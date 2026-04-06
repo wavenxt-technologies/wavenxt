@@ -40,7 +40,7 @@ const products = [
     stat: "12",
     statLabel: "Variants",
     specs: ["200 – 8000 MHz", "95 dB range", "0.25 dB step"],
-    image: "/group-atten.jpg",
+    image: "/images/group-atten.webp",
   },
   {
     num: "02",
@@ -52,7 +52,7 @@ const products = [
     stat: "N×N",
     statLabel: "Config",
     specs: ["Multi-port", "High Isolation", "API Control"],
-    image: "/mesh.jpg",
+    image: "/images/mesh4.webp",
   },
   {
     num: "03",
@@ -64,7 +64,7 @@ const products = [
     stat: "M×N",
     statLabel: "Config",
     specs: ["Path Selection", "Scalable I/O", "Low Crosstalk"],
-    image: "/matrix.jpg",
+    image: "/images/matrix.webp",
   },
 
   {
@@ -77,8 +77,7 @@ const products = [
     stat: "𝑛 X 𝑛",
     statLabel: "Beams",
     specs: ["Up to 8 GHz", "4×4 – 8×8", "Phase Mapping"],
-    image:
-      "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=400&q=80",
+    image: "/images/butler4.webp",
   },
   {
     num: "05",
@@ -90,7 +89,7 @@ const products = [
     stat: "",
     statLabel: "Custom Systems",
     specs: ["Seamless Roaming", "Mobility Testing", "Latency Optimization"],
-    image: "/handover.png",
+    image: "/images/handover.webp",
   },
   {
     num: "06",
@@ -102,8 +101,7 @@ const products = [
     stat: "up to 18",
     statLabel: "GHz",
     specs: ["Wideband", "High Isolation", "Low Insertion Loss"],
-    image:
-      "https://images.unsplash.com/photo-1518181835702-6eef8b4b2113?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    image: "/images/splitter.webp",
   },
 ];
 
@@ -239,7 +237,7 @@ export default function Products() {
           ))}
         </div>
         <Link
-          href="/support"
+          href="/contact"
           className="hidden items-center gap-1.5 text-sm text-zinc-500 transition-colors hover:text-zinc-900 md:inline-flex mt-6 justify-end w-full"
         >
           Need guidance? <ArrowUpRight className="size-3.5" />
@@ -392,7 +390,7 @@ export default function Products() {
             </motion.div>
             <motion.div variants={fadeUp} custom={1}>
               <Link
-                href="/support"
+                href="/contact"
                 className="inline-flex items-center gap-2 text-sm font-medium text-zinc-400 transition-colors hover:text-white"
               >
                 Talk to our team <ArrowUpRight className="size-4" />

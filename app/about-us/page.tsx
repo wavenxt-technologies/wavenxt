@@ -325,7 +325,7 @@ export default function AboutUs() {
                   >
                     View Products
                   </motion.a>
-                  <Link href="/support">
+                  <Link href="/contact">
                     <motion.span
                       whileHover={{ scale: 1.015 }}
                       whileTap={{ scale: 0.985 }}
@@ -390,7 +390,7 @@ export default function AboutUs() {
                   whileTap={{ scale: 0.985 }}
                 >
                   <Link
-                    href="/support"
+                    href="/contact"
                     className="inline-flex items-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.5)] transition-colors hover:bg-[#1e3070]"
                   >
                     Our Blogs
@@ -398,7 +398,7 @@ export default function AboutUs() {
                   </Link>
                 </motion.span>
                 <motion.a
-                  href="/support"
+                  href="/contact"
                   whileHover={{ scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
                   className="inline-flex items-center rounded-xl border border-zinc-300 px-6 py-3 text-sm font-medium text-zinc-800 transition-colors hover:border-zinc-500 hover:text-zinc-900"

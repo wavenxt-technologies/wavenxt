@@ -90,8 +90,7 @@ export const butlerModels = [
     model: "NXBM-4P67",
     matrix: "4x4 Butler Matrix",
     frequencyText: "0.6 to 7.125 GHz",
-    image:
-      "https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/butler4.webp",
     overview: fourByFourOverview,
     features: fourByFourFeatures,
     applications: fourByFourApplications,
@@ -108,8 +107,7 @@ export const butlerModels = [
     model: "NXBM-4P28",
     matrix: "4x4 Butler Matrix",
     frequencyText: "2.4 to 8 GHz",
-    image:
-      "https://images.unsplash.com/photo-1518773553398-650c184e0bb3?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/butler4.webp",
     overview: fourByFourOverview,
     features: fourByFourFeatures,
     applications: fourByFourApplications,
@@ -126,8 +124,7 @@ export const butlerModels = [
     model: "NXBM-8P67",
     matrix: "8x8 Butler Matrix",
     frequencyText: "0.6 to 7.125 GHz",
-    image:
-      "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/butler8.webp",
     overview: eightByEightOverview,
     features: eightByEightFeatures,
     applications: eightByEightApplications,
@@ -144,8 +141,7 @@ export const butlerModels = [
     model: "NXBM-8P28",
     matrix: "8x8 Butler Matrix",
     frequencyText: "2.4 to 8 GHz",
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/butler8.webp",
     overview: eightByEightOverview,
     features: eightByEightFeatures,
     applications: eightByEightApplications,

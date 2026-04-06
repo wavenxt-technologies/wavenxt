@@ -6,8 +6,7 @@ export const meshModels = [
     frequencyText: "200 - 8000 MHz",
     overview:
       "The NXA-B4P programmable mesh attenuator is a fully shielded, high-performance, digitally controlled RF attenuator system featuring robust and repeatable digital attenuation. It stands out with a user-friendly GUI, customizable fading profiles, and extensive connectivity options, enclosed in a compact 1RU design.",
-    image:
-      "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/mesh4.webp",
     features: [
       "Extended Frequency Range: Operates across a broad spectrum from 200 MHz to 8 GHz, ensuring versatility for a wide array of testing applications.",
       "24/7 Operation: Engineered for continuous use, supporting fully automated testing workflows to maximize efficiency and reliability in mission-critical environments.",
@@ -170,8 +169,7 @@ export const meshModels = [
     frequencyText: "200 to 8000 MHz",
     overview:
       "The NXA-B9P programmable mesh attenuator is a fully shielded, high-performance, digitally controlled RF attenuator system featuring 36 channels. It is designed for automated RF testing applications that require precise signal power control. The NXA-B9P delivers excellent attenuation accuracy, a wide dynamic range, and fast response speed. Its superior performance is achieved through a high-precision attenuator design along with thorough calibration.",
-    image:
-      "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=1600&q=80",
+    image: "/images/mesh9.webp",
     features: [
       "Wideband Frequency Coverage: Supports operation from 200 MHz to 8 GHz, enabling testing across Wi-Fi, cellular, and broadband RF systems.",
       "Designed for Continuous Operation: Built for 24/7 unattended use, making it ideal for fully automated and long-duration RF test environments.",

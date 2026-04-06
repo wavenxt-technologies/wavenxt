@@ -80,7 +80,7 @@ const pathsGradients: Record<number, string> = {
 
 export default function HandoverTestSystems() {
   return (
-    <main className="min-h-screen bg-[#f7f7f5] text-zinc-900 pb-20">
+    <main className="min-h-screen bg-[#f7f7f5] text-zinc-900">
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-48">
         <div className="pointer-events-none absolute inset-0">
@@ -159,7 +159,7 @@ export default function HandoverTestSystems() {
             >
               {[
                 { label: "Frequency", value: "200 – 8000", unit: "MHz" },
-                { label: "Attenuation", value: "Up to 90", unit: "dB" },
+                { label: "Attenuation", value: "Up to 95", unit: "dB" },
                 { label: "Step Size", value: "0.25", unit: "dB" },
                 { label: "Max Paths", value: "512", unit: "paths" },
               ].map((s) => (
@@ -261,9 +261,51 @@ export default function HandoverTestSystems() {
           </motion.div>
         </div>
       </section>
+      {/* ── Functional Diagram ── */}
+      <section className="border-t border-zinc-200/80 bg-white">
+        <div className="mx-auto max-w-7xl px-6 pt-20 md:px-10 md:pt-28">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={stagger}
+            className="flex flex-col items-center justify-center text-center"
+          >
+            <motion.div variants={fadeUp} custom={0} className="max-w-2xl">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#172556]/70">
+                Architecture
+              </p>
+              <h2 className="font-heading text-3xl font-medium tracking-tight text-zinc-900 md:text-5xl">
+                Functional Diagram
+              </h2>
+              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
+                A highly integrated non-blocking architecture ensures seamless
+                coverage emulation across multiple network nodes.
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={fadeUp}
+              custom={1}
+              className="mt-12 w-full max-w-4xl"
+            >
+              <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-[#f7f7f5] p-3 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]">
+                <div className="relative flex aspect-[16/9] w-full items-center justify-center rounded-2xl border border-zinc-100 bg-white overflow-hidden">
+                  <Image
+                    src="/diagram/handover.png"
+                    alt="Handover Test Systems Functional Diagram"
+                    fill
+                    className="object-contain p-4"
+                  />
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
 
       {/* ── Standard Models ── */}
-      <section className="bg-white text-zinc-900">
+      <section className="bg-[#f7f7f5] text-zinc-900">
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
           <motion.div
             initial="hidden"
@@ -283,7 +325,9 @@ export default function HandoverTestSystems() {
               <motion.a
                 variants={fadeUp}
                 custom={1}
-                href="#"
+                href="/datasheet/handover-test-systems/Handover-Systems.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#f7f7f5] border border-zinc-200/80 px-6 py-3.5 text-sm font-medium text-zinc-700 transition-all hover:bg-white hover:text-[#172556] hover:shadow-sm self-start md:self-auto"
               >
                 <FileDown className="size-4" />
@@ -355,7 +399,7 @@ export default function HandoverTestSystems() {
                   </span>
                 </p>
                 <Link
-                  href="/support"
+                  href="/contact"
                   className="mt-8 inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-[#172556] px-6 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[#1e3070]"
                 >
                   Talk to engineers <ArrowUpRight className="size-4" />
@@ -374,70 +418,6 @@ export default function HandoverTestSystems() {
               <span className="mx-2 opacity-50">|</span> Up to 90 dB attenuation{" "}
               <span className="mx-2 opacity-50">|</span> SMA female connectors
             </motion.p>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ── Block Diagram ── */}
-      <section className="border-t border-zinc-200/80 bg-[#f7f7f5]">
-        <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            variants={stagger}
-            className="grid md:grid-cols-12 gap-12 md:gap-16 md:items-center"
-          >
-            <motion.div
-              variants={fadeUp}
-              custom={0}
-              className="md:col-span-5 relative z-10"
-            >
-              <p className="mb-4 text-[10px] font-bold uppercase tracking-widest text-[#172556]">
-                Block Diagram
-              </p>
-              <h2 className="font-heading text-3xl font-medium tracking-tight text-zinc-900 md:text-5xl md:leading-[1.1]">
-                8×8 Handover Test System
-              </h2>
-              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                The NXA-B88M block diagram illustrates the internal signal
-                routing architecture — 8 inputs routed through an attenuator
-                matrix to 8 outputs, with full shielding across all paths.
-              </p>
-
-              <div className="mt-10 flex flex-col sm:flex-row gap-4">
-                <a
-                  href="#"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-white px-6 text-sm font-medium text-zinc-900 shadow-sm ring-1 ring-zinc-200/80 transition-all hover:bg-zinc-50 hover:shadow-md"
-                >
-                  <FileDown className="size-4 text-zinc-500" />
-                  Download Datasheet
-                </a>
-                <Link
-                  href="/support"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-xl px-6 text-sm font-medium text-zinc-600 transition-colors hover:text-zinc-900 hover:bg-zinc-200/50"
-                >
-                  Request custom topology
-                  <ArrowUpRight className="size-4" />
-                </Link>
-              </div>
-            </motion.div>
-
-            <motion.div variants={fadeUp} custom={1} className="md:col-span-7">
-              <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white p-2 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.1)]">
-                <div className="rounded-[1.5rem] bg-zinc-50 p-2 md:p-4 border border-zinc-100">
-                  <div className="relative aspect-4/3 w-full overflow-hidden rounded-xl bg-white outline outline-zinc-200/60">
-                    <Image
-                      src="/handover.png"
-                      alt="NXA-B88M — 8×8 Block Diagram"
-                      fill
-                      unoptimized
-                      className="object-contain p-8"
-                    />
-                  </div>
-                </div>
-              </div>
-            </motion.div>
           </motion.div>
         </div>
       </section>

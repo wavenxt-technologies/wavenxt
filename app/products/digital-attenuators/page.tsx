@@ -2,9 +2,14 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
-import { motion, useSpring, useMotionValue } from "framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  useSpring,
+  useMotionValue,
+} from "framer-motion";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -73,27 +78,30 @@ const channelGradients: Record<number, string> = {
 export default function DigitalAttenuators() {
   const [hovering, setHovering] = useState(false);
   const [activeImage, setActiveImage] = useState("/atten8.jpg");
+  const [activeModel, setActiveModel] = useState("");
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
 
-  const floatX = useSpring(mouseX, { damping: 30, stiffness: 150, mass: 0.8 });
-  const floatY = useSpring(mouseY, { damping: 30, stiffness: 150, mass: 0.8 });
+  const floatX = useSpring(mouseX, { damping: 25, stiffness: 120, mass: 0.5 });
+  const floatY = useSpring(mouseY, { damping: 25, stiffness: 120, mass: 0.5 });
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
-      const imageWidth = 300;
-      const imageHeight = 200;
-      const margin = 32;
+      const imageWidth = 320;
+      const imageHeight = 240;
+      const margin = 24;
 
       let xOffset = margin;
-      let yOffset = margin;
+      let yOffset = -imageHeight / 2;
 
       if (e.clientX + margin + imageWidth > window.innerWidth) {
         xOffset = -imageWidth - margin;
       }
 
-      if (e.clientY + margin + imageHeight > window.innerHeight) {
+      if (e.clientY + yOffset < 0) {
+        yOffset = margin;
+      } else if (e.clientY + yOffset + imageHeight > window.innerHeight) {
         yOffset = -imageHeight - margin;
       }
 
@@ -105,27 +113,7 @@ export default function DigitalAttenuators() {
   }, [mouseX, mouseY]);
 
   return (
-    <main className="min-h-screen bg-[#f7f7f5] text-zinc-900 pb-20 relative">
-      {/* Floating Reveal */}
-      <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-50 hidden h-50 w-75 overflow-hidden rounded-2xl bg-white shadow-2xl shadow-black/10 ring-1 ring-zinc-900/5 md:block"
-        style={{ x: floatX, y: floatY }}
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{
-          opacity: hovering ? 1 : 0,
-          scale: hovering ? 1 : 0.8,
-        }}
-        transition={{ duration: 0.3, ease }}
-      >
-        <Image
-          src={activeImage}
-          alt="Preview"
-          fill
-          className="object-cover object-center"
-          unoptimized
-        />
-      </motion.div>
-
+    <main className="min-h-screen bg-[#f7f7f5] text-zinc-900 relative">
       {/* ── Hero ── */}
       <section className="relative overflow-hidden pb-20 pt-32 md:pb-28 md:pt-48">
         <div className="pointer-events-none absolute inset-0">
@@ -210,7 +198,7 @@ export default function DigitalAttenuators() {
       </section>
 
       {/* ── Models Grid ── */}
-      <section className="bg-white py-20 md:py-28">
+      <section className="py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-6 md:px-10">
           <motion.div
             initial="hidden"
@@ -271,10 +259,14 @@ export default function DigitalAttenuators() {
                         key={m.model}
                         href={`/products/digital-attenuators/${m.model.toLowerCase()}`}
                         onMouseEnter={() => {
-                          setActiveImage(`/atten${m.channel}.jpg`);
+                          setActiveImage(`/atten${m.channel}.webp`);
+                          setActiveModel(m.model);
                           setHovering(true);
                         }}
-                        onMouseLeave={() => setHovering(false)}
+                        onMouseLeave={() => {
+                          setHovering(false);
+                          setActiveModel("");
+                        }}
                         className="group relative flex flex-col justify-between overflow-hidden rounded-[1.5rem] border border-zinc-200/60 bg-[#f7f7f5] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] md:h-45"
                       >
                         {/* Dynamic Channel Accent Gradient */}

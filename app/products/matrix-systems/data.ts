@@ -1,10 +1,10 @@
 export const matrixModels = [
   {
     model: "NXA-B168M",
-    name: "Matrix Attenuator",
+    name: "Matrix Systems",
     frequencyText: "200 - 8000 MHz",
     overview:
-      "The NXA-B168M Matrix Attenuator offers robust and repeatable digital attenuation with user-friendly GUI controls. Supporting Windows and Linux, it features customizable fading profiles, USB and Ethernet control options, all housed in a compact design.",
+      "The NXA-B168M Matrix System delivers precise, repeatable RF routing and attenuation control for complex test setups. It features an intuitive GUI, supports Windows and Linux, and enables flexible path configuration, fading profiles, and control via USB and Ethernet in a compact, scalable design.",
     image:
       "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1600&q=80",
     features: [

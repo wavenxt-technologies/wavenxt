@@ -1,8 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Mail, Phone, ArrowUpRight } from "lucide-react";
+import {
+  ChevronDown,
+  Mail,
+  Phone,
+  ArrowUpRight,
+  CheckCircle,
+} from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -50,6 +56,33 @@ const fieldClass =
   "mt-2 w-full rounded-xl border border-zinc-300/80 bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-200 focus:border-[#172556] focus:bg-white focus:ring-2 focus:ring-[#172556]/10";
 
 export default function SupportPage() {
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setStatus("loading");
+    const fd = new FormData(e.currentTarget);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: fd.get("name"),
+          email: fd.get("email"),
+          phone: fd.get("phone"),
+          subject: fd.get("subject"),
+          message: fd.get("message"),
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setStatus("success");
+    } catch {
+      setStatus("error");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#f7f7f5] text-zinc-900">
       {/* ── Hero ── */}
@@ -112,9 +145,24 @@ export default function SupportPage() {
               guidance.
             </p>
 
+            {status === "success" && (
+              <div className="mt-8 flex flex-col items-center justify-center rounded-2xl bg-emerald-50/60 py-12 text-center">
+                <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-100">
+                  <CheckCircle className="size-6 text-emerald-600" />
+                </div>
+                <h3 className="mt-5 font-heading text-xl font-medium text-zinc-900">
+                  Message Sent
+                </h3>
+                <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-500">
+                  Thank you for reaching out. Our team will get back to you
+                  within 24 hours.
+                </p>
+              </div>
+            )}
+
             <form
-              className="mt-8 grid gap-5 md:grid-cols-2"
-              onSubmit={(e) => e.preventDefault()}
+              className={`mt-8 grid gap-5 md:grid-cols-2 ${status === "success" ? "hidden" : ""}`}
+              onSubmit={handleSubmit}
             >
               <motion.div variants={fadeUp} custom={1}>
                 <label
@@ -212,12 +260,18 @@ export default function SupportPage() {
               >
                 <motion.button
                   type="submit"
+                  disabled={status === "loading"}
                   whileHover={{ scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
-                  className="inline-flex items-center justify-center rounded-xl bg-[#172556] px-7 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.5)] transition-colors hover:bg-[#1e3070]"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#172556] px-7 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.5)] transition-colors hover:bg-[#1e3070] disabled:opacity-60"
                 >
-                  Submit Inquiry
+                  {status === "loading" ? "Sending..." : "Submit Inquiry"}
                 </motion.button>
+                {status === "error" && (
+                  <p className="mt-2 text-sm text-red-500">
+                    Something went wrong. Please try again.
+                  </p>
+                )}
               </motion.div>
             </form>
           </motion.div>
@@ -284,7 +338,7 @@ export default function SupportPage() {
             <div className="aspect-4/3 w-full">
               <iframe
                 title="Wavenxt Location Map"
-                src="https://www.google.com/maps?q=%23847%202nd%20Floor%20A%20block%20Sahakaranagar%20Bangalore%20560092&output=embed"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.560391827154!2d77.58399237578841!3d13.063630612852435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae18223d26c1f7%3A0xe2ff1b42fcbf6c3a!2sPremier%20Measurement%20Solutions%20Private%20Limited!5e0!3m2!1sen!2sin!4v1775478059147!5m2!1sen!2sin"
                 className="h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

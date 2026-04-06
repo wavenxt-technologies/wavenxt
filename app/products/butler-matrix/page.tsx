@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { ArrowUpRight, FileDown } from "lucide-react";
 import { motion } from "framer-motion";
 import { butlerModels } from "./data";
@@ -199,7 +198,9 @@ export default function ButlerMatrix() {
               <motion.a
                 variants={fadeUp}
                 custom={1}
-                href="#"
+                href="/datasheet/bulter-matrix/NXBM-4P67.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="inline-flex items-center justify-center gap-2 self-start rounded-2xl border border-zinc-200/80 bg-[#f7f7f5] px-6 py-3.5 text-sm font-medium text-zinc-700 transition-all hover:bg-white hover:text-[#172556] hover:shadow-sm md:self-auto"
               >
                 <FileDown className="size-4" />
@@ -401,7 +402,7 @@ export default function ButlerMatrix() {
               className="mt-10 flex flex-col gap-4"
             >
               <Link
-                href="/support"
+                href="/contact"
                 className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-zinc-300"
               >
                 Talk to an engineer <ArrowUpRight className="size-4" />

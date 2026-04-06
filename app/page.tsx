@@ -28,6 +28,13 @@ import {
   Car,
   Smartphone,
   Building2,
+  Target,
+  Lightbulb,
+  Award,
+  Leaf,
+  Users,
+  Eye,
+  Headset,
 } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
@@ -45,98 +52,6 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.1 } },
 };
 
-/* ─────────────────────────────── data ─────────────────────────────── */
-
-const allProducts = [
-  {
-    name: "Digital Attenuators",
-    tag: "Core",
-    href: "/products/digital-attenuators",
-    image: "/group-atten.jpg",
-    stat: "12",
-    statLabel: "Models",
-    freq: "200 – 8000 MHz",
-    desc: "Precise RF signal control for Wi-Fi and cellular validation — 95 dB dynamic range with 0.25 dB resolution.",
-  },
-  {
-    name: "Mesh Attenuators",
-    tag: "RF Network",
-    href: "/products/mesh-attenuators",
-    image: "/mesh.jpg",
-    stat: "36",
-    statLabel: "Paths",
-    freq: "Multi-port",
-    desc: "High-density attenuation matrices for stable multi-node signal management across complex RF topologies.",
-  },
-  {
-    name: "Matrix Systems",
-    tag: "Routing",
-    href: "/products/matrix-systems",
-    image: "/matrix.jpg",
-    stat: "16×8",
-    statLabel: "Config",
-    freq: "200 – 8000 MHz",
-    desc: "Flexible solid-state RF path switching across multi-device, multi-band environments with programmable routing.",
-  },
-  {
-    name: "Butler Matrix",
-    tag: "Advanced",
-    href: "/products/butler-matrix",
-    image: "/group-atten1.jpg",
-    stat: "8×8",
-    statLabel: "Beams",
-    freq: "0.6 – 7.125 GHz",
-    desc: "Passive beamforming networks for advanced antenna characterization and MIMO validation workflows.",
-  },
-  {
-    name: "Handover Test Systems",
-    tag: "System",
-    href: "/products/handover-test-systems",
-    image: "/handover.png",
-    stat: "512",
-    statLabel: "Paths",
-    freq: "200 – 8000 MHz",
-    desc: "End-to-end integrated systems for mobility, roaming, and handover validation at production scale.",
-  },
-  {
-    name: "Splitters",
-    tag: "Signal Chain",
-    href: "/products/splitters",
-    image: "/atten8.jpg",
-    stat: "18",
-    statLabel: "GHz",
-    freq: "Wideband",
-    desc: "Low-loss Wilkinson splitter/combiners engineered for balanced, repeatable signal distribution in test setups.",
-  },
-];
-
-const milestones = [
-  {
-    year: "2014",
-    title: "Founded",
-    detail:
-      "Started building compact, high-precision RF test systems for modern wireless labs.",
-  },
-  {
-    year: "2018",
-    title: "Expansion",
-    detail:
-      "Expanded into custom matrix and handover test architectures for multi-band validation.",
-  },
-  {
-    year: "2022",
-    title: "Global Scale",
-    detail:
-      "Scaled engineering support and deployment across global telecom and manufacturing partners.",
-  },
-  {
-    year: "Now",
-    title: "Next-Gen",
-    detail:
-      "Building future-ready measurement platforms for 5G, private networks, and next-gen mobility.",
-  },
-];
-
 /* ═══════════════════════════════════════════════════
    PAGE
    ═══════════════════════════════════════════════════ */
@@ -146,20 +61,13 @@ export default function Home() {
     <div className="min-h-screen bg-[#f7f7f5] text-zinc-900">
       <Hero />
       <WhoWeAre />
-      <OurServices />
-      <IndustriesWeServe />
-      <NumbersAndCapabilities />
-      <JourneyTimeline />
+      <CoreProducts />
       <ValuesManifesto />
       <TechnologiesSection />
       <GlobalPresence />
     </div>
   );
 }
-
-/* ═══════════════════════════════════════════════════
-   1 · HERO — full-screen video, left-aligned content
-   ═══════════════════════════════════════════════════ */
 
 function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -175,7 +83,7 @@ function Hero() {
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-screen items-end overflow-hidden bg-zinc-900"
+      className="relative flex min-h-screen items-center overflow-hidden bg-zinc-900"
     >
       {/* Video background */}
       <motion.div style={{ scale: videoScale }} className="absolute inset-0">
@@ -190,21 +98,21 @@ function Hero() {
         </video>
       </motion.div>
 
-      <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-transparent" />
+      {/* Smooth uniform translucent overlay */}
+      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
 
       <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-40"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-40 z-10"
         style={{
           background:
             "linear-gradient(to top, #f7f7f5 0%, rgba(247,247,245,0.6) 40%, rgba(247,247,245,0) 100%)",
         }}
       />
 
-      {/* Content — left aligned */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pb-36 pt-48 md:px-10 md:pb-44">
+      {/* Content — left aligned but vertically centered */}
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-20 md:px-10 flex flex-col justify-center">
         <motion.div style={{ y: textY, opacity: textOpacity }}>
           <motion.div initial="hidden" animate="visible" variants={stagger}>
-            {/* Badge */}
             <motion.div
               variants={fadeUp}
               custom={0}
@@ -215,23 +123,19 @@ function Hero() {
                 <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
               </span>
               <span className="text-[11px] font-medium uppercase tracking-widest text-white/70">
-                Trusted by RF labs in 18 countries
+                Chosen by global RF engineers
               </span>
             </motion.div>
-
             {/* Heading */}
             <motion.h1
               variants={fadeUp}
               custom={1}
-              className="mt-8 max-w-3xl font-heading text-[clamp(2.5rem,5.8vw,5rem)] font-medium leading-[1.05] tracking-tight text-white"
+              className="mt-8 max-w-5xl font-heading text-[clamp(2.5rem,5vw,5rem)] font-medium leading-[1.05] tracking-tight text-white"
             >
-              Precision RF test
+              RF test solutions engineered
               <br />
-              solutions, built
-              <br />
-              <span className="text-white/40">to measure.</span>
+              <span className="text-white/40">for absolute accuracy</span>
             </motion.h1>
-
             {/* Description */}
             <motion.p
               variants={fadeUp}
@@ -241,7 +145,6 @@ function Hero() {
               From programmable attenuators to complete handover test systems —
               engineered for absolute certainty in every measurement cycle.
             </motion.p>
-
             {/* CTAs */}
             <motion.div
               variants={fadeUp}
@@ -258,23 +161,22 @@ function Hero() {
                   <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
                 </motion.span>
               </Link>
-              <Link href="/support">
+              <Link href="/contact">
                 <motion.span
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center gap-2.5 rounded-xl border border-white/15 bg-white/[0.06] px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/10"
+                  className="inline-flex items-center gap-2.5 rounded-xl border border-white/15 bg-white/6 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/10"
                 >
                   Get in Touch
                   <ArrowUpRight className="size-3.5" />
                 </motion.span>
               </Link>
             </motion.div>
-
             {/* Specs strip */}
             <motion.div
               variants={fadeUp}
               custom={4}
-              className="mt-14 flex flex-wrap items-center gap-8"
+              className="mt-10 flex flex-wrap items-center gap-8"
             >
               {[
                 { icon: Radio, value: "200 – 8000 MHz" },
@@ -283,9 +185,9 @@ function Hero() {
               ].map((item) => (
                 <div
                   key={item.value}
-                  className="flex items-center gap-2.5 text-sm text-white/50"
+                  className="flex items-center gap-2.5 text-sm text-white"
                 >
-                  <item.icon className="size-4 text-white/30" />
+                  <item.icon className="size-4 text-white" />
                   <span className="font-medium">{item.value}</span>
                 </div>
               ))}
@@ -324,23 +226,16 @@ function WhoWeAre() {
           {/* Image side */}
           <motion.div variants={fadeUp} custom={0} className="md:col-span-5">
             <motion.div style={{ y: imgY }} className="relative">
-              <div className="relative aspect-[3/4] overflow-hidden rounded-3xl bg-zinc-200">
+              <div className="relative aspect-[3/4] overflow-hidden">
                 <Image
-                  src="/atten2.jpg"
+                  src="/images/group-atten.webp"
                   alt="Wavenxt engineering lab"
                   fill
-                  sizes="(max-width:768px) 100vw, 40vw"
+                  quality={100}
+                  priority
+                  sizes="100vw"
                   className="object-cover"
                 />
-              </div>
-              {/* Overlapping accent card */}
-              <div className="absolute -bottom-6 -right-4 rounded-2xl border border-zinc-200/80 bg-white p-5 shadow-lg md:-right-8">
-                <p className="font-heading text-3xl font-medium tabular-nums text-[#172556]">
-                  2014
-                </p>
-                <p className="mt-1 text-xs font-medium uppercase tracking-widest text-zinc-500">
-                  Founded
-                </p>
               </div>
             </motion.div>
           </motion.div>
@@ -360,8 +255,8 @@ function WhoWeAre() {
               custom={2}
               className="mt-5 font-heading text-3xl font-medium leading-[1.15] tracking-tight md:text-4xl lg:text-5xl"
             >
-              We design dependable wireless test systems for teams that cannot
-              afford uncertainty.
+              We design wireless test systems that ensure confidence in every RF
+              measurement.
             </motion.h2>
 
             <motion.div
@@ -385,32 +280,12 @@ function WhoWeAre() {
               </p>
             </motion.div>
 
-            {/* Inline stats row */}
-            <motion.div
-              variants={fadeUp}
-              custom={4}
-              className="mt-10 grid grid-cols-3 gap-6 border-t border-zinc-200/80 pt-8"
-            >
-              {[
-                { v: "12+", l: "Years" },
-                { v: "300+", l: "Projects" },
-                { v: "18", l: "Countries" },
-              ].map((s) => (
-                <div key={s.l}>
-                  <p className="font-heading text-3xl font-medium tabular-nums text-zinc-900 md:text-4xl">
-                    {s.v}
-                  </p>
-                  <p className="mt-1 text-sm text-zinc-500">{s.l}</p>
-                </div>
-              ))}
-            </motion.div>
-
             <motion.div variants={fadeUp} custom={5} className="mt-8">
               <Link
                 href="/about-us"
                 className="inline-flex items-center gap-2 text-sm font-medium text-[#172556] transition-colors hover:text-[#1e3070]"
               >
-                Read our full story
+                Know about us
                 <ArrowUpRight className="size-3.5" />
               </Link>
             </motion.div>
@@ -422,205 +297,266 @@ function WhoWeAre() {
 }
 
 /* ═══════════════════════════════════════════════════
-   4 · OUR SERVICES
+   3.5 · CORE PRODUCTS — flagship product showcase
    ═══════════════════════════════════════════════════ */
 
-function OurServices() {
+function CoreProducts() {
   const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  const services = [
-    {
-      title: "Custom RF Engineering",
-      desc: "From schematic capture to full-scale fabrication, our RF engineering team designs custom high-frequency pathways and solid-state switching matrices. We tailor every architecture to minimize insertion loss, maximize isolation, and precisely fit your unique lab environment setup.",
-      icon: Cpu,
-    },
-    {
-      title: "System Integration",
-      desc: "We seamlessly combine disparate hardware modules into unified, cohesive testing platforms. Our automated integration sequences are backed by full REST API support, ensuring your new equipment drops into existing automated testing pipelines instantly.",
-      icon: Network,
-    },
-    {
-      title: "Calibration & Certification",
-      desc: "Accuracy is non-negotiable. Every unit undergoes rigorous factory calibration using NIST-traceable equipment. We provide detailed performance characterization, ensuring absolute measurement precision and verifiable compliance with global telecom standards.",
-      icon: Shield,
-    },
-    {
-      title: "Consulting & Support",
-      desc: "Our commitment extends beyond delivery. You receive dedicated engineering assistance directly from the teams who built your equipment. Whether debugging complex measurement setups or scaling lab infrastructure, we are your long-term partners.",
-      icon: Headphones,
-    },
-  ];
+  const inView = useInView(ref, { once: true, margin: "-80px" });
 
   return (
-    <section className="overflow-hidden border-t border-zinc-200/80 bg-white">
+    <section className="border-t border-zinc-200/80 bg-white">
       <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
         <motion.div
           ref={ref}
           initial="hidden"
           animate={inView ? "visible" : "hidden"}
           variants={stagger}
-          className="mb-16 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
         >
-          <div>
-            <motion.p
-              variants={fadeUp}
-              custom={0}
-              className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500"
-            >
-              Our Services
-            </motion.p>
-            <motion.h2
-              variants={fadeUp}
-              custom={1}
-              className="mt-4 max-w-xl font-heading text-3xl font-medium tracking-tight md:text-4xl text-zinc-900"
-            >
-              Comprehensive solutions from concept to lab deployment
-            </motion.h2>
+          {/* Section header */}
+          <div className="mb-16 md:mb-20">
+            <motion.div variants={fadeUp} custom={0} className="max-w-2xl">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                Flagship Products
+              </p>
+              <h2 className="mt-4 font-heading text-3xl font-medium leading-[1.15] tracking-tight md:text-4xl lg:text-5xl">
+                The heart of every
+                <br />
+                reliable RF test setup
+              </h2>
+              <p className="mt-5 text-base leading-relaxed text-zinc-500">
+                Two product lines engineered to anchor your entire wireless
+                validation workflow — from single-channel attenuation to
+                full-scale handover testing.
+              </p>
+            </motion.div>
           </div>
+
+          {/* ────────────────────────────────────────────
+              PRODUCT 1 — MT-88A Digital Attenuator
+              Full-width card with image hero + content
+              ──────────────────────────────────────────── */}
           <motion.div
             variants={fadeUp}
             custom={2}
-            className="hidden items-center gap-2 text-sm font-medium text-zinc-400 md:flex"
+            className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-[#f7f7f5] transition-shadow duration-500 hover:shadow-2xl hover:shadow-zinc-300/40"
           >
-            Drag to explore <ArrowRight className="size-4" />
-          </motion.div>
-        </motion.div>
+            <div className="grid md:grid-cols-12">
+              <div className="relative md:col-span-7">
+                <div className="relative aspect-[4/3] w-full md:aspect-auto md:h-full md:min-h-[520px]">
+                  <Image
+                    src="/images/atten8.webp"
+                    alt="MT-88A 8 Channel Digital Attenuator"
+                    fill
+                    quality={100}
+                    priority
+                    sizes="100vw"
+                    className="object-cover"
+                  />
+                  {/* Gradient fade to content side */}
+                  <div className="pointer-events-none absolute inset-y-0 right-0 hidden w-32 bg-gradient-to-l from-[#f7f7f5] to-transparent md:block" />
+                  {/* Bottom gradient for mobile */}
+                  <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#f7f7f5] to-transparent md:hidden" />
+                </div>
 
-        <div className="relative -mx-6 px-6 md:-mx-10 md:px-10">
-          <div className="flex w-full snap-x snap-mandatory gap-6 overflow-x-auto pb-12 pt-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {services.map((service, idx) => (
-              <motion.div
-                key={service.title}
-                initial={{ opacity: 0, x: 20 }}
-                animate={inView ? { opacity: 1, x: 0 } : {}}
-                transition={{ duration: 0.5, delay: idx * 0.1, ease }}
-                className="group relative flex w-[85vw] shrink-0 snap-center flex-col overflow-hidden rounded-[2.5rem] border border-zinc-200/60 bg-[#f7f7f5] p-10 transition-all hover:-translate-y-2 hover:bg-white hover:shadow-xl hover:shadow-zinc-200/50 sm:w-[50vw] md:w-[450px]"
-              >
-                <div className="mb-10 flex items-center justify-between">
-                  <div className="flex size-14 items-center justify-center rounded-2xl bg-white text-[#172556] shadow-sm transition-colors group-hover:bg-[#172556] group-hover:text-white">
-                    <service.icon className="size-6" />
-                  </div>
-                  <span className="font-heading text-4xl font-light text-zinc-200 transition-colors group-hover:text-zinc-300">
-                    0{idx + 1}
+                {/* Floating badge on image */}
+                <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-1.5 shadow-lg shadow-black/5 backdrop-blur-sm">
+                  <span className="font-mono text-[10px] font-bold tracking-widest text-[#172556]">
+                    MT-88A
+                  </span>
+                  <span className="h-3 w-px bg-zinc-300" />
+                  <span className="text-[10px] font-semibold text-zinc-500">
+                    8 Channel
                   </span>
                 </div>
-                <h3 className="mb-4 font-heading text-2xl font-medium text-zinc-900">
-                  {service.title}
-                </h3>
-                <p className="flex-1 leading-relaxed text-zinc-500">
-                  {service.desc}
-                </p>
-                <div className="mt-8 flex items-center gap-2 text-sm font-medium text-[#172556] opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  Explore Service <ArrowRight className="size-4" />
-                </div>
-              </motion.div>
-            ))}
-            <div className="w-1 shrink-0 snap-center md:w-4" />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════
-   4.1 · INDUSTRIES WE SERVE
-   ═══════════════════════════════════════════════════ */
-
-function IndustriesWeServe() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  const industries = [
-    {
-      name: "Telecommunications",
-      icon: Smartphone,
-      image:
-        "https://images.unsplash.com/photo-1591808216268-ce0b82787efe?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      desc: "5G & 6G network validations and base station functional testing.",
-    },
-    {
-      name: "Aerospace & Defense",
-      icon: Satellite,
-      image: "/handover.png",
-      desc: "High-reliability precision matrices for radar and telemetry.",
-    },
-    {
-      name: "Automotive IoT",
-      icon: Car,
-      image: "/group-atten.jpg",
-      desc: "V2X communication testing and connected vehicle systems.",
-    },
-    {
-      name: "Enterprise Networking",
-      icon: Building2,
-      image: "/matrix.jpg",
-      desc: "Wi-Fi 7 access point compliance and heavily dense scale evaluations.",
-    },
-  ];
-
-  return (
-    <section className="border-t border-zinc-200/80 bg-[#f7f7f5] py-20 md:py-28">
-      <div className="mx-auto max-w-7xl px-6 md:px-10 text-center">
-        <motion.div
-          ref={ref}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          variants={stagger}
-          className="mx-auto mb-16 max-w-2xl"
-        >
-          <motion.p
-            variants={fadeUp}
-            custom={0}
-            className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500"
-          >
-            Industries We Serve
-          </motion.p>
-          <motion.h2
-            variants={fadeUp}
-            custom={1}
-            className="mt-4 font-heading text-3xl font-medium tracking-tight md:text-4xl text-zinc-900"
-          >
-            Empowering next-generation connectivity across sectors
-          </motion.h2>
-        </motion.div>
-
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 text-left">
-          {industries.map((ind, idx) => (
-            <motion.div
-              key={ind.name}
-              initial={{ opacity: 0, y: 20 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: idx * 0.1, ease }}
-              className="group flex flex-col overflow-hidden rounded-[2rem] border border-zinc-200/60 bg-white shadow-sm transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-zinc-200/50"
-            >
-              <div className="p-2">
-                <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] bg-zinc-100">
-                  <Image
-                    src={ind.image}
-                    alt={ind.name}
-                    fill
-                    sizes="(max-width:768px) 100vw, 25vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
               </div>
 
-              <div className="flex flex-1 flex-col px-6 pb-8 pt-6">
-                <span className="mb-5 flex size-12 items-center justify-center rounded-2xl bg-[#f7f7f5] text-[#172556] ring-1 ring-zinc-100 transition-colors group-hover:bg-[#172556] group-hover:text-white">
-                  <ind.icon className="size-5" />
-                </span>
-                <h3 className="font-heading text-xl font-medium text-zinc-900">
-                  {ind.name}
+              {/* Content side */}
+              <div className="flex flex-col justify-center px-6 py-8 md:col-span-5 md:px-10 md:py-12">
+                <div className="flex items-center gap-3">
+                  <span className="font-mono text-[11px] font-medium tabular-nums text-zinc-300">
+                    01
+                  </span>
+                  <span className="h-px w-8 bg-zinc-300" />
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-[#172556]">
+                    Attenuator
+                  </span>
+                </div>
+
+                <h3 className="mt-5 font-heading text-2xl font-medium leading-tight tracking-tight text-zinc-900 md:text-3xl">
+                  8 Channel Digital Attenuator
                 </h3>
-                <p className="mt-3 leading-relaxed text-zinc-500 text-sm">
-                  {ind.desc}
+
+                <p className="mt-4 text-[15px] leading-relaxed text-zinc-500">
+                  Our most versatile attenuator — 8 fully independent channels
+                  covering 200 MHz to 8 GHz with 0.25 dB precision. PoE-powered,
+                  API-controlled, and built for 24/7 automated operation.
                 </p>
+
+                {/* Inline specs */}
+                <div className="mt-6 space-y-3">
+                  {[
+                    { label: "Frequency Range", value: "200 – 8000 MHz" },
+                    { label: "Dynamic Range", value: "95 dB" },
+                    { label: "Step Resolution", value: "0.25 dB" },
+                    { label: "Power", value: "PoE" },
+                    { label: "Interface", value: "REST API + APPLICATION" },
+                  ].map((s) => (
+                    <div
+                      key={s.label}
+                      className="flex items-center justify-between border-b border-zinc-200/60 pb-3 last:border-0 last:pb-0"
+                    >
+                      <span className="text-[13px] text-zinc-400">
+                        {s.label}
+                      </span>
+                      <span className="font-mono text-[13px] font-medium text-zinc-800">
+                        {s.value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* CTA */}
+                <div className="mt-8">
+                  <Link
+                    href="/products/digital-attenuators/mt88a"
+                    className="group/btn inline-flex items-center gap-2.5 rounded-xl bg-[#172556] px-6 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.4)] transition-all hover:bg-[#1e3070] hover:shadow-[0_14px_32px_-10px_rgba(23,37,86,0.5)]"
+                  >
+                    Explore MT-88A
+                    <ArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-0.5" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* ── Spacer ── */}
+          <div className="my-10 md:my-14" />
+
+          {/* ────────────────────────────────────────────
+              PRODUCT 2 — Handover Test Systems
+              Dark immersive card for contrast
+              ──────────────────────────────────────────── */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-80px" }}
+            variants={stagger}
+          >
+            <motion.div
+              variants={fadeUp}
+              custom={0}
+              className="group relative overflow-hidden rounded-3xl border border-zinc-200/80 bg-[#f7f7f5] transition-shadow duration-500 hover:shadow-2xl hover:shadow-zinc-300/40"
+            >
+              <div className="grid md:grid-cols-12">
+                {/* Content side — left for alternating layout */}
+                <div className="order-2 flex flex-col justify-center px-6 py-8 md:order-1 md:col-span-5 md:px-10 md:py-12">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-[11px] font-medium tabular-nums text-zinc-300">
+                      02
+                    </span>
+                    <span className="h-px w-8 bg-zinc-300" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-[#172556]">
+                      System
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 font-heading text-2xl font-medium leading-tight tracking-tight text-zinc-900 md:text-3xl">
+                    Handover Test Systems
+                  </h3>
+
+                  <p className="mt-4 text-[15px] leading-relaxed text-zinc-500">
+                    End-to-end integrated systems for mobility, roaming, and
+                    handover validation at production scale. Combine
+                    programmable attenuators and RF switching matrices into a
+                    unified, API-controlled platform.
+                  </p>
+
+                  {/* Configuration pills */}
+                  <div className="mt-7">
+                    <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-400">
+                      Configurations
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      {[
+                        { model: "NXA-B88M", spec: "8×8", paths: "64" },
+                        { model: "NXA-B168M", spec: "16×8", paths: "64" },
+                        { model: "NXA-B328M", spec: "32×8", paths: "256" },
+                        { model: "NXA-B648M", spec: "64×8", paths: "512" },
+                      ].map((cfg) => (
+                        <div
+                          key={cfg.model}
+                          className="rounded-xl border border-zinc-200/80 bg-white px-3.5 py-3 transition-colors duration-200 hover:border-zinc-300"
+                        >
+                          <p className="font-mono text-[12px] font-semibold text-zinc-800">
+                            {cfg.model}
+                          </p>
+                          <div className="mt-1 flex items-center gap-2">
+                            <span className="text-[10px] text-zinc-400">
+                              {cfg.spec} matrix
+                            </span>
+                            <span className="h-2.5 w-px bg-zinc-200" />
+                            <span className="text-[10px] font-medium text-[#172556]/60">
+                              {cfg.paths} paths
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* CTAs */}
+                  <div className="mt-8 flex flex-wrap items-center gap-4">
+                    <Link
+                      href="/products/handover-test-systems"
+                      className="group/btn inline-flex items-center gap-2.5 rounded-xl bg-[#172556] px-6 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.4)] transition-all hover:bg-[#1e3070] hover:shadow-[0_14px_32px_-10px_rgba(23,37,86,0.5)]"
+                    >
+                      Explore Systems
+                      <ArrowRight className="size-3.5 transition-transform group-hover/btn:translate-x-0.5" />
+                    </Link>
+                    <Link
+                      href="/contact"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
+                    >
+                      Request a quote
+                      <ArrowUpRight className="size-3.5" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Image side — right */}
+                <div className="relative order-1 md:order-2 md:col-span-7">
+                  <div className="relative aspect-[4/3] w-full md:aspect-auto md:h-full md:min-h-[520px]">
+                    <Image
+                      src="/images/handover.webp"
+                      alt="Handover Test Systems"
+                      fill
+                      quality={100}
+                      priority
+                      sizes="100vw"
+                      className="object-contain"
+                    />
+                    {/* Gradient fade to content side */}
+                    <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-32 bg-gradient-to-r from-[#f7f7f5] to-transparent md:block" />
+                    {/* Bottom gradient for mobile */}
+                    <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#f7f7f5] to-transparent md:hidden" />
+                  </div>
+
+                  {/* Floating badge on image */}
+                  <div className="absolute right-5 top-5 flex items-center gap-2 rounded-full bg-white/90 px-3.5 py-1.5 shadow-lg shadow-black/5 backdrop-blur-sm">
+                    <span className="font-mono text-[10px] font-bold tracking-widest text-[#172556]">
+                      Up to 512 paths
+                    </span>
+                    <span className="h-3 w-px bg-zinc-300" />
+                    <span className="text-[10px] font-semibold text-zinc-500">
+                      64×8
+                    </span>
+                  </div>
+                </div>
               </div>
             </motion.div>
-          ))}
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
   );
@@ -634,50 +570,8 @@ function TechnologiesSection() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-60px" });
 
-  const techList = [
-    {
-      title: "Wireless Tech",
-      tag: "Connectivity",
-      image:
-        "https://images.unsplash.com/photo-1683322499436-f4383dd59f5a?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      desc: "Accelerating deployment of private networks and complex multi-antenna arrays addressing real-world challenges.",
-      icon: Radio,
-    },
-    {
-      title: "Silicon Design",
-      tag: "Architecture",
-      image:
-        "https://images.unsplash.com/photo-1760842543713-108c3cadbba1?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      desc: "Custom silicon architectures pushing the boundary of performance.",
-      icon: Cpu,
-    },
-    {
-      title: "Networking",
-      tag: "Infrastructure",
-      image:
-        "https://images.unsplash.com/photo-1691435828932-911a7801adfb?q=80&w=1632&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      desc: "Robust communication layers ensuring seamless resilient routing protocols.",
-      icon: Network,
-    },
-    {
-      title: "Hardware Design",
-      tag: "Engineering",
-      image: "/group-atten.jpg",
-      desc: "High-frequency PCB and module engineering tailored for extreme RF environments.",
-      icon: Zap,
-    },
-    {
-      title: "Testing",
-      tag: "Validation",
-      image:
-        "https://images.unsplash.com/photo-1618389041494-8fab89c3f22b?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      desc: "Advanced QA sequences and rigorous validation ensuring flawless production runs.",
-      icon: Gauge,
-    },
-  ];
-
   return (
-    <section className="border-t border-zinc-200/80 bg-white">
+    <section className="border-t border-zinc-200/80 bg-[#f7f7f5]">
       <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
         <motion.div
           ref={ref}
@@ -688,132 +582,213 @@ function TechnologiesSection() {
           <motion.div
             variants={fadeUp}
             custom={0}
-            className="mb-14 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
+            className="mb-14 grid gap-6 md:grid-cols-12 md:items-end"
           >
-            <div>
+            <div className="md:col-span-7">
               <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
                 Technologies that power us
               </p>
-              <h2 className="mt-4 max-w-2xl font-heading text-3xl font-medium tracking-tight md:text-4xl text-zinc-900">
-                We leverage state-of-the-art wireless, networking, and testing
-                technologies
+              <h2 className="mt-4 font-heading text-3xl font-medium leading-[1.15] tracking-tight text-zinc-900 md:text-4xl lg:text-5xl">
+                State-of-the-art wireless,
+                <br />
+                networking & testing
               </h2>
             </div>
-            <Link
-              href="/about-us"
-              className="inline-flex items-center gap-2 text-sm font-medium text-[#172556] transition-colors hover:text-[#1e3070]"
-            >
-              Learn more about us
-              <ArrowUpRight className="size-3.5" />
-            </Link>
+            <div className="md:col-span-5 md:text-right">
+              <Link
+                href="/about-us"
+                className="inline-flex items-center gap-2 text-sm font-medium text-[#172556] transition-colors hover:text-[#1e3070]"
+              >
+                Learn more about us
+                <ArrowUpRight className="size-3.5" />
+              </Link>
+            </div>
           </motion.div>
         </motion.div>
 
-        {/* Ultra-Clean Light Premium Bento Grid */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:auto-rows-[420px]">
-          {techList.map((tech, idx) => {
-            const layoutClass = idx === 0 ? "md:col-span-2" : "md:col-span-1";
+        {/* Bento grid */}
+        <div className="grid gap-3 md:grid-cols-12 md:gap-4">
+          {/* ── Row 1: Hero card (8 cols) + Tall card (4 cols) ── */}
 
-            return (
-              <motion.div
-                key={tech.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.5, delay: 0.1 * idx, ease }}
-                className={`group relative flex flex-col overflow-hidden rounded-[2.5rem] border border-zinc-200/80 bg-[#f8f8f8] transition-all hover:-translate-y-1 hover:bg-white hover:shadow-2xl hover:shadow-zinc-200/50 ${layoutClass} h-[450px] md:h-auto`}
-              >
-                {idx === 0 ? (
-                  <div className="flex flex-col md:flex-row h-full">
-                    <div className="z-10 flex w-full flex-col justify-center p-8 md:w-[50%] md:p-12">
-                      <div className="mb-6 flex items-center gap-3">
-                        <span className="flex size-14 items-center justify-center rounded-2xl bg-white text-[#172556] shadow-sm ring-1 ring-zinc-200/50 transition-colors group-hover:bg-[#172556] group-hover:text-white">
-                          <tech.icon className="size-6" />
-                        </span>
-                        <span className="text-xs font-bold uppercase tracking-widest text-zinc-500">
-                          {tech.tag}
-                        </span>
-                      </div>
-                      <h3 className="mb-4 font-heading text-3xl font-medium text-zinc-900 md:text-4xl">
-                        {tech.title}
-                      </h3>
-                      <p className="leading-relaxed text-zinc-500 text-[15px]">
-                        {tech.desc}
-                      </p>
-                    </div>
-                    <div className="relative h-64 w-full overflow-hidden md:h-full md:w-[50%] border-t md:border-t-0 md:border-l border-zinc-200/80 bg-zinc-100">
-                      <Image
-                        src={tech.image}
-                        alt={tech.title}
-                        fill
-                        sizes="(max-width:768px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                      />
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex h-full flex-col">
-                    {idx % 2 !== 0 ? (
-                      <>
-                        <div className="relative h-[45%] w-full overflow-hidden border-b border-zinc-200/80 bg-zinc-100">
-                          <Image
-                            src={tech.image}
-                            alt={tech.title}
-                            fill
-                            sizes="(max-width:768px) 100vw, 33vw"
-                            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                          />
-                        </div>
-                        <div className="z-10 flex flex-1 flex-col justify-end p-8 pb-10">
-                          <div className="mb-5 flex items-center gap-3">
-                            <span className="flex size-12 items-center justify-center rounded-xl bg-white text-[#172556] shadow-sm ring-1 ring-zinc-200/50 transition-colors group-hover:bg-[#172556] group-hover:text-white">
-                              <tech.icon className="size-5" />
-                            </span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                              {tech.tag}
-                            </span>
-                          </div>
-                          <h3 className="mb-3 font-heading text-2xl font-medium text-zinc-900">
-                            {tech.title}
-                          </h3>
-                          <p className="line-clamp-3 text-sm leading-relaxed text-zinc-500">
-                            {tech.desc}
-                          </p>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div className="z-10 flex flex-1 flex-col justify-start p-8 pt-10">
-                          <div className="mb-5 flex items-center gap-3">
-                            <span className="flex size-12 items-center justify-center rounded-xl bg-white text-[#172556] shadow-sm ring-1 ring-zinc-200/50 transition-colors group-hover:bg-[#172556] group-hover:text-white">
-                              <tech.icon className="size-5" />
-                            </span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-                              {tech.tag}
-                            </span>
-                          </div>
-                          <h3 className="mb-3 font-heading text-2xl font-medium text-zinc-900">
-                            {tech.title}
-                          </h3>
-                          <p className="line-clamp-3 text-sm leading-relaxed text-zinc-500">
-                            {tech.desc}
-                          </p>
-                        </div>
-                        <div className="relative h-[45%] w-full overflow-hidden border-t border-zinc-200/80 bg-zinc-100">
-                          <Image
-                            src={tech.image}
-                            alt={tech.title}
-                            fill
-                            sizes="(max-width:768px) 100vw, 33vw"
-                            className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                          />
-                        </div>
-                      </>
-                    )}
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
+          {/* Wireless Tech — large horizontal */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.1, ease }}
+            className="group overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-zinc-200/50 md:col-span-8 md:row-span-2"
+          >
+            <div className="flex h-full flex-col md:flex-row">
+              <div className="flex w-full flex-col justify-center p-8 md:w-[48%] md:p-10 lg:p-12">
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="flex size-12 items-center justify-center rounded-xl bg-[#f7f7f5] text-[#172556] ring-1 ring-zinc-100 transition-colors duration-300 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556]">
+                    <Radio className="size-5" />
+                  </span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                    Connectivity
+                  </span>
+                </div>
+                <h3 className="font-heading text-2xl font-medium tracking-tight text-zinc-900 md:text-3xl">
+                  Wireless Technology
+                </h3>
+                <p className="mt-4 text-[15px] leading-relaxed text-zinc-500">
+                  Accelerating deployment of private networks and complex
+                  multi-antenna arrays addressing real-world challenges in 5G,
+                  Wi-Fi 7, and next-generation IoT connectivity.
+                </p>
+              </div>
+              <div className="relative h-64 w-full overflow-hidden border-t border-zinc-200/80 bg-zinc-100 md:h-auto md:w-[52%] md:border-l md:border-t-0">
+                <Image
+                  src="https://images.unsplash.com/photo-1767884162181-68267b807b40?q=80&w=686&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                  alt="Wireless Technology"
+                  fill
+                  sizes="(max-width:768px) 100vw, 52vw"
+                  className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+                />
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Silicon Design — tall vertical */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.2, ease }}
+            className="group flex flex-col overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-zinc-200/50 md:col-span-4 md:row-span-2"
+          >
+            <div className="relative min-h-44 w-full flex-1 overflow-hidden border-b border-zinc-200/80 bg-zinc-100">
+              <Image
+                src="https://images.unsplash.com/photo-1613616631374-121ea711cc3d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Silicon Design"
+                fill
+                sizes="(max-width:768px) 100vw, 33vw"
+                className="object-cover object-top transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+            </div>
+            <div className="shrink-0 p-7 md:p-8">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex size-11 items-center justify-center rounded-xl bg-[#f7f7f5] text-[#172556] ring-1 ring-zinc-100 transition-colors duration-300 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556]">
+                  <Cpu className="size-5" />
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                  Architecture
+                </span>
+              </div>
+              <h3 className="font-heading text-xl font-medium tracking-tight text-zinc-900">
+                Silicon Design
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+                Custom silicon architectures pushing the boundary of RF
+                performance in attenuators and switching matrices.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* ── Row 2: Three equal cards ── */}
+
+          {/* Networking */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.3, ease }}
+            className="group overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-zinc-200/50 md:col-span-4"
+          >
+            <div className="relative h-44 w-full overflow-hidden border-b border-zinc-200/80 bg-zinc-100">
+              <Image
+                src="https://images.unsplash.com/photo-1591808216268-ce0b82787efe?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Networking"
+                fill
+                sizes="(max-width:768px) 100vw, 33vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+            </div>
+            <div className="p-7">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="flex size-11 items-center justify-center rounded-xl bg-[#f7f7f5] text-[#172556] ring-1 ring-zinc-100 transition-colors duration-300 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556]">
+                  <Network className="size-5" />
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                  Infrastructure
+                </span>
+              </div>
+              <h3 className="font-heading text-xl font-medium tracking-tight text-zinc-900">
+                Networking
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+                Robust communication layers ensuring seamless, resilient routing
+                protocols for high-availability test environments.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Hardware Design */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.4, ease }}
+            className="group overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-zinc-200/50 md:col-span-4"
+          >
+            <div className="relative h-44 w-full overflow-hidden border-b border-zinc-200/80 bg-zinc-100">
+              <Image
+                src="https://images.unsplash.com/photo-1562408590-e32931084e23?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Hardware Design"
+                fill
+                sizes="(max-width:768px) 100vw, 33vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+            </div>
+            <div className="p-7">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="flex size-11 items-center justify-center rounded-xl bg-[#f7f7f5] text-[#172556] ring-1 ring-zinc-100 transition-colors duration-300 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556]">
+                  <Zap className="size-5" />
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                  Engineering
+                </span>
+              </div>
+              <h3 className="font-heading text-xl font-medium tracking-tight text-zinc-900">
+                Hardware Design
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+                High-frequency PCB and module engineering tailored for extreme
+                RF environments and production-grade reliability.
+              </p>
+            </div>
+          </motion.div>
+
+          {/* Testing */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5, delay: 0.5, ease }}
+            className="group overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-zinc-200/50 md:col-span-4"
+          >
+            <div className="relative h-44 w-full overflow-hidden border-b border-zinc-200/80 bg-zinc-100">
+              <Image
+                src="https://images.unsplash.com/photo-1629904853716-f0bc54eea481?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                alt="Testing"
+                fill
+                sizes="(max-width:768px) 100vw, 33vw"
+                className="object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+              />
+            </div>
+            <div className="p-7">
+              <div className="mb-5 flex items-center gap-3">
+                <span className="flex size-11 items-center justify-center rounded-xl bg-[#f7f7f5] text-[#172556] ring-1 ring-zinc-100 transition-colors duration-300 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556]">
+                  <Gauge className="size-5" />
+                </span>
+                <span className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+                  Validation
+                </span>
+              </div>
+              <h3 className="font-heading text-xl font-medium tracking-tight text-zinc-900">
+                Testing & QA
+              </h3>
+              <p className="mt-2 text-sm leading-relaxed text-zinc-500">
+                Advanced validation sequences and rigorous QA ensuring flawless
+                production runs across every product line.
+              </p>
+            </div>
+          </motion.div>
         </div>
       </div>
     </section>
@@ -846,284 +821,6 @@ function AnimatedNumber({ value }: { value: number }) {
   return <span ref={ref}>{display}</span>;
 }
 
-function NumbersAndCapabilities() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-
-  const capabilities = [
-    {
-      icon: Zap,
-      title: "Reliable Repeatability",
-      body: "Stable RF behavior across repeated lab and validation cycles, eliminating measurement drift and ensuring confidence in every test run.",
-    },
-    {
-      icon: Shield,
-      title: "Deployment-Ready Systems",
-      body: "Practical interfaces and maintainable architecture designed for real lab environments from day one. PoE-powered for clean bench integration.",
-    },
-    {
-      icon: Gauge,
-      title: "Precision by Default",
-      body: "Factory-calibrated attenuation accuracy across the full operating frequency range. Every unit ships with measured performance data.",
-    },
-    {
-      icon: Headphones,
-      title: "End-to-End Support",
-      body: "Dedicated engineering assistance from initial integration through production rollout, with troubleshooting for deployed test setups.",
-    },
-  ];
-
-  return (
-    <section className="bg-[#f7f7f5]">
-      <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
-        {/* Big numbers row */}
-        <motion.div
-          ref={ref}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          variants={stagger}
-        >
-          <motion.p
-            variants={fadeUp}
-            custom={0}
-            className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500"
-          >
-            The numbers
-          </motion.p>
-          <motion.h2
-            variants={fadeUp}
-            custom={1}
-            className="mt-4 font-heading text-3xl font-medium tracking-tight md:text-4xl"
-          >
-            Built on a decade of engineering focus
-          </motion.h2>
-        </motion.div>
-
-        <div className="mt-12 grid grid-cols-2 gap-6 md:grid-cols-4">
-          {[
-            {
-              num: 12,
-              suffix: "+",
-              label: "Years of RF\nEngineering",
-              color: "bg-[#172556]",
-              text: "text-white",
-            },
-            {
-              num: 300,
-              suffix: "+",
-              label: "Wireless Projects\nDelivered",
-              color: "bg-white",
-              text: "text-zinc-900",
-            },
-            {
-              num: 18,
-              suffix: "",
-              label: "Countries\nServed",
-              color: "bg-white",
-              text: "text-zinc-900",
-            },
-            {
-              num: 94,
-              suffix: "%",
-              label: "Average Client\nRetention",
-              color: "bg-[#172556]",
-              text: "text-white",
-            },
-          ].map((item, idx) => (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 24 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 + idx * 0.1, ease }}
-              className={`relative overflow-hidden rounded-3xl ${item.color} ${
-                item.color === "bg-white"
-                  ? "border border-zinc-200/80 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]"
-                  : "shadow-lg shadow-[#172556]/20"
-              } p-6 md:p-8`}
-            >
-              {item.color === "bg-[#172556]" && (
-                <div className="pointer-events-none absolute inset-0">
-                  <div className="absolute -right-12 -top-12 h-32 w-32 rounded-full bg-blue-400/10 blur-2xl" />
-                  <div
-                    className="absolute inset-0 opacity-[0.04]"
-                    style={{
-                      backgroundImage:
-                        "radial-gradient(rgba(255,255,255,0.3) 1px, transparent 1px)",
-                      backgroundSize: "20px 20px",
-                    }}
-                  />
-                </div>
-              )}
-              <div className="relative">
-                <p
-                  className={`font-heading text-4xl font-medium tabular-nums tracking-tight md:text-5xl lg:text-6xl ${item.text}`}
-                >
-                  <AnimatedNumber value={item.num} />
-                  {item.suffix}
-                </p>
-                <p
-                  className={`mt-3 whitespace-pre-line text-sm leading-snug ${
-                    item.color === "bg-[#172556]"
-                      ? "text-blue-100/60"
-                      : "text-zinc-500"
-                  }`}
-                >
-                  {item.label}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Capabilities — horizontal flowing cards */}
-        <div className="mt-20">
-          <motion.div
-            initial="hidden"
-            animate={inView ? "visible" : "hidden"}
-            variants={stagger}
-          >
-            <motion.p
-              variants={fadeUp}
-              custom={0}
-              className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500"
-            >
-              Why Wavenxt
-            </motion.p>
-            <motion.h2
-              variants={fadeUp}
-              custom={1}
-              className="mt-4 max-w-2xl font-heading text-3xl font-medium tracking-tight md:text-4xl"
-            >
-              Engineered for teams that measure what matters
-            </motion.h2>
-          </motion.div>
-
-          <div className="mt-12 grid gap-4 sm:grid-cols-2">
-            {capabilities.map((item, idx) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 20 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ duration: 0.6, delay: 0.4 + idx * 0.1, ease }}
-                className="group relative rounded-2xl border border-zinc-200/80 bg-white p-7 transition-all duration-300 hover:border-zinc-300 hover:shadow-md md:p-8"
-              >
-                <div className="flex items-start gap-5">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-[#172556]/[0.06] text-[#172556] transition-colors group-hover:bg-[#172556] group-hover:text-white">
-                    <item.icon className="size-5" />
-                  </div>
-                  <div>
-                    <h3 className="font-heading text-lg font-medium tracking-tight text-zinc-900">
-                      {item.title}
-                    </h3>
-                    <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                      {item.body}
-                    </p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════
-   6 · JOURNEY TIMELINE — horizontal scrolling
-   ═══════════════════════════════════════════════════ */
-
-function JourneyTimeline() {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
-
-  return (
-    <section className="relative overflow-hidden bg-[#172556] text-white">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -left-40 -top-40 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-32 -right-32 h-[400px] w-[400px] rounded-full bg-indigo-400/10 blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
-        <motion.div
-          ref={ref}
-          initial="hidden"
-          animate={inView ? "visible" : "hidden"}
-          variants={stagger}
-        >
-          <motion.p
-            variants={fadeUp}
-            custom={0}
-            className="text-xs uppercase tracking-[0.2em] text-blue-200/70"
-          >
-            Our Journey
-          </motion.p>
-          <motion.div
-            variants={fadeUp}
-            custom={1}
-            className="mt-4 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"
-          >
-            <h2 className="max-w-lg font-heading text-3xl font-medium tracking-tight md:text-4xl">
-              A decade of building precision
-            </h2>
-            <Link
-              href="/about-us"
-              className="inline-flex items-center gap-2 text-sm font-medium text-blue-200/70 transition-colors hover:text-white"
-            >
-              Full story <ArrowUpRight className="size-3.5" />
-            </Link>
-          </motion.div>
-        </motion.div>
-
-        {/* Horizontal timeline */}
-        <div className="mt-14">
-          {/* Timeline line */}
-          <div className="relative">
-            <div className="absolute left-0 right-0 top-5 h-px bg-white/10" />
-            <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
-              {milestones.map((m, idx) => (
-                <motion.div
-                  key={m.year}
-                  initial={{ opacity: 0, y: 24 }}
-                  animate={inView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 0.3 + idx * 0.12, ease }}
-                  className="relative pt-12"
-                >
-                  {/* Dot on timeline */}
-                  <div className="absolute left-0 top-0">
-                    <div className="relative flex size-10 items-center justify-center">
-                      <span className="absolute size-10 rounded-full border border-white/10 bg-white/[0.04]" />
-                      <span className="relative size-3 rounded-full bg-blue-400" />
-                    </div>
-                  </div>
-
-                  <p className="font-heading text-2xl font-medium tabular-nums text-white md:text-3xl">
-                    {m.year}
-                  </p>
-                  <p className="mt-2 text-sm font-medium text-blue-100/80">
-                    {m.title}
-                  </p>
-                  <p className="mt-2 text-sm leading-relaxed text-blue-100/40">
-                    {m.detail}
-                  </p>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 /* ═══════════════════════════════════════════════════
    7 · VALUES MANIFESTO — large typography layout
    ═══════════════════════════════════════════════════ */
@@ -1135,28 +832,66 @@ function ValuesManifesto() {
   const values = [
     {
       word: "Integrity",
+      icon: Shield,
       detail:
-        "We hold ourselves to the highest ethical standards, ensuring transparency and honesty in all our dealings.",
+        "No hidden trade-offs, no inflated claims. What we publish is what you measure — honest specs, honest support.",
+      gradient:
+        "bg-linear-to-br from-emerald-500/10 via-emerald-500/5 to-transparent",
     },
     {
       word: "Innovation",
+      icon: Lightbulb,
       detail:
-        "We embrace change and constantly seek to push the boundaries of what's possible in wireless measurement.",
+        "Every product generation is shaped by real lab feedback. We solve problems engineers actually face, not theoretical ones.",
+      gradient:
+        "bg-linear-to-br from-blue-500/10 via-blue-500/5 to-transparent",
     },
     {
       word: "Excellence",
+      icon: Award,
       detail:
-        "We strive for excellence in every aspect — from product development to customer service.",
+        "From component selection to final calibration — built to perform flawlessly in 24/7 automated environments.",
+      gradient:
+        "bg-linear-to-br from-teal-500/10 via-teal-500/5 to-transparent",
     },
     {
       word: "Sustainability",
+      icon: Leaf,
       detail:
-        "We are committed to building responsibly, making decisions that are good for the planet and the future.",
+        "PoE-powered, solid-state designs engineered for longevity — reducing waste and total cost of ownership.",
+      gradient:
+        "bg-linear-to-br from-rose-500/10 via-rose-500/5 to-transparent",
+    },
+    {
+      word: "Customer Focus",
+      icon: Users,
+      detail:
+        "Direct access to our RF engineering team. Custom configurations when standard models don't fit your workflow.",
+      gradient:
+        "bg-linear-to-br from-indigo-500/10 via-indigo-500/5 to-transparent",
+    },
+    {
+      word: "Transparency",
+      icon: Eye,
+      detail:
+        "Full datasheets with real measured data, open REST APIs, complete documentation, and honest lead times.",
+      gradient:
+        "bg-linear-to-br from-violet-500/10 via-violet-500/5 to-transparent",
     },
   ];
 
+  /* Grid spans: row1 = 4·5·3, row2 = 3·5·4 (mirrored rhythm) */
+  const gridSpans = [
+    "md:col-span-4",
+    "md:col-span-5",
+    "md:col-span-3",
+    "md:col-span-3",
+    "md:col-span-5",
+    "md:col-span-4",
+  ];
+
   return (
-    <section className="bg-[#f7f7f5]">
+    <section className="border-t border-zinc-200/80 bg-white">
       <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
         <motion.div
           ref={ref}
@@ -1164,49 +899,72 @@ function ValuesManifesto() {
           animate={inView ? "visible" : "hidden"}
           variants={stagger}
         >
-          <motion.p
-            variants={fadeUp}
-            custom={0}
-            className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500"
-          >
-            Our Values
-          </motion.p>
-          <motion.h2
-            variants={fadeUp}
-            custom={1}
-            className="mt-4 max-w-lg font-heading text-3xl font-medium tracking-tight md:text-4xl"
-          >
-            Principles that shape every decision
-          </motion.h2>
-        </motion.div>
-
-        <div className="mt-14 space-y-0 border-t border-zinc-200/80">
-          {values.map((v, idx) => (
-            <motion.div
-              key={v.word}
-              initial={{ opacity: 0, x: -20 }}
-              animate={inView ? { opacity: 1, x: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.2 + idx * 0.1, ease }}
-              className="group grid items-baseline gap-4 border-b border-zinc-200/80 py-8 md:grid-cols-12 md:gap-8 md:py-10"
-            >
-              <div className="md:col-span-1">
-                <span className="text-xs font-bold tabular-nums text-zinc-300">
-                  {String(idx + 1).padStart(2, "0")}
-                </span>
-              </div>
-              <div className="md:col-span-4">
-                <h3 className="font-heading text-2xl font-medium tracking-tight text-zinc-900 transition-colors group-hover:text-[#172556] md:text-3xl">
-                  {v.word}
-                </h3>
-              </div>
-              <div className="md:col-span-7">
-                <p className="max-w-lg leading-relaxed text-zinc-600">
-                  {v.detail}
-                </p>
-              </div>
+          {/* Header */}
+          <div className="mb-12 grid gap-6 md:grid-cols-12 md:items-end">
+            <motion.div variants={fadeUp} custom={0} className="md:col-span-7">
+              <p className="text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+                Our Values
+              </p>
+              <h2 className="mt-4 font-heading text-3xl font-medium leading-[1.15] tracking-tight md:text-4xl lg:text-5xl">
+                Principles that shape
+                <br />
+                every decision
+              </h2>
             </motion.div>
-          ))}
-        </div>
+            <motion.div variants={fadeUp} custom={1} className="md:col-span-5">
+              <p className="max-w-md text-base leading-relaxed text-zinc-500">
+                The standards we hold ourselves to — in engineering, in
+                partnerships, and in the way we build products that labs depend
+                on every day.
+              </p>
+            </motion.div>
+          </div>
+
+          {/* Compact bento grid */}
+          <div className="grid gap-3 md:grid-cols-12">
+            {values.map((v, i) => {
+              const Icon = v.icon;
+              return (
+                <motion.div
+                  key={v.word}
+                  variants={fadeUp}
+                  custom={i + 2}
+                  className={`group relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-all duration-300 hover:border-[#172556]/20 hover:shadow-lg hover:shadow-zinc-200/60 ${gridSpans[i]}`}
+                >
+                  {/* Subtle Gradient matched to the value */}
+                  <div
+                    className={`pointer-events-none absolute inset-0 transition-opacity duration-300 opacity-60 group-hover:opacity-100 ${v.gradient}`}
+                  />
+
+                  {/* Hover accent — top border glow */}
+                  <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-[#172556]/0 to-transparent transition-all duration-500 group-hover:via-[#172556]/40" />
+
+                  <div className="relative z-10 flex h-full flex-col p-6">
+                    {/* Top row: icon + number */}
+                    <div className="mb-4 flex items-center justify-between">
+                      <span className="flex size-10 items-center justify-center rounded-xl bg-white text-[#172556] ring-1 ring-zinc-200/80 transition-all duration-300 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556] group-hover:shadow-md group-hover:shadow-[#172556]/20">
+                        <Icon className="size-[18px]" />
+                      </span>
+                      <span className="font-mono text-[10px] font-medium tabular-nums text-zinc-300 transition-colors duration-300 group-hover:text-[#172556]/30">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-heading text-lg font-medium tracking-tight text-zinc-900">
+                      {v.word}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="mt-2 text-[13px] leading-relaxed text-zinc-600">
+                      {v.detail}
+                    </p>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -1222,7 +980,7 @@ function GlobalPresence() {
 
   return (
     <section className="border-t border-zinc-200/80 bg-[#f7f7f5]">
-      <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
+      <div className="mx-auto max-w-7xl px-6 pt-20 md:px-10 md:pt-28">
         <motion.div
           ref={ref}
           initial="hidden"
@@ -1240,12 +998,12 @@ function GlobalPresence() {
               </h2>
               <p className="mt-5 leading-relaxed text-zinc-600">
                 From our engineering hub in Bangalore, we deliver and support
-                precision RF test systems across 18 countries — helping teams
+                precision RF test systems across many countries — helping teams
                 validate faster with better repeatability.
               </p>
               <div className="mt-8">
                 <Link
-                  href="/support"
+                  href="/contact"
                   className="inline-flex items-center gap-2 text-sm font-medium text-[#172556] transition-colors hover:text-[#1e3070]"
                 >
                   Talk to our engineering team
@@ -1274,11 +1032,18 @@ function GlobalPresence() {
                   href: "mailto:support@wavenxt.com",
                 },
                 {
-                  icon: Phone,
-                  label: "Phone",
+                  icon: Headset,
+                  label: "Landline Number",
                   value: "080-4164 3659",
                   href: "tel:08041643659",
-                  sub: "Monday – Friday",
+                  sub: "Monday - Friday",
+                },
+                {
+                  icon: Phone,
+                  label: "Mobile Number",
+                  value: "+91 74837 59420",
+                  href: "tel:+917483759420",
+                  sub: "Monday - Friday",
                 },
                 {
                   icon: MapPin,
@@ -1347,7 +1112,7 @@ function GlobalPresence() {
                   </p>
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-3">
-                  <Link href="/support">
+                  <Link href="/contact">
                     <motion.span
                       whileHover={{ scale: 1.015 }}
                       whileTap={{ scale: 0.985 }}

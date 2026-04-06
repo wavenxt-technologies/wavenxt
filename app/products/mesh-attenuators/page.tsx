@@ -42,8 +42,10 @@ export default function MeshAttenuators() {
   const m1Specs = [
     { label: "Frequency", value: m1.frequencyText },
     {
-      label: "Channels",
-      value: getSpec(m1.specifications, "Inputs/Outputs")?.typ + " ch",
+      label: "Ports/Channels",
+      value:
+        getSpec(m1.specifications, "Inputs/Outputs")?.typ +
+        " ports / 6 Channels ",
     },
     {
       label: "Attenuation",
@@ -66,8 +68,10 @@ export default function MeshAttenuators() {
   const m2Specs = [
     { label: "Frequency", value: m2.frequencyText },
     {
-      label: "RF Ports",
-      value: getSpec(m2.specifications, "Number of RF Ports")?.typ + " ports",
+      label: "Ports/Channels",
+      value:
+        getSpec(m2.specifications, "Number of RF Ports")?.typ +
+        " ports / 36 Channels",
     },
     {
       label: "Attenuation",
@@ -89,14 +93,18 @@ export default function MeshAttenuators() {
 
   const compareRows = [
     { label: "Frequency Range", v1: "200 – 8000 MHz", v2: "200 – 8000 MHz" },
-    { label: "Ports / Channels", v1: "4 channels", v2: "9 ports" },
+    {
+      label: "Ports / Channels",
+      v1: "4 ports / 6 channels",
+      v2: "9 ports / 36 channels",
+    },
     { label: "Attenuation Range", v1: "95 dB", v2: "95 dB" },
     { label: "Step Size", v1: "0.25 dB", v2: "0.25 dB" },
     { label: "Isolation", v1: "90 dB", v2: "90 dB" },
     { label: "Shielding", v1: "90 dB", v2: "90 dB" },
     { label: "Switching Speed", v1: "2 µs", v2: "2 µs" },
     { label: "Form Factor", v1: "1RU", v2: "3RU" },
-    { label: "Power", v1: "USB (5V)", v2: "100–240V AC" },
+    { label: "Power", v1: "Power Over Ethernet", v2: "100-240V AC, 50/60 Hz" },
     { label: "Control", v1: "USB / Ethernet", v2: "USB / Ethernet" },
     { label: "OS Support", v1: "Win / Linux / Mac", v2: "Win / Linux / Mac" },
   ];
@@ -152,11 +160,10 @@ export default function MeshAttenuators() {
               <h2 className="font-heading text-2xl font-medium leading-[1.4] tracking-tight text-zinc-900 md:text-3xl lg:text-4xl">
                 <span className="text-zinc-400">
                   Programmable mesh attenuators designed for fully automated RF
-                  testing — precise signal power control, wide dynamic range,
-                  and fast response speeds.
+                  testing,
                 </span>{" "}
-                Two models, one shared architecture — differing in port count
-                and form factor to suit different lab scales.
+                precise signal power control, wide dynamic range, and fast
+                response speeds.
               </h2>
             </motion.div>
 
@@ -283,7 +290,9 @@ export default function MeshAttenuators() {
                   </motion.span>
                 </Link>
                 <a
-                  href="#"
+                  href={`/datasheet/mesh-attenuators/4/NXA-B4P.pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
                 >
                   <FileDown className="size-4" /> Datasheet
@@ -297,11 +306,11 @@ export default function MeshAttenuators() {
               custom={2}
               className="order-1 md:order-2 md:col-span-7"
             >
-              <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-gradient-to-b from-zinc-100/80 to-zinc-50/80 p-1.5 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)]">
-                <div className="overflow-hidden rounded-xl border border-zinc-100 bg-white">
+              <div className="overflow-hidden">
+                <div className="overflow-hidden rounded-xl border border-zinc-100">
                   <div className="relative aspect-[4/3] w-full">
                     <Image
-                      src="/mesh.jpg"
+                      src="/images/mesh4.webp"
                       alt={m1.model}
                       fill
                       sizes="(max-width:768px) 100vw, 700px"
@@ -327,11 +336,11 @@ export default function MeshAttenuators() {
           >
             {/* image */}
             <motion.div variants={fadeUp} custom={0} className="md:col-span-7">
-              <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-gradient-to-b from-zinc-100/80 to-zinc-50/80 p-1.5 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)]">
-                <div className="overflow-hidden rounded-xl border border-zinc-100 bg-white">
+              <div className="overflow-hidden">
+                <div className="overflow-hidden rounded-xl border border-zinc-100">
                   <div className="relative aspect-[4/3] w-full">
                     <Image
-                      src="/mesh.jpg"
+                      src="/images/mesh9.webp"
                       alt={m2.model}
                       fill
                       sizes="(max-width:768px) 100vw, 700px"
@@ -408,7 +417,9 @@ export default function MeshAttenuators() {
                   </motion.span>
                 </Link>
                 <a
-                  href="#"
+                  href={`/datasheet/mesh-attenuators/9/NXA-B9P.pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 text-sm font-medium text-zinc-500 transition-colors hover:text-zinc-900"
                 >
                   <FileDown className="size-4" /> Datasheet
@@ -441,38 +452,43 @@ export default function MeshAttenuators() {
             custom={1}
             className="overflow-x-auto rounded-2xl border border-zinc-200/80 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.03)]"
           >
-            <table className="w-full text-sm">
-              <thead className="border-b border-zinc-100 bg-zinc-50/80">
-                <tr>
-                  <th className="w-[35%] px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-                    Parameter
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-                    NXA-B4P
-                    <span className="ml-2 font-normal normal-case text-zinc-300">
-                      1RU · 4ch
-                    </span>
-                  </th>
-                  <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-                    NXA-B9P
-                    <span className="ml-2 font-normal normal-case text-zinc-300">
-                      3RU · 9 ports
-                    </span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-zinc-100/80">
-                {compareRows.map((row, i) => (
-                  <tr key={i} className="transition-colors hover:bg-zinc-50/50">
-                    <td className="px-6 py-3.5 font-medium text-zinc-900">
-                      {row.label}
-                    </td>
-                    <td className="px-6 py-3.5 text-zinc-500">{row.v1}</td>
-                    <td className="px-6 py-3.5 text-zinc-500">{row.v2}</td>
+            <div className="w-full overflow-x-auto px-1 py-1">
+              <table className="w-full text-sm min-w-150">
+                <thead className="border-b border-zinc-100 bg-zinc-50/80">
+                  <tr>
+                    <th className="w-[35%] px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                      Parameter
+                    </th>
+                    <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                      NXA-B4P
+                      <span className="ml-2 font-normal normal-case text-zinc-300">
+                        1RU · 4ch
+                      </span>
+                    </th>
+                    <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                      NXA-B9P
+                      <span className="ml-2 font-normal normal-case text-zinc-300">
+                        3RU · 9 ports
+                      </span>
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-zinc-100/80">
+                  {compareRows.map((row, i) => (
+                    <tr
+                      key={i}
+                      className="transition-colors hover:bg-zinc-50/50"
+                    >
+                      <td className="px-6 py-3.5 font-medium text-zinc-900">
+                        {row.label}
+                      </td>
+                      <td className="px-6 py-3.5 text-zinc-500">{row.v1}</td>
+                      <td className="px-6 py-3.5 text-zinc-500">{row.v2}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </motion.div>
 
           {/* CTA below table */}
@@ -481,7 +497,7 @@ export default function MeshAttenuators() {
             custom={2}
             className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center"
           >
-            <Link href="/support">
+            <Link href="/contact">
               <motion.span
                 whileHover={{ y: -2 }}
                 whileTap={{ scale: 0.98 }}

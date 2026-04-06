@@ -119,7 +119,7 @@ export default function MatrixSystems() {
                 custom={2}
                 className="font-heading text-4xl font-medium leading-[1.1] tracking-tight md:text-5xl lg:text-6xl"
               >
-                Matrix Attenuator
+                Matrix Systems
               </motion.h1>
 
               <motion.p
@@ -135,7 +135,7 @@ export default function MatrixSystems() {
                 custom={4}
                 className="mt-8 flex flex-wrap gap-3"
               >
-                <Link href="/support">
+                <Link href="/contact">
                   <motion.span
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
@@ -156,11 +156,11 @@ export default function MatrixSystems() {
 
             {/* Right: product image */}
             <motion.div variants={fadeUp} custom={3} className="md:col-span-5">
-              <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-gradient-to-b from-zinc-100/80 to-zinc-50/80 p-1.5 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]">
-                <div className="overflow-hidden rounded-xl border border-zinc-100 bg-white">
+              <div className="overflow-hidden">
+                <div className="overflow-hidden rounded-xl border border-zinc-100">
                   <div className="relative aspect-[4/3] w-full">
                     <Image
-                      src="/matrix.jpg"
+                      src="/images/matrix.webp"
                       alt={model.model}
                       fill
                       sizes="(max-width:768px) 100vw, 500px"
@@ -284,7 +284,7 @@ export default function MatrixSystems() {
               className="mt-10 flex flex-col gap-4"
             >
               <Link
-                href="/support"
+                href="/contact"
                 className="inline-flex items-center gap-2 text-sm font-medium text-white transition-colors hover:text-zinc-300"
               >
                 Scale your lab setup <ArrowUpRight className="size-4" />
@@ -357,7 +357,7 @@ export default function MatrixSystems() {
             <motion.div
               variants={fadeUp}
               custom={2}
-              className="space-y-8 lg:col-span-8"
+              className="space-y-8 lg:col-span-8 min-w-0"
             >
               {/* Electrical */}
               <div>
@@ -366,44 +366,48 @@ export default function MatrixSystems() {
                   Characteristics
                 </p>
                 <div className="overflow-x-auto rounded-2xl border border-zinc-200/80 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.03)]">
-                  <table className="w-full text-sm">
-                    <thead className="border-b border-zinc-100 bg-zinc-50/80">
-                      <tr>
-                        {["Parameter", "Min", "Typ", "Max", "Unit"].map((h) => (
-                          <th
-                            key={h}
-                            className="whitespace-nowrap px-5 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400"
-                          >
-                            {h}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-100/80">
-                      {electricalSpecs.map((row, i) => (
-                        <tr
-                          key={i}
-                          className="transition-colors hover:bg-zinc-50/50"
-                        >
-                          <td className="px-5 py-3.5 font-medium text-zinc-900">
-                            {row.parameter}
-                          </td>
-                          <td className="px-5 py-3.5 text-zinc-500">
-                            {row.min || "—"}
-                          </td>
-                          <td className="px-5 py-3.5 text-zinc-500">
-                            {row.typ || "—"}
-                          </td>
-                          <td className="px-5 py-3.5 text-zinc-500">
-                            {row.max || "—"}
-                          </td>
-                          <td className="px-5 py-3.5 text-zinc-400">
-                            {row.unit || "—"}
-                          </td>
+                  <div className="w-full overflow-x-auto px-1 py-1">
+                    <table className="w-full text-sm min-w-150">
+                      <thead className="border-b border-zinc-100 bg-zinc-50/80">
+                        <tr>
+                          {["Parameter", "Min", "Typ", "Max", "Unit"].map(
+                            (h) => (
+                              <th
+                                key={h}
+                                className="whitespace-nowrap px-5 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400"
+                              >
+                                {h}
+                              </th>
+                            ),
+                          )}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-100/80">
+                        {electricalSpecs.map((row, i) => (
+                          <tr
+                            key={i}
+                            className="transition-colors hover:bg-zinc-50/50"
+                          >
+                            <td className="px-5 py-3.5 font-medium text-zinc-900">
+                              {row.parameter}
+                            </td>
+                            <td className="px-5 py-3.5 text-zinc-500">
+                              {row.min || "—"}
+                            </td>
+                            <td className="px-5 py-3.5 text-zinc-500">
+                              {row.typ || "—"}
+                            </td>
+                            <td className="px-5 py-3.5 text-zinc-500">
+                              {row.max || "—"}
+                            </td>
+                            <td className="px-5 py-3.5 text-zinc-400">
+                              {row.unit || "—"}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
 
@@ -414,33 +418,35 @@ export default function MatrixSystems() {
                   Environmental
                 </p>
                 <div className="overflow-x-auto rounded-2xl border border-zinc-200/80 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.03)]">
-                  <table className="w-full text-sm">
-                    <thead className="border-b border-zinc-100 bg-zinc-50/80">
-                      <tr>
-                        <th className="w-1/3 px-5 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-                          Parameter
-                        </th>
-                        <th className="px-5 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-                          Details
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-zinc-100/80">
-                      {mechanicalSpecs.map((row, i) => (
-                        <tr
-                          key={i}
-                          className="transition-colors hover:bg-zinc-50/50"
-                        >
-                          <td className="px-5 py-3.5 align-top font-medium text-zinc-900">
-                            {row.parameter}
-                          </td>
-                          <td className="whitespace-pre-line px-5 py-3.5 leading-relaxed text-zinc-500">
-                            {row.conditions}
-                          </td>
+                  <div className="w-full overflow-x-auto px-1 py-1">
+                    <table className="w-full text-sm min-w-150">
+                      <thead className="border-b border-zinc-100 bg-zinc-50/80">
+                        <tr>
+                          <th className="w-1/3 px-5 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                            Parameter
+                          </th>
+                          <th className="px-5 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                            Details
+                          </th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
+                      </thead>
+                      <tbody className="divide-y divide-zinc-100/80">
+                        {mechanicalSpecs.map((row, i) => (
+                          <tr
+                            key={i}
+                            className="transition-colors hover:bg-zinc-50/50"
+                          >
+                            <td className="px-5 py-3.5 align-top font-medium text-zinc-900">
+                              {row.parameter}
+                            </td>
+                            <td className="whitespace-pre-line px-5 py-3.5 leading-relaxed text-zinc-500">
+                              {row.conditions}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -457,7 +463,9 @@ export default function MatrixSystems() {
                     curves, and mechanical drawings.
                   </p>
                   <a
-                    href="#"
+                    href="/datasheet/matrix-systems/NXA-B168M System.pdf"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200/80 bg-white px-5 py-3 text-sm font-medium text-zinc-700 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] transition-all hover:shadow-sm"
                   >
                     <FileDown className="size-4 text-zinc-400" /> Download
@@ -474,7 +482,7 @@ export default function MatrixSystems() {
                     interfaces to fit your lab.
                   </p>
                   <Link
-                    href="/support"
+                    href="/contact"
                     className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.5)] transition-colors hover:bg-[#1e3070]"
                   >
                     Contact engineering <ArrowUpRight className="size-4" />
@@ -487,35 +495,42 @@ export default function MatrixSystems() {
       </section>
 
       {/* ── Functional Diagram ── */}
-      <section className="border-t border-zinc-200/80 bg-gradient-to-b from-[#f7f7f5] to-zinc-100/60">
+      <section className="border-y border-zinc-200/80 bg-[#f7f7f5]">
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger}
-            className="grid items-center gap-10 md:grid-cols-12 md:gap-16"
+            className="flex flex-col items-center justify-center text-center"
           >
-            <motion.div variants={fadeUp} custom={0} className="md:col-span-5">
-              <p className="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-zinc-500">
+            <motion.div variants={fadeUp} custom={0} className="max-w-2xl">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-zinc-500">
                 Architecture
               </p>
-              <h2 className="font-heading text-2xl font-medium tracking-tight md:text-3xl">
+              <h2 className="font-heading text-3xl font-medium tracking-tight text-zinc-900 md:text-5xl">
                 Functional Diagram
               </h2>
-              <p className="mt-4 leading-relaxed text-zinc-600">
+              <p className="mt-6 text-lg leading-relaxed text-zinc-600">
                 The 16×8 switching matrix routes any of the 16 inputs to any of
                 the 8 outputs through independently controlled attenuation
                 paths.
               </p>
             </motion.div>
 
-            <motion.div variants={fadeUp} custom={1} className="md:col-span-7">
-              <div className="overflow-hidden rounded-2xl border border-zinc-200/80 bg-gradient-to-b from-zinc-100/80 to-zinc-50/80 p-2 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]">
-                <div className="overflow-hidden rounded-xl border border-zinc-100 bg-white">
-                  <div className="relative flex aspect-4/3 w-full items-center justify-center bg-zinc-50 text-zinc-400">
-                    Diagram coming soon
-                  </div>
+            <motion.div
+              variants={fadeUp}
+              custom={1}
+              className="mt-12 w-full max-w-4xl"
+            >
+              <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white p-3 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]">
+                <div className="relative flex aspect-[16/9] w-full items-center justify-center rounded-2xl border border-zinc-100 bg-zinc-50/50 overflow-hidden">
+                  <Image
+                    src="/diagram/matrix.png"
+                    alt="Matrix System Functional Diagram"
+                    fill
+                    className="object-contain p-4"
+                  />
                 </div>
               </div>
             </motion.div>

@@ -2,7 +2,8 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { ArrowUpRight, Mail, Phone } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight, Mail, Phone, MapPin, HeadsetIcon } from "lucide-react";
 import { motion, useScroll, useTransform } from "framer-motion";
 
 const products = [
@@ -16,7 +17,6 @@ const products = [
 const company = [
   { name: "About Us", href: "/about-us" },
   { name: "Products", href: "/products" },
-  { name: "Support", href: "/support" },
 ];
 
 export default function Footer() {
@@ -80,7 +80,7 @@ export default function Footer() {
                 </p>
                 <div className="mt-12 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
                   <Link
-                    href="/support"
+                    href="/contact"
                     className="inline-flex items-center gap-3 rounded-full bg-[#172556] px-10 py-5 text-base font-medium text-white shadow-[0_20px_60px_-15px_rgba(23,37,86,0.4)] transition-all hover:scale-105 hover:bg-[#1e3070] hover:shadow-[0_20px_60px_-10px_rgba(23,37,86,0.5)]"
                   >
                     Start a conversation <ArrowUpRight className="size-5" />
@@ -100,49 +100,53 @@ export default function Footer() {
           </div>
 
           {/* Links grid */}
-          <div className="grid gap-16 border-t border-zinc-200/80 pt-16 md:grid-cols-12 md:gap-20 md:pt-20">
+          <div className="grid gap-16 border-t border-zinc-200/80 pt-16 md:grid-cols-12 md:gap-8 lg:gap-16 md:pt-20">
             {/* Brand column */}
-            <div className="md:col-span-4">
-              <Link href="/" className="group inline-block">
-                <h3 className="font-heading text-3xl font-medium text-zinc-900 transition-colors group-hover:text-zinc-600">
-                  Wavenxt
-                </h3>
+            <div className="md:col-span-4 lg:col-span-4">
+              <Link href="/" className="group inline-flex items-center gap-3">
+                <Image
+                  src="/logo.png"
+                  alt="Wavenxt"
+                  width={180}
+                  height={48}
+                  className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                />
               </Link>
-              <p className="mt-4 max-w-xs text-sm leading-relaxed text-zinc-600">
+              <p className="mt-5 max-w-65 text-sm leading-relaxed text-zinc-500">
                 Precision RF test solutions for demanding validation
-                environments.
+                environments. Engineered for repeatability.
               </p>
-              <div className="mt-8 flex gap-4">
+              <div className="mt-8 flex gap-3">
                 <a
                   href="mailto:sales@wavenxt.com"
-                  className="flex size-10 items-center justify-center rounded-full border border-zinc-300 text-zinc-600 transition-all hover:border-[#172556] hover:bg-[#172556] hover:text-white"
+                  className="group flex size-10 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] transition-all hover:border-[#172556] hover:bg-[#172556] hover:text-white hover:shadow-md"
                 >
-                  <Mail className="size-4" />
+                  <Mail className="size-4 transition-transform group-hover:scale-110" />
                 </a>
                 <a
                   href="tel:08041643659"
-                  className="flex size-10 items-center justify-center rounded-full border border-zinc-300 text-zinc-600 transition-all hover:border-[#172556] hover:bg-[#172556] hover:text-white"
+                  className="group flex size-10 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] transition-all hover:border-[#172556] hover:bg-[#172556] hover:text-white hover:shadow-md"
                 >
-                  <Phone className="size-4" />
+                  <Phone className="size-4 transition-transform group-hover:scale-110" />
                 </a>
               </div>
             </div>
 
             {/* Links columns */}
-            <div className="md:col-span-8 grid gap-12 sm:grid-cols-3">
+            <div className="grid gap-12 sm:grid-cols-3 md:col-span-8 lg:col-span-8 lg:gap-8">
               {/* Products */}
               <div>
-                <h4 className="mb-6 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
+                <h4 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
                   Products
                 </h4>
-                <ul className="space-y-3">
+                <ul className="space-y-3.5">
                   {products.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="group inline-flex items-center gap-2 text-sm text-zinc-600 transition-colors hover:text-[#172556]"
+                        className="group flex items-center gap-2.5 text-sm font-medium text-zinc-500 transition-all hover:text-[#172556]"
                       >
-                        <span className="h-px w-0 bg-[#172556] transition-all group-hover:w-4" />
+                        <span className="h-px w-2 bg-zinc-300 transition-all group-hover:w-4 group-hover:bg-[#172556]" />
                         {item.name}
                       </Link>
                     </li>
@@ -152,17 +156,17 @@ export default function Footer() {
 
               {/* Company */}
               <div>
-                <h4 className="mb-6 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
+                <h4 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
                   Company
                 </h4>
-                <ul className="space-y-3">
+                <ul className="space-y-3.5">
                   {company.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
-                        className="group inline-flex items-center gap-2 text-sm text-zinc-600 transition-colors hover:text-[#172556]"
+                        className="group flex items-center gap-2.5 text-sm font-medium text-zinc-500 transition-all hover:text-[#172556]"
                       >
-                        <span className="h-px w-0 bg-[#172556] transition-all group-hover:w-4" />
+                        <span className="h-px w-2 bg-zinc-300 transition-all group-hover:w-4 group-hover:bg-[#172556]" />
                         {item.name}
                       </Link>
                     </li>
@@ -170,36 +174,70 @@ export default function Footer() {
                 </ul>
               </div>
 
-              {/* Contact */}
+              {/* Reach us */}
               <div>
-                <h4 className="mb-6 text-xs font-bold uppercase tracking-[0.2em] text-zinc-500">
+                <h4 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
                   Reach us
                 </h4>
-                <ul className="space-y-4">
+                <ul className="space-y-5">
                   <li>
                     <a
                       href="mailto:sales@wavenxt.com"
-                      className="text-sm text-zinc-600 transition-colors hover:text-[#172556]"
+                      className="group flex items-start gap-3 text-sm text-zinc-500 transition-colors hover:text-[#172556]"
                     >
-                      sales@wavenxt.com
+                      <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-zinc-200/80 bg-white text-zinc-400 shadow-sm transition-colors group-hover:border-[#172556]/20 group-hover:bg-[#172556]/5 group-hover:text-[#172556]">
+                        <Mail className="size-3.5" />
+                      </div>
+                      <span className="font-medium leading-relaxed">
+                        sales@wavenxt.com
+                      </span>
                     </a>
                   </li>
                   <li>
                     <a
                       href="tel:08041643659"
-                      className="text-sm text-zinc-600 transition-colors hover:text-[#172556]"
+                      className="group flex items-start gap-3 text-sm text-zinc-500 transition-colors hover:text-[#172556]"
                     >
-                      080-4164 3659
+                      <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-zinc-200/80 bg-white text-zinc-400 shadow-sm transition-colors group-hover:border-[#172556]/20 group-hover:bg-[#172556]/5 group-hover:text-[#172556]">
+                        <HeadsetIcon className="size-3.5" />
+                      </div>
+                      <span className="flex flex-col">
+                        <span className="font-medium leading-relaxed">
+                          080-4164 3659
+                        </span>
+                        <span className="text-xs text-zinc-400">Landline</span>
+                      </span>
                     </a>
                   </li>
                   <li>
-                    <p className="text-sm leading-relaxed text-zinc-500">
-                      #847 2nd Floor A block
-                      <br />
-                      Sahakaranagar
-                      <br />
-                      Bangalore 560092
-                    </p>
+                    <a
+                      href="tel:+917483759420"
+                      className="group flex items-start gap-3 text-sm text-zinc-500 transition-colors hover:text-[#172556]"
+                    >
+                      <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-zinc-200/80 bg-white text-zinc-400 shadow-sm transition-colors group-hover:border-[#172556]/20 group-hover:bg-[#172556]/5 group-hover:text-[#172556]">
+                        <Phone className="size-3.5" />
+                      </div>
+                      <span className="flex flex-col">
+                        <span className="font-medium leading-relaxed">
+                          +91 74837 59420
+                        </span>
+                        <span className="text-xs text-zinc-400">Mobile</span>
+                      </span>
+                    </a>
+                  </li>
+                  <li>
+                    <div className="flex items-start gap-3 text-sm text-zinc-500 group cursor-default">
+                      <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg border border-zinc-200/80 bg-white text-zinc-400 shadow-sm transition-colors group-hover:border-zinc-300 group-hover:text-zinc-600">
+                        <MapPin className="size-3.5" />
+                      </div>
+                      <span className="font-medium leading-relaxed">
+                        #847 2nd Floor A block
+                        <br />
+                        Sahakaranagar
+                        <br />
+                        Bangalore 560092
+                      </span>
+                    </div>
                   </li>
                 </ul>
               </div>
