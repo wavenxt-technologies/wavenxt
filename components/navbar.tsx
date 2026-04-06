@@ -288,8 +288,8 @@ export default function Navbar() {
               })}
             </ul>
 
-            {/* <div className="relative z-10 flex items-center gap-4">
-              <Link
+            <div className="relative z-10 flex items-center gap-4">
+              {/* <Link
                 href="/support"
                 className={cn(
                   "hidden md:inline-flex items-center gap-1.5 rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300",
@@ -300,7 +300,7 @@ export default function Navbar() {
               >
                 Let&apos;s Talk
                 <ArrowUpRight className="size-3.5" />
-              </Link>
+              </Link> */}
 
               <button
                 className={cn(
@@ -312,7 +312,7 @@ export default function Navbar() {
               >
                 <Menu className="size-6" />
               </button>
-            </div> */}
+            </div>
           </nav>
         </div>
 
