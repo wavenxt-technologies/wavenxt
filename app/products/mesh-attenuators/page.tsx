@@ -457,7 +457,7 @@ export default function MeshAttenuators() {
                 <thead className="border-b border-zinc-100 bg-zinc-50/80">
                   <tr>
                     <th className="w-[35%] px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-                      Parameter
+                      Parameters
                     </th>
                     <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                       NXA-B4P
