@@ -462,7 +462,7 @@ export default function MeshAttenuators() {
                     <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                       NXA-B4P
                       <span className="ml-2 font-normal normal-case text-zinc-300">
-                        1RU · 4ch
+                        1RU · 4 ports
                       </span>
                     </th>
                     <th className="px-6 py-4 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400">

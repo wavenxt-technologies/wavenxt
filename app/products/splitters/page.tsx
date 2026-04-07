@@ -167,7 +167,7 @@ export default function PowerSplitters() {
                       </td>
                       <td className="px-5 py-5">
                         <a
-                          href={`/${m.model}.pdf`}
+                          href={`/datasheet/splitters/${m.model}.pdf`}
                           target="_blank"
                           rel="noreferrer"
                           className="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200/60 bg-white px-3 py-1.5 text-[11px] font-medium text-[#172556] transition-colors hover:bg-zinc-50"
