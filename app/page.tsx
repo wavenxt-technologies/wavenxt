@@ -79,10 +79,10 @@ function Hero() {
           muted
           loop
           playsInline
+          aria-hidden="true"
           className="h-full w-full object-cover"
         >
           <source src="/hero-bg.mp4" type="video/mp4" />
-          <track kind="captions" srcLang="en" src="" default />
         </video>
       </motion.div>
 
