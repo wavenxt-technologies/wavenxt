@@ -1,16 +1,9 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useInView,
-  useMotionValue,
-  useSpring,
-} from "framer-motion";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -20,15 +13,9 @@ import {
   Zap,
   Shield,
   Gauge,
-  Headphones,
   Mail,
   Phone,
   MapPin,
-  Satellite,
-  Car,
-  Smartphone,
-  Building2,
-  Target,
   Lightbulb,
   Award,
   Leaf,
@@ -793,32 +780,6 @@ function TechnologiesSection() {
       </div>
     </section>
   );
-}
-
-/* ═══════════════════════════════════════════════════
-   5 · NUMBERS + CAPABILITIES — large number grid
-       with animated count + inline capabilities
-   ═══════════════════════════════════════════════════ */
-
-function AnimatedNumber({ value }: { value: number }) {
-  const ref = useRef(null);
-  const inView = useInView(ref, { once: true });
-  const motionVal = useMotionValue(0);
-  const spring = useSpring(motionVal, { stiffness: 50, damping: 20 });
-  const [display, setDisplay] = useState("0");
-
-  useEffect(() => {
-    if (inView) motionVal.set(value);
-  }, [inView, value, motionVal]);
-
-  useEffect(() => {
-    const unsub = spring.on("change", (v) => {
-      setDisplay(Math.round(v).toString());
-    });
-    return unsub;
-  }, [spring]);
-
-  return <span ref={ref}>{display}</span>;
 }
 
 /* ═══════════════════════════════════════════════════

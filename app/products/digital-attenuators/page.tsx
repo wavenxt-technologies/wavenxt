@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
-import { useState, useEffect, useRef } from "react";
-import { ArrowUpRight, ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
+import { motion } from "framer-motion";
 import {
-  motion,
-  AnimatePresence,
-  useSpring,
-  useMotionValue,
-} from "framer-motion";
+  digitalAttenuatorCommonSpecs as commonSpecs,
+  digitalAttenuatorGroups as groups,
+} from "./data";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -26,48 +23,6 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.08 } },
 };
 
-const groups = [
-  {
-    band: "200 – 8000 MHz",
-    tag: "8 GHz",
-    models: [
-      { model: "MT88A", channel: 8 },
-      { model: "MT84A", channel: 4 },
-      { model: "MT82A", channel: 2 },
-      { model: "MT81A", channel: 1 },
-    ],
-  },
-  {
-    band: "200 – 6000 MHz",
-    tag: "6 GHz",
-    models: [
-      { model: "MT68A", channel: 8 },
-      { model: "MT64A", channel: 4 },
-      { model: "MT62A", channel: 2 },
-      { model: "MT61A", channel: 1 },
-    ],
-  },
-  {
-    band: "200 – 3000 MHz",
-    tag: "3 GHz",
-    models: [
-      { model: "MT38A", channel: 8 },
-      { model: "MT34A", channel: 4 },
-      { model: "MT32A", channel: 2 },
-      { model: "MT31A", channel: 1 },
-    ],
-  },
-];
-
-const commonSpecs = [
-  { label: "Attenuation Range", value: "0 – 95 dB" },
-  { label: "Step Size", value: "0.25 dB" },
-  { label: "Accuracy", value: "±0.5 dB" },
-  { label: "Control", value: "USB & Ethernet" },
-  { label: "Connector", value: "SMA Female" },
-  { label: "Operation", value: "24/7 Automated" },
-];
-
 const channelGradients: Record<number, string> = {
   8: "bg-linear-to-br from-indigo-500/10 to-transparent",
   4: "bg-linear-to-br from-blue-500/10 to-transparent",
@@ -76,42 +31,6 @@ const channelGradients: Record<number, string> = {
 };
 
 export default function DigitalAttenuators() {
-  const [hovering, setHovering] = useState(false);
-  const [activeImage, setActiveImage] = useState("/atten8.jpg");
-  const [activeModel, setActiveModel] = useState("");
-
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-
-  const floatX = useSpring(mouseX, { damping: 25, stiffness: 120, mass: 0.5 });
-  const floatY = useSpring(mouseY, { damping: 25, stiffness: 120, mass: 0.5 });
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      const imageWidth = 320;
-      const imageHeight = 240;
-      const margin = 24;
-
-      let xOffset = margin;
-      let yOffset = -imageHeight / 2;
-
-      if (e.clientX + margin + imageWidth > window.innerWidth) {
-        xOffset = -imageWidth - margin;
-      }
-
-      if (e.clientY + yOffset < 0) {
-        yOffset = margin;
-      } else if (e.clientY + yOffset + imageHeight > window.innerHeight) {
-        yOffset = -imageHeight - margin;
-      }
-
-      mouseX.set(e.clientX + xOffset);
-      mouseY.set(e.clientY + yOffset);
-    };
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, [mouseX, mouseY]);
-
   return (
     <main className="min-h-screen bg-[#f7f7f5] text-zinc-900 relative">
       {/* ── Hero ── */}
@@ -258,15 +177,6 @@ export default function DigitalAttenuators() {
                       <Link
                         key={m.model}
                         href={`/products/digital-attenuators/${m.model.toLowerCase()}`}
-                        onMouseEnter={() => {
-                          setActiveImage(`/atten${m.channel}.webp`);
-                          setActiveModel(m.model);
-                          setHovering(true);
-                        }}
-                        onMouseLeave={() => {
-                          setHovering(false);
-                          setActiveModel("");
-                        }}
                         className="group relative flex flex-col justify-between overflow-hidden rounded-[1.5rem] border border-zinc-200/60 bg-[#f7f7f5] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] md:h-45"
                       >
                         {/* Dynamic Channel Accent Gradient */}

@@ -146,7 +146,7 @@ export default function PowerSplitters() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-100">
-                  {splitterModels.map((m, i) => (
+                  {splitterModels.map((m) => (
                     <tr
                       key={m.model}
                       className="transition-colors hover:bg-zinc-50/50"

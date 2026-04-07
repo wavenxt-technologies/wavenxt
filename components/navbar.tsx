@@ -144,6 +144,11 @@ const productItems: ProductItem[] = [
 
 export default function Navbar() {
   const pathname = usePathname();
+
+  return <NavbarContent key={pathname} pathname={pathname} />;
+}
+
+function NavbarContent({ pathname }: { pathname: string }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
@@ -172,11 +177,6 @@ export default function Navbar() {
   }
 
   useEffect(() => {
-    setDropdownOpen(false);
-    setMobileMenuOpen(false);
-  }, [pathname]);
-
-  useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -186,6 +186,14 @@ export default function Navbar() {
       document.body.style.overflow = "unset";
     };
   }, [mobileMenuOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, notFound } from "next/navigation";
@@ -17,7 +17,7 @@ import {
   Monitor,
   Download,
 } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Sheet,
   SheetContent,
@@ -25,6 +25,10 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  parseDigitalAttenuatorModel,
+  type DigitalAttenuatorModel,
+} from "../data";
 
 /* ── Animation helpers ──────────────────────────────────────────────── */
 
@@ -43,45 +47,10 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.08 } },
 };
 
-/* ── Model data derived from URL id ──────────────────────────────────── */
-
-const FREQ_MAP: Record<string, { band: string; max: string; tag: string }> = {
-  8: { band: "200 – 8000 MHz", max: "8 GHz", tag: "8 GHz" },
-  6: { band: "200 – 6000 MHz", max: "6 GHz", tag: "6 GHz" },
-  3: { band: "200 – 3000 MHz", max: "3 GHz", tag: "3 GHz" },
-};
-
-const MODEL_IMAGES: Record<string, string> = {
-  8: "/images/atten8.webp",
-  4: "/images/atten4.webp",
-  2: "/images/atten2.webp",
-  1: "/images/atten1.webp",
-};
-
-function parseModel(id: string) {
-  const upper = (id || "").toUpperCase();
-  const match = upper.match(/MT(\d)(\d)A/);
-  if (!match) return null;
-  const [, freqTag, ch] = match;
-  const freq = FREQ_MAP[freqTag];
-  if (!freq) return null;
-  return {
-    raw: upper,
-    model: `MT-${freqTag}${ch}A`,
-    freqTag,
-    ch,
-    chNum: parseInt(ch),
-    freq,
-    sizeLabel: `${ch} Channel`,
-    image: MODEL_IMAGES[ch] ?? MODEL_IMAGES["8"],
-  };
-}
-
 /* ── Static spec table ───────────────────────────────────────────────── */
 
 const getDatasheetRows = (freqTag: string, ch: string) => {
   const is8GHz = freqTag === "8";
-  const is6GHz = freqTag === "6";
   const is3GHz = freqTag === "3";
 
   return [
@@ -280,7 +249,7 @@ const featureIcons = [
 export default function DigitalAttenuatorProduct() {
   const params = useParams();
   const id = params.id as string;
-  const m = parseModel(id);
+  const m = parseDigitalAttenuatorModel(id);
   if (!m) notFound();
 
   const heroSpecs = [
@@ -329,13 +298,8 @@ export default function DigitalAttenuatorProduct() {
 
   const siblings = ["8", "4", "2", "1"]
     .filter((c) => c !== m.ch)
-    .map((c) => ({
-      id: `mt${m.freqTag}${c}a`,
-      model: `MT-${m.freqTag}${c}A`,
-      ch: parseInt(c),
-      band: m.freq.band,
-      image: MODEL_IMAGES[c] ?? MODEL_IMAGES["8"],
-    }))
+    .map((c) => parseDigitalAttenuatorModel(`mt${m.freqTag}${c}a`))
+    .filter((item): item is DigitalAttenuatorModel => item !== null)
     .slice(0, 3);
 
   return (
@@ -889,7 +853,9 @@ export default function DigitalAttenuatorProduct() {
                         <p className="font-heading text-4xl font-medium tracking-tight text-zinc-900 transition-colors group-hover:text-[#172556]">
                           {sib.ch} Ch
                         </p>
-                        <p className="mt-2 text-sm text-zinc-500">{sib.band}</p>
+                        <p className="mt-2 text-sm text-zinc-500">
+                          {sib.freq.band}
+                        </p>
                       </div>
 
                       <div className="relative z-10 mt-8 grid grid-cols-3 gap-2 border-t border-zinc-200/80 pt-6 transition-colors group-hover:border-zinc-300">

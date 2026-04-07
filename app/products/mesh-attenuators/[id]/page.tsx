@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, notFound } from "next/navigation";
@@ -15,7 +15,7 @@ import {
   Zap,
   Download,
 } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { meshModelMap, meshModels } from "../data";
 import {
   Sheet,
@@ -699,7 +699,7 @@ export default function MeshAttenuatorModelPage() {
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              {others.map((m: any, idx: number) => {
+              {others.map((m, idx) => {
                 const mAtten = getSpec(m.specifications, "attenuation range");
                 const mPorts =
                   getSpec(m.specifications, "inputs/outputs") ??

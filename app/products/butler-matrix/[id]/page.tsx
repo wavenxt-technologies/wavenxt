@@ -1,6 +1,5 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, notFound } from "next/navigation";
@@ -14,7 +13,7 @@ import {
   SlidersHorizontal,
   LayoutDashboard,
 } from "lucide-react";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { butlerModelMap, butlerModels } from "../data";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];

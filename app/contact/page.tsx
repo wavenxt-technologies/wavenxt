@@ -1,14 +1,8 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import {
-  ChevronDown,
-  Mail,
-  Phone,
-  ArrowUpRight,
-  CheckCircle,
-} from "lucide-react";
+import { motion } from "framer-motion";
+import { Mail, Phone, ArrowUpRight, CheckCircle } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -135,7 +129,7 @@ export default function SupportPage() {
           <motion.div
             variants={fadeUp}
             custom={0}
-            className="rounded-3xl border border-zinc-200/80 bg-gradient-to-b from-zinc-100/80 to-zinc-50/80 p-6 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] backdrop-blur-sm md:p-8"
+            className="rounded-3xl border border-zinc-200/80 bg-linear-to-b from-zinc-100/80 to-zinc-50/80 p-6 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] backdrop-blur-sm md:p-8"
           >
             <h2 className="font-heading text-3xl font-medium tracking-tight md:text-4xl">
               Send us a message
@@ -289,7 +283,7 @@ export default function SupportPage() {
           <motion.div
             variants={fadeUp}
             custom={0}
-            className="rounded-3xl border border-zinc-200/80 bg-gradient-to-b from-zinc-100/80 to-zinc-50/80 p-6 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] backdrop-blur-sm"
+            className="rounded-3xl border border-zinc-200/80 bg-linear-to-b from-zinc-100/80 to-zinc-50/80 p-6 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] backdrop-blur-sm"
           >
             <h3 className="font-heading text-xl font-medium tracking-tight">
               Contact Details
@@ -325,7 +319,7 @@ export default function SupportPage() {
           <motion.div
             variants={fadeUp}
             custom={1}
-            className="overflow-hidden rounded-3xl border border-zinc-200/80 bg-gradient-to-b from-zinc-100/80 to-zinc-50/80 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]"
+            className="overflow-hidden rounded-3xl border border-zinc-200/80 bg-linear-to-b from-zinc-100/80 to-zinc-50/80 shadow-[0_1px_0_0_rgba(0,0,0,0.03)]"
           >
             <div className="border-b border-zinc-200/80 p-5">
               <h3 className="font-heading text-xl font-medium tracking-tight">
@@ -371,7 +365,7 @@ export default function SupportPage() {
             whileInView="visible"
             viewport={{ once: true, margin: "-80px" }}
             variants={stagger}
-            className="rounded-3xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm md:p-10"
+            className="rounded-3xl border border-white/10 bg-white/4 p-6 backdrop-blur-sm md:p-10"
           >
             <div className="grid items-center gap-10 md:grid-cols-12">
               <motion.div
@@ -429,7 +423,7 @@ export default function SupportPage() {
                         backgroundColor: "rgba(255,255,255,0.12)",
                       }}
                       transition={{ duration: 0.2 }}
-                      className="inline-flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/[0.06] px-4 py-3.5 text-sm text-blue-50/90 transition-colors"
+                      className="inline-flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/6 px-4 py-3.5 text-sm text-blue-50/90 transition-colors"
                     >
                       <item.icon className="size-4 shrink-0 text-blue-300/70" />
                       {item.text}

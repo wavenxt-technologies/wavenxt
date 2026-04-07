@@ -401,7 +401,7 @@ export default function Products() {
       </section>
 
       {/* ── FAQ ── */}
-      {/* <section className="bg-[#f7f7f5]">
+      <section className="bg-[#f7f7f5]">
         <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
           <motion.div
             initial="hidden"
@@ -428,7 +428,7 @@ export default function Products() {
             </motion.div>
           </motion.div>
         </div>
-      </section> */}
+      </section>
     </div>
   );
 }

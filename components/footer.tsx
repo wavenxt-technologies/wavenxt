@@ -71,7 +71,7 @@ export default function Footer() {
                   Ready to get started?
                 </p>
                 <h2 className="mt-6 font-heading text-5xl font-medium tracking-tight text-zinc-900 md:text-7xl lg:text-8xl">
-                  Let's build something together
+                  Let&apos;s build something together
                 </h2>
                 <p className="mt-8 text-lg leading-relaxed text-zinc-600 md:text-xl">
                   Whether you need a custom RF solution, technical consultation,
