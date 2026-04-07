@@ -117,18 +117,20 @@ export default function Footer() {
                 environments. Engineered for repeatability.
               </p>
               <div className="mt-8 flex gap-3">
-                <a
+                <Link
                   href="mailto:sales@wavenxt.com"
+                  aria-label="Email us at sales@wavenxt.com"
                   className="group flex size-10 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] transition-all hover:border-[#172556] hover:bg-[#172556] hover:text-white hover:shadow-md"
                 >
-                  <Mail className="size-4 transition-transform group-hover:scale-110" />
-                </a>
-                <a
+                  <Mail className="size-4 transition-transform group-hover:scale-110" aria-hidden="true" />
+                </Link>
+                <Link
                   href="tel:08041643659"
+                  aria-label="Call us at 080 4164 3659"
                   className="group flex size-10 items-center justify-center rounded-full border border-zinc-200 bg-white text-zinc-500 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] transition-all hover:border-[#172556] hover:bg-[#172556] hover:text-white hover:shadow-md"
                 >
-                  <Phone className="size-4 transition-transform group-hover:scale-110" />
-                </a>
+                  <Phone className="size-4 transition-transform group-hover:scale-110" aria-hidden="true" />
+                </Link>
               </div>
             </div>
 
@@ -136,9 +138,9 @@ export default function Footer() {
             <div className="grid gap-12 sm:grid-cols-3 md:col-span-8 lg:col-span-8 lg:gap-8">
               {/* Products */}
               <div>
-                <h4 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
+                <h3 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
                   Products
-                </h4>
+                </h3>
                 <ul className="space-y-3.5">
                   {products.map((item) => (
                     <li key={item.href}>
@@ -156,9 +158,9 @@ export default function Footer() {
 
               {/* Company */}
               <div>
-                <h4 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
+                <h3 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
                   Company
-                </h4>
+                </h3>
                 <ul className="space-y-3.5">
                   {company.map((item) => (
                     <li key={item.href}>
@@ -176,9 +178,9 @@ export default function Footer() {
 
               {/* Reach us */}
               <div>
-                <h4 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
+                <h3 className="mb-6 font-heading text-sm font-semibold tracking-wide text-zinc-900">
                   Reach us
-                </h4>
+                </h3>
                 <ul className="space-y-5">
                   <li>
                     <a
