@@ -399,36 +399,6 @@ export default function Products() {
           </motion.div>
         </div>
       </section>
-
-      {/* ── FAQ ── */}
-      <section className="bg-[#f7f7f5]">
-        <div className="mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-80px" }}
-            variants={stagger}
-          >
-            <motion.div variants={fadeUp} custom={0} className="max-w-xl">
-              <h2 className="font-heading text-3xl font-medium leading-tight tracking-tight md:text-4xl">
-                Still unsure about something?
-              </h2>
-              <p className="mt-6 leading-relaxed text-zinc-600">
-                Common questions about our products, ordering, and custom
-                configurations.
-              </p>
-            </motion.div>
-
-            <motion.div
-              variants={fadeUp}
-              custom={1}
-              className="mt-16 md:ml-auto md:mt-20 md:w-8/12"
-            >
-              <ProductFAQ />
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
     </div>
   );
 }
