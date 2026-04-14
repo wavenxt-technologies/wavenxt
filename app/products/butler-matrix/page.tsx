@@ -195,17 +195,6 @@ export default function ButlerMatrix() {
                   Choose your configuration
                 </h2>
               </motion.div>
-              <motion.a
-                variants={fadeUp}
-                custom={1}
-                href="/datasheet/bulter-matrix/NXBM-4P67.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 self-start rounded-2xl border border-zinc-200/80 bg-[#f7f7f5] px-6 py-3.5 text-sm font-medium text-zinc-700 transition-all hover:bg-white hover:text-[#172556] hover:shadow-sm md:self-auto"
-              >
-                <FileDown className="size-4" />
-                Download Datasheet
-              </motion.a>
             </div>
 
             <motion.div
