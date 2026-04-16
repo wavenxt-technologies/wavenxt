@@ -10,16 +10,50 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { ArrowUpRight, ArrowRight, ChevronDown, Menu, X } from "lucide-react";
+import {
+  ArrowUpRight,
+  ArrowRight,
+  ChevronDown,
+  Menu,
+  X,
+  BookOpen,
+  Video,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
-const navLinks = [
+/* ─── Nav data ─── */
+
+type DropdownType = "products" | "resources";
+
+interface NavLink {
+  href: string;
+  label: string;
+  dropdownType?: DropdownType;
+}
+
+const navLinks: NavLink[] = [
   { href: "/", label: "Home" },
-  { href: "/products", label: "All Products", hasDropdown: true },
+  { href: "/products", label: "All Products", dropdownType: "products" },
+  { href: "/resources", label: "Resources", dropdownType: "resources" },
   { href: "/about-us", label: "About Us" },
   { href: "/contact", label: "Contact" },
+];
+
+const resourceItems = [
+  {
+    name: "Blogs",
+    href: "/resources/blogs",
+    icon: BookOpen,
+    desc: "Articles and insights on RF engineering, wireless testing, and industry trends",
+  },
+  {
+    name: "Webinars",
+    href: "/resources/webinars",
+    icon: Video,
+    desc: "Live sessions and on-demand recordings from our engineering experts",
+  },
 ];
 
 interface SubModel {
@@ -142,6 +176,10 @@ const productItems: ProductItem[] = [
   },
 ];
 
+/* ═══════════════════════════════════════════════════
+   NAVBAR
+   ═══════════════════════════════════════════════════ */
+
 export default function Navbar() {
   const pathname = usePathname();
 
@@ -149,7 +187,9 @@ export default function Navbar() {
 }
 
 function NavbarContent({ pathname }: { pathname: string }) {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<DropdownType | null>(
+    null
+  );
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -157,21 +197,22 @@ function NavbarContent({ pathname }: { pathname: string }) {
 
   const activeProduct = productItems[activeIndex];
   const isHome = pathname === "/";
-  const isTransparent = isHome && !scrolled && !dropdownOpen && !mobileMenuOpen;
+  const isTransparent =
+    isHome && !scrolled && !activeDropdown && !mobileMenuOpen;
 
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 50);
   });
 
-  function openDropdown() {
+  function handleDropdownEnter(type: DropdownType) {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setDropdownOpen(true);
+    setActiveDropdown(type);
   }
 
-  function closeDropdown() {
+  function handleDropdownLeave() {
     timeoutRef.current = setTimeout(() => {
-      setDropdownOpen(false);
+      setActiveDropdown(null);
       setActiveIndex(0);
     }, 200);
   }
@@ -197,7 +238,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setDropdownOpen(false);
+      if (e.key === "Escape") setActiveDropdown(null);
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
@@ -217,7 +258,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
             "border-b transition-all duration-300",
             isTransparent
               ? "border-transparent bg-transparent"
-              : "border-zinc-200/60 bg-[#f7f7f5]",
+              : "border-zinc-200/60 bg-[#f7f7f5]"
           )}
         >
           <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-10">
@@ -233,7 +274,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
                 height={40}
                 className={cn(
                   "h-7 w-auto object-contain transition-all duration-300",
-                  isTransparent && "brightness-0 invert",
+                  isTransparent && "brightness-0 invert"
                 )}
                 priority
               />
@@ -246,14 +287,31 @@ function NavbarContent({ pathname }: { pathname: string }) {
                   link.href === "/"
                     ? pathname === "/"
                     : pathname.startsWith(link.href);
+
+                const hasChevron = !!link.dropdownType;
+                const isThisDropdownOpen = activeDropdown === link.dropdownType;
+
                 return (
                   <li
                     key={link.href}
-                    onMouseEnter={link.hasDropdown ? openDropdown : undefined}
-                    onMouseLeave={link.hasDropdown ? closeDropdown : undefined}
+                    className={
+                      link.dropdownType === "resources" ? "relative" : ""
+                    }
+                    onMouseEnter={
+                      link.dropdownType
+                        ? () => handleDropdownEnter(link.dropdownType!)
+                        : undefined
+                    }
+                    onMouseLeave={
+                      link.dropdownType ? handleDropdownLeave : undefined
+                    }
                   >
                     <Link
-                      href={link.href}
+                      href={
+                        link.dropdownType === "resources"
+                          ? "/resources/blogs"
+                          : link.href
+                      }
                       className={cn(
                         "relative flex items-center gap-1 rounded-lg px-6 py-2.5 transition-colors duration-300",
                         isTransparent
@@ -262,19 +320,19 @@ function NavbarContent({ pathname }: { pathname: string }) {
                             : "text-white/60 hover:text-white"
                           : isActive
                             ? "font-medium text-zinc-900"
-                            : "text-zinc-500 hover:text-zinc-800",
+                            : "text-zinc-500 hover:text-zinc-800"
                       )}
                     >
                       {link.label}
-                      {link.hasDropdown && (
+                      {hasChevron && (
                         <motion.span
-                          animate={{ rotate: dropdownOpen ? 180 : 0 }}
+                          animate={{ rotate: isThisDropdownOpen ? 180 : 0 }}
                           transition={{ duration: 0.2, ease }}
                         >
                           <ChevronDown
                             className={cn(
                               "size-3 transition-colors duration-300",
-                              isTransparent ? "text-white/40" : "text-zinc-400",
+                              isTransparent ? "text-white/40" : "text-zinc-400"
                             )}
                           />
                         </motion.span>
@@ -291,29 +349,83 @@ function NavbarContent({ pathname }: { pathname: string }) {
                         />
                       )}
                     </Link>
+
+                    {/* ── Resources dropdown (inline in li) ── */}
+                    {link.dropdownType === "resources" && (
+                      <AnimatePresence>
+                        {activeDropdown === "resources" && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 6 }}
+                            transition={{ duration: 0.18, ease }}
+                            className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3"
+                          >
+                            <div className="w-[480px] overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[0_20px_60px_-16px_rgba(0,0,0,0.15)]">
+                              {/* Main resource links */}
+                              <div className="grid grid-cols-2 gap-0 divide-x divide-zinc-100">
+                                {resourceItems.map((item) => {
+                                  const Icon = item.icon;
+                                  return (
+                                    <Link
+                                      key={item.href}
+                                      href={item.href}
+                                      onClick={() => setActiveDropdown(null)}
+                                      className="group flex flex-col gap-4 p-5 transition-all duration-200 hover:bg-zinc-50/80 first:rounded-tl-2xl last:rounded-tr-2xl"
+                                    >
+                                      <span className="flex size-11 items-center justify-center rounded-xl bg-[#172556]/[0.06] text-[#172556] ring-1 ring-zinc-100 transition-all duration-200 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556] group-hover:shadow-lg group-hover:shadow-[#172556]/20">
+                                        <Icon className="size-5" />
+                                      </span>
+                                      <div>
+                                        <div className="flex items-center gap-1.5">
+                                          <p className="text-[15px] font-semibold text-zinc-900 transition-colors group-hover:text-[#172556]">
+                                            {item.name}
+                                          </p>
+                                          <ArrowUpRight className="size-3.5 text-zinc-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#172556]" />
+                                        </div>
+                                        <p className="mt-1.5 text-[12px] leading-relaxed text-zinc-400">
+                                          {item.desc}
+                                        </p>
+                                      </div>
+                                    </Link>
+                                  );
+                                })}
+                              </div>
+
+                              {/* Bottom accent strip */}
+                              <div className="bg-[#172556] px-5 py-4 flex items-center justify-between">
+                                <div>
+                                  <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-200/60">
+                                    Stay Updated
+                                  </p>
+                                  <p className="mt-0.5 text-[13px] font-medium text-white/90">
+                                    Get the latest from our engineering team
+                                  </p>
+                                </div>
+                                <Link
+                                  href="/contact"
+                                  onClick={() => setActiveDropdown(null)}
+                                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3.5 py-2 text-[12px] font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/25"
+                                >
+                                  Contact Us
+                                  <ArrowUpRight className="size-3" />
+                                </Link>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    )}
                   </li>
                 );
               })}
             </ul>
 
             <div className="relative z-10 flex items-center gap-4">
-              {/* <Link
-                href="/support"
-                className={cn(
-                  "hidden md:inline-flex items-center gap-1.5 rounded-full px-6 py-2.5 text-sm font-medium transition-all duration-300",
-                  isTransparent
-                    ? "border border-white/20 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20"
-                    : "bg-[#172556] text-white hover:bg-[#1e3070]",
-                )}
-              >
-                Let&apos;s Talk
-                <ArrowUpRight className="size-3.5" />
-              </Link> */}
-
               <button
                 className={cn(
                   "md:hidden p-2 -mr-2 transition-colors duration-300",
-                  isTransparent ? "text-white" : "text-zinc-900",
+                  isTransparent ? "text-white" : "text-zinc-900"
                 )}
                 onClick={() => setMobileMenuOpen(true)}
                 aria-label="Open mobile menu"
@@ -324,17 +436,17 @@ function NavbarContent({ pathname }: { pathname: string }) {
           </nav>
         </div>
 
-        {/* Mega menu */}
+        {/* Products mega menu */}
         <AnimatePresence>
-          {dropdownOpen && (
+          {activeDropdown === "products" && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.15 }}
               className="absolute left-0 right-0 top-full hidden md:block"
-              onMouseEnter={openDropdown}
-              onMouseLeave={closeDropdown}
+              onMouseEnter={() => handleDropdownEnter("products")}
+              onMouseLeave={handleDropdownLeave}
             >
               <motion.div
                 initial={{ opacity: 0, y: -6 }}
@@ -357,7 +469,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
                               "group flex items-center gap-3.5 rounded-lg px-3 py-3 transition-all duration-150",
                               activeIndex === idx
                                 ? "bg-zinc-50"
-                                : "hover:bg-zinc-50/60",
+                                : "hover:bg-zinc-50/60"
                             )}
                           >
                             <div
@@ -365,7 +477,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
                                 "relative size-10 shrink-0 overflow-hidden rounded-lg border transition-all duration-150",
                                 activeIndex === idx
                                   ? "border-zinc-200 shadow-sm"
-                                  : "border-zinc-100",
+                                  : "border-zinc-100"
                               )}
                             >
                               <Image
@@ -384,7 +496,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
                                   "truncate text-sm font-medium transition-colors duration-150",
                                   activeIndex === idx
                                     ? "text-zinc-900"
-                                    : "text-zinc-600",
+                                    : "text-zinc-600"
                                 )}
                               >
                                 {item.name}
@@ -398,7 +510,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
                                 "size-3.5 -rotate-90 shrink-0 transition-all duration-150",
                                 activeIndex === idx
                                   ? "text-zinc-400 opacity-100"
-                                  : "opacity-0",
+                                  : "opacity-0"
                               )}
                             />
                           </Link>
@@ -562,7 +674,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
                 <div className="flex flex-col gap-6">
                   {navLinks.map((link) => (
                     <div key={link.href} className="flex flex-col">
-                      {link.hasDropdown ? (
+                      {link.dropdownType === "products" ? (
                         <>
                           <div className="flex items-center justify-between py-2 text-xl font-medium text-zinc-900">
                             {link.label}
@@ -575,6 +687,25 @@ function NavbarContent({ pathname }: { pathname: string }) {
                                 onClick={() => setMobileMenuOpen(false)}
                                 className="text-base text-zinc-600 font-medium transition-colors hover:text-[#172556]"
                               >
+                                {item.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </>
+                      ) : link.dropdownType === "resources" ? (
+                        <>
+                          <div className="flex items-center justify-between py-2 text-xl font-medium text-zinc-900">
+                            {link.label}
+                          </div>
+                          <div className="mt-4 flex flex-col gap-4 pl-4 border-l-2 border-zinc-100">
+                            {resourceItems.map((item) => (
+                              <Link
+                                key={item.href}
+                                href={item.href}
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="flex items-center gap-3 text-base text-zinc-600 font-medium transition-colors hover:text-[#172556]"
+                              >
+                                <item.icon className="size-4" />
                                 {item.name}
                               </Link>
                             ))}
@@ -597,7 +728,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
               {/* Mobile Menu Footer CTA */}
               <div className="shrink-0 p-6 border-t border-zinc-100 bg-zinc-50/50">
                 <Link
-                  href="/support"
+                  href="/contact"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex w-full items-center justify-center gap-2 rounded-full bg-[#172556] px-6 py-3.5 text-base font-medium text-white transition-opacity hover:opacity-90"
                 >
@@ -610,16 +741,16 @@ function NavbarContent({ pathname }: { pathname: string }) {
         </AnimatePresence>
       </motion.header>
 
-      {/* Overlay backdrop */}
+      {/* Overlay backdrop — products mega menu only */}
       <AnimatePresence>
-        {dropdownOpen && (
+        {activeDropdown === "products" && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
             className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[2px]"
-            onClick={() => setDropdownOpen(false)}
+            onClick={() => setActiveDropdown(null)}
             style={{ top: "3.5rem" }}
           />
         )}
