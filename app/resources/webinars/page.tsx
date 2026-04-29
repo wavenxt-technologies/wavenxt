@@ -534,146 +534,168 @@ function WebinarCard({
   const upcoming = isLive && isUpcoming(webinar.startDateTime);
   const hasVideo = !isLive && !!webinar.videoUrl;
 
-  return (
-    <motion.div variants={cardVariant} custom={index} className="group flex">
-      <div className="flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-200/80 bg-white transition-all duration-300 hover:border-zinc-300 hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.10)]">
-        {/* ── Thumbnail ── */}
-        <div
-          className={cn(
-            "relative aspect-[16/10] overflow-hidden bg-zinc-100",
-            hasVideo && "cursor-pointer",
-          )}
-          onClick={hasVideo ? () => onWatch(webinar) : undefined}
-        >
-          <Image
-            src={urlFor(webinar.thumbnail).width(960).height(600).url()}
-            alt={webinar.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-[1.04]"
-            sizes="(max-width: 768px) 120vw, 60vw"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+  const thumbnailContent = (
+    <>
+      <Image
+        src={urlFor(webinar.thumbnail).width(960).height(540).url()}
+        alt={webinar.title}
+        fill
+        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+        sizes="(max-width: 768px) 100vw, 50vw"
+      />
+      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-80" />
 
-          {/* Category badge */}
-          <div className="absolute left-3 top-3">
-            {isLive ? (
-              <span className="inline-flex items-center gap-1 rounded-full bg-red-500 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-white shadow-lg shadow-red-500/30">
-                <span className="relative flex size-1.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-                  <span className="relative inline-flex size-1.5 rounded-full bg-white" />
-                </span>
-                {upcoming ? "Upcoming" : "Live"}
-              </span>
+      {/* Category badge */}
+      <div className="absolute left-4 top-4">
+        {isLive ? (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white shadow-lg shadow-red-500/20 backdrop-blur-md">
+            <span className="relative flex size-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
+              <span className="relative inline-flex size-2 rounded-full bg-white" />
+            </span>
+            {upcoming ? "Upcoming" : "Live"}
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/40 border border-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
+            <Play className="size-3 fill-current" />
+            On Demand
+          </span>
+        )}
+      </div>
+
+      {/* Play button overlay */}
+      {hasVideo && (
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <motion.div
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className="flex size-16 items-center justify-center rounded-full border border-white/20 bg-black/30 shadow-2xl backdrop-blur-md"
+          >
+            <Play className="ml-1 size-6 fill-white text-white" />
+          </motion.div>
+        </div>
+      )}
+    </>
+  );
+
+  return (
+    <motion.div
+      variants={cardVariant}
+      custom={index}
+      className="group flex h-full"
+    >
+      <div className="flex w-full flex-col overflow-hidden rounded-[24px] border border-zinc-200/70 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300/80 hover:shadow-[0_20px_40px_-16px_rgba(0,0,0,0.12)]">
+        {/* ── Thumbnail ── */}
+        {hasVideo ? (
+          <Link
+            href={`/resources/webinars/${webinar._id}`}
+            className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-100 block"
+          >
+            {thumbnailContent}
+          </Link>
+        ) : (
+          <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-100">
+            {thumbnailContent}
+          </div>
+        )}
+
+        {/* ── Body ── */}
+        <div className="flex flex-1 flex-col p-6 sm:p-8">
+          <div className="mb-4 flex items-center gap-3 text-[13px] font-medium text-zinc-500">
+            {isLive && webinar.startDateTime ? (
+              <div className="flex items-center gap-1.5 rounded-md bg-zinc-100/80 px-2.5 py-1 text-zinc-700">
+                <Calendar className="size-3.5 text-zinc-500" />
+                <span>{formatDateTime(webinar.startDateTime)}</span>
+              </div>
             ) : (
-              <span className="inline-flex items-center gap-1 rounded-full bg-black/50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-white backdrop-blur-sm">
-                <Play className="size-2.5 fill-current" />
-                On Demand
-              </span>
+              <div className="flex items-center gap-1.5 rounded-md bg-zinc-100/80 px-2.5 py-1 text-zinc-600">
+                <Clock className="size-3.5 text-zinc-400" />
+                <span>{formatDate(webinar.createdAt)}</span>
+              </div>
             )}
           </div>
 
-          {/* Play button overlay */}
-          {hasVideo && (
-            <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-              <motion.div
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.93 }}
-                className="flex size-14 items-center justify-center rounded-full border border-white/30 bg-white/20 shadow-2xl backdrop-blur-md"
-              >
-                <Play className="ml-0.5 size-5 fill-white text-white" />
-              </motion.div>
-            </div>
+          {hasVideo ? (
+            <Link href={`/resources/webinars/${webinar._id}`}>
+              <h3 className="line-clamp-2 font-heading text-xl font-semibold leading-tight tracking-tight text-zinc-900 transition-colors duration-200 group-hover:text-[#172556]">
+                {webinar.title}
+              </h3>
+            </Link>
+          ) : (
+            <h3 className="line-clamp-2 font-heading text-xl font-semibold leading-tight tracking-tight text-zinc-900">
+              {webinar.title}
+            </h3>
           )}
-        </div>
 
-        {/* ── Body ── */}
-        <div className="flex flex-1 flex-col p-5">
-          <h3
-            className={cn(
-              "line-clamp-2 font-heading text-[15px] font-semibold leading-snug tracking-tight text-zinc-900 transition-colors duration-200 md:text-base",
-              hasVideo && "cursor-pointer group-hover:text-[#172556]",
-            )}
-            onClick={hasVideo ? () => onWatch(webinar) : undefined}
-          >
-            {webinar.title}
-          </h3>
-
-          <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-zinc-500">
+          <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-zinc-500">
             {webinar.description}
           </p>
 
-          {/* Date */}
-          <div className="mt-3 flex items-center gap-1.5 text-xs text-zinc-400">
-            {isLive && webinar.startDateTime ? (
-              <>
-                <Calendar className="size-3 shrink-0" />
-                <span className="font-medium text-zinc-500">
-                  {formatDateTime(webinar.startDateTime)}
-                </span>
-              </>
-            ) : (
-              <>
-                <Clock className="size-3 shrink-0" />
-                <span>{formatDate(webinar.createdAt)}</span>
-              </>
-            )}
-          </div>
+          <div className="mt-auto pt-8">
+            <div className="h-px w-full bg-zinc-100" />
 
-          <div className="my-4 border-t border-zinc-100" />
+            {/* ── Speaker + CTA ── */}
+            <div className="mt-6 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3 min-w-0">
+                {webinar.speaker.photo ? (
+                  <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-white shadow-sm border border-zinc-100">
+                    <Image
+                      src={urlFor(webinar.speaker.photo)
+                        .width(80)
+                        .height(80)
+                        .url()}
+                      alt={webinar.speaker.name}
+                      fill
+                      className="object-cover"
+                      sizes="40px"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-100 border border-zinc-200/50">
+                    <User className="size-4 text-zinc-400" />
+                  </div>
+                )}
 
-          {/* ── Speaker + CTA ── */}
-          <div className="mt-auto flex items-center gap-3">
-            {webinar.speaker.photo ? (
-              <div className="relative size-9 shrink-0 overflow-hidden rounded-full ring-2 ring-zinc-100">
-                <Image
-                  src={urlFor(webinar.speaker.photo).width(72).height(72).url()}
-                  alt={webinar.speaker.name}
-                  fill
-                  className="object-cover"
-                  sizes="36px"
-                />
+                <div className="min-w-0">
+                  <p className="truncate text-[14px] font-semibold text-zinc-900">
+                    {webinar.speaker.name}
+                  </p>
+                  <p className="truncate text-[12px] font-medium text-zinc-500">
+                    {webinar.speaker.designation}
+                  </p>
+                </div>
               </div>
-            ) : (
-              <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-zinc-100">
-                <User className="size-3.5 text-zinc-400" />
-              </div>
-            )}
 
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-sm font-medium text-zinc-800">
-                {webinar.speaker.name}
-              </p>
-              <p className="truncate text-[11px] text-zinc-400">
-                {webinar.speaker.designation}
-              </p>
+              <div className="shrink-0">
+                {isLive && webinar.meetingLink ? (
+                  <a
+                    href={webinar.meetingLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <motion.span
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#172556] px-4 text-[13px] font-semibold text-white shadow-sm transition-all hover:bg-[#1e3070] hover:shadow-md"
+                    >
+                      {upcoming ? "Register" : "Join"}
+                      <ArrowUpRight className="size-3.5" />
+                    </motion.span>
+                  </a>
+                ) : webinar.videoUrl ? (
+                  <Link href={`/resources/webinars/${webinar._id}`}>
+                    <motion.span
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#172556] px-4 text-[13px] font-semibold text-white shadow-sm transition-all hover:bg-[#1e3070] hover:shadow-md"
+                    >
+                      Watch
+                      <Play className="size-3 fill-current" />
+                    </motion.span>
+                  </Link>
+                ) : null}
+              </div>
             </div>
-
-            {isLive && webinar.meetingLink ? (
-              <a
-                href={webinar.meetingLink}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <motion.span
-                  whileHover={{ scale: 1.03 }}
-                  whileTap={{ scale: 0.97 }}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#172556] px-4 py-2 text-xs font-semibold text-white shadow-[0_4px_12px_-4px_rgba(23,37,86,0.35)] hover:bg-[#1e3070]"
-                >
-                  {upcoming ? "Register" : "Join"}
-                  <ArrowUpRight className="size-3" />
-                </motion.span>
-              </a>
-            ) : webinar.videoUrl ? (
-              <motion.button
-                onClick={() => onWatch(webinar)}
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#172556] px-4 py-2 text-xs font-semibold text-white shadow-[0_4px_12px_-4px_rgba(23,37,86,0.35)] hover:bg-[#1e3070]"
-              >
-                Watch
-                <Play className="size-3 fill-current" />
-              </motion.button>
-            ) : null}
           </div>
         </div>
       </div>

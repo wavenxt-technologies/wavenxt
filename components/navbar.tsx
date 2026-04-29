@@ -355,15 +355,14 @@ function NavbarContent({ pathname }: { pathname: string }) {
                       <AnimatePresence>
                         {activeDropdown === "resources" && (
                           <motion.div
-                            initial={{ opacity: 0, y: 6 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 6 }}
-                            transition={{ duration: 0.18, ease }}
-                            className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-3"
+                            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                            transition={{ duration: 0.2, ease }}
+                            className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4"
                           >
-                            <div className="w-[480px] overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[0_20px_60px_-16px_rgba(0,0,0,0.15)]">
-                              {/* Main resource links */}
-                              <div className="grid grid-cols-2 gap-0 divide-x divide-zinc-100">
+                            <div className="w-[420px] overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-2 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.18)]">
+                              <div className="flex flex-col gap-1">
                                 {resourceItems.map((item) => {
                                   const Icon = item.icon;
                                   return (
@@ -371,19 +370,19 @@ function NavbarContent({ pathname }: { pathname: string }) {
                                       key={item.href}
                                       href={item.href}
                                       onClick={() => setActiveDropdown(null)}
-                                      className="group flex flex-col gap-4 p-5 transition-all duration-200 hover:bg-zinc-50/80 first:rounded-tl-2xl last:rounded-tr-2xl"
+                                      className="group relative flex items-start gap-4 rounded-xl p-3.5 transition-all duration-200 hover:bg-zinc-50"
                                     >
-                                      <span className="flex size-11 items-center justify-center rounded-xl bg-[#172556]/[0.06] text-[#172556] ring-1 ring-zinc-100 transition-all duration-200 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556] group-hover:shadow-lg group-hover:shadow-[#172556]/20">
+                                      <div className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-lg bg-zinc-100/80 text-zinc-600 transition-all duration-200 group-hover:bg-white group-hover:text-[#172556] group-hover:shadow-sm ring-1 ring-zinc-200/50 group-hover:ring-black/5">
                                         <Icon className="size-5" />
-                                      </span>
-                                      <div>
+                                      </div>
+                                      <div className="flex flex-col">
                                         <div className="flex items-center gap-1.5">
                                           <p className="text-[15px] font-semibold text-zinc-900 transition-colors group-hover:text-[#172556]">
                                             {item.name}
                                           </p>
-                                          <ArrowUpRight className="size-3.5 text-zinc-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#172556]" />
+                                          <ArrowUpRight className="size-3.5 opacity-0 -translate-x-1 translate-y-1 text-[#172556] transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0" />
                                         </div>
-                                        <p className="mt-1.5 text-[12px] leading-relaxed text-zinc-400">
+                                        <p className="mt-1 text-[13px] leading-relaxed text-zinc-500">
                                           {item.desc}
                                         </p>
                                       </div>
@@ -392,24 +391,24 @@ function NavbarContent({ pathname }: { pathname: string }) {
                                 })}
                               </div>
 
-                              {/* Bottom accent strip */}
-                              <div className="bg-[#172556] px-5 py-4 flex items-center justify-between">
-                                <div>
-                                  <p className="text-[11px] font-semibold uppercase tracking-widest text-blue-200/60">
-                                    Stay Updated
-                                  </p>
-                                  <p className="mt-0.5 text-[13px] font-medium text-white/90">
-                                    Get the latest from our engineering team
-                                  </p>
+                              <div className="mt-2 rounded-xl bg-zinc-50 p-4 ring-1 ring-inset ring-zinc-900/5">
+                                <div className="flex items-center justify-between">
+                                  <div className="flex flex-col">
+                                    <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+                                      Need support?
+                                    </span>
+                                    <span className="mt-0.5 text-[13px] font-medium text-zinc-900">
+                                      Contact our engineering team
+                                    </span>
+                                  </div>
+                                  <Link
+                                    href="/contact"
+                                    onClick={() => setActiveDropdown(null)}
+                                    className="flex size-8 items-center justify-center rounded-full bg-white text-zinc-600 shadow-sm ring-1 ring-zinc-900/10 transition-all hover:bg-zinc-50 hover:text-[#172556]"
+                                  >
+                                    <ArrowRight className="size-4" />
+                                  </Link>
                                 </div>
-                                <Link
-                                  href="/contact"
-                                  onClick={() => setActiveDropdown(null)}
-                                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3.5 py-2 text-[12px] font-semibold text-white backdrop-blur-sm transition-all hover:bg-white/20 hover:border-white/25"
-                                >
-                                  Contact Us
-                                  <ArrowUpRight className="size-3" />
-                                </Link>
                               </div>
                             </div>
                           </motion.div>
