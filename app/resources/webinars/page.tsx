@@ -68,8 +68,13 @@ type WebinarFilter = "all" | "live" | "on-demand";
 
 /* ─── Query ─── */
 
-const WEBINARS_QUERY = `*[_type == "webinar"] | order(createdAt desc) {
-  _id, category, title, thumbnail, description, speaker,
+const WEBINARS_QUERY = `*[_type == "webinar" && (
+  (defined(startDateTime) && dateTime(now()) < dateTime(startDateTime)) ||
+  !defined(startDateTime)
+)] | order(createdAt desc) {
+  _id,
+  "category": select(defined(startDateTime) => "live", "on-demand"),
+  title, thumbnail, description, speaker,
   meetingLink, startDateTime, createdAt,
   "videoUrl": video.asset->url
 }`;
