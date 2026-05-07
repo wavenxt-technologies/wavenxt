@@ -1,11 +1,24 @@
 <!doctype html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>WaveNxt Webinar - Mastering RF Signal Control</title>
-  <!--[if mso]>
+<html
+  lang="en"
+  xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:v="urn:schemas-microsoft-com:vml"
+  xmlns:o="urn:schemas-microsoft-com:office:office"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>WaveNxt Webinar - Mastering RF Signal Control</title>
+    <!--[if gte mso 9]>
+      <xml>
+        <o:OfficeDocumentSettings>
+          <o:AllowPNG />
+          <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+      </xml>
+    <![endif]-->
+    <!--[if mso]>
       <style type="text/css">
         table {
           border-collapse: collapse;
@@ -16,587 +29,1253 @@
         td,
         p,
         div,
-        span {
+        span,
+        a,
+        h1,
+        h2,
+        h3 {
           font-family: Arial, Helvetica, sans-serif !important;
+        }
+        .badge-td {
+          width: 28px !important;
+          height: 28px !important;
+          font-size: 12px !important;
+        }
+        .avatar-td {
+          width: 80px !important;
+          height: 80px !important;
         }
       </style>
     <![endif]-->
-  <style type="text/css">
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #f1f5f9;
-      font-family: Arial, Helvetica, sans-serif;
-      -webkit-text-size-adjust: 100%;
-      -ms-text-size-adjust: 100%;
-    }
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 0;
+        background-color: #f1f5f9;
+        font-family: Arial, Helvetica, sans-serif;
+        -webkit-text-size-adjust: 100%;
+        -ms-text-size-adjust: 100%;
+        width: 100% !important;
+      }
+      table {
+        border-spacing: 0;
+        mso-table-lspace: 0pt;
+        mso-table-rspace: 0pt;
+      }
+      td {
+        padding: 0;
+      }
+      img {
+        border: 0;
+        display: block;
+        outline: none;
+        text-decoration: none;
+        -ms-interpolation-mode: bicubic;
+      }
+      a {
+        color: #2563eb;
+        text-decoration: none;
+      }
 
-    table {
-      border-spacing: 0;
-      mso-table-lspace: 0pt;
-      mso-table-rspace: 0pt;
-    }
+      @media only screen and (max-width: 620px) {
+        .email-wrapper {
+          width: 100% !important;
+        }
+        .email-body {
+          width: 100% !important;
+        }
+        .content-pad {
+          padding-left: 20px !important;
+          padding-right: 20px !important;
+        }
+        .hero-pad {
+          padding: 40px 20px 50px 20px !important;
+        }
+        .hero-title {
+          font-size: 28px !important;
+          line-height: 1.2 !important;
+        }
+        .hero-sub {
+          font-size: 15px !important;
+        }
+        .detail-cell {
+          display: block !important;
+          width: 100% !important;
+        }
+        .detail-spacer {
+          display: block !important;
+          width: 100% !important;
+          height: 12px !important;
+          font-size: 1px !important;
+          line-height: 12px !important;
+        }
+        .footer-btn {
+          padding: 0 3px !important;
+        }
+        .footer-btn-inner {
+          padding: 8px 10px !important;
+        }
+        .speaker-avatar {
+          width: 60px !important;
+          height: 60px !important;
+          line-height: 60px !important;
+          font-size: 18px !important;
+        }
+        .speaker-info {
+          padding-left: 12px !important;
+        }
+        .hook-text {
+          font-size: 17px !important;
+        }
+        .takeaway-text {
+          font-size: 14px !important;
+        }
+      }
+    </style>
+  </head>
 
-    td {
-      padding: 0;
-    }
+  <body style="margin: 0; padding: 0; background-color: #f1f5f9">
+    <table
+      border="0"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="background-color: #f1f5f9"
+      role="presentation"
+    >
+      <tr>
+        <td align="center" style="padding: 20px 10px">
+          <!-- View in Browser -->
+          <table
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            width="600"
+            class="email-wrapper"
+            style="max-width: 600px; width: 100%"
+            role="presentation"
+          >
+            <tr>
+              <td
+                align="center"
+                style="padding-bottom: 15px; font-size: 11px; color: #64748b"
+              >
+                Having trouble viewing this email?
+                <a
+                  href="https://wavenxt.com/newsletter/pZSSLOt90gB.html"
+                  style="color: #2563eb; text-decoration: underline"
+                  >Click here to view it in your browser</a
+                >
+              </td>
+            </tr>
+          </table>
 
-    img {
-      border: 0;
-      display: block;
-      outline: none;
-      text-decoration: none;
-    }
-
-    a {
-      color: #2563eb;
-      text-decoration: none;
-    }
-  </style>
-</head>
-
-<body style="margin: 0; padding: 0; background-color: #f1f5f9">
-  <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f1f5f9; padding: 0 0">
-    <tr>
-      <td align="center" style="padding: 20px 0">
-        <!-- View in Browser -->
-        <div style="
-              max-width: 700px;
-              margin: 0 auto;
-              padding-bottom: 15px;
-              text-align: center;
-              font-size: 11px;
-              color: #64748b;
-            ">
-          Having trouble viewing this email?
-          <a href="https://wavenxt.com/newsletter/pZSSLOt90gB.html" style="color: #2563eb; text-decoration: underline">Click here to view it in your browser</a>
-        </div>
-
-        <!--[if (gte mso 9)|(IE)]>
-                <table align="center" border="0" cellspacing="0" cellpadding="0" width="600">
-                <tr>
-                <td align="center" valign="top" width="600">
-                <![endif]-->
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="
-              max-width: 700px;
+          <!--[if (gte mso 9)|(IE)]>
+        <table align="center" border="0" cellspacing="0" cellpadding="0" width="600" role="presentation">
+        <tr>
+        <td align="center" valign="top" width="600">
+        <![endif]-->
+          <table
+            border="0"
+            cellpadding="0"
+            cellspacing="0"
+            width="600"
+            class="email-body"
+            style="
+              max-width: 600px;
+              width: 100%;
               background-color: #ffffff;
               border: 1px solid #e2e8f0;
               border-top: 6px solid #2563eb;
-            ">
-          <!-- Top Bar -->
-          <tr>
-            <td align="center" style="padding: 35px 40px 25px 40px">
-              <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <tr>
-                  <td align="left">
-                    <img src="https://stratus.campaign-image.in/images/logozcv232955000000021503_zc_v1_329550000000214035.png" alt="WaveNxt" width="140" style="
+            "
+            role="presentation"
+          >
+            <!-- Top Bar -->
+            <tr>
+              <td
+                align="center"
+                class="content-pad"
+                style="padding: 35px 40px 25px 40px"
+              >
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  role="presentation"
+                >
+                  <tr>
+                    <td align="left" width="50%">
+                      <img
+                        src="https://stratus.campaign-image.in/images/logozcv232955000000021503_zc_v1_329550000000214035.png"
+                        alt="WaveNxt"
+                        width="140"
+                        style="
                           display: block;
                           border: 0;
                           outline: none;
-                          text-decoration: none;
-                          max-width: 100%;
-                        " />
-                  </td>
-                  <td align="right" style="
+                          max-width: 140px;
+                        "
+                      />
+                    </td>
+                    <td
+                      align="right"
+                      width="50%"
+                      style="
                         font-size: 11px;
                         font-weight: bold;
                         color: #94a3b8;
                         letter-spacing: 2px;
-                      ">
-                    WEBINAR INVITATION
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+                      "
+                    >
+                      WEBINAR INVITATION
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
 
-          <!-- Hero Section -->
-          <tr>
-            <td align="center" style="padding: 65px 40px 75px 40px; background-color: #0f172a">
-              <!-- Premium Pill for Category -->
-              <table border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 30px">
-                <tr>
-                  <td align="center" style="
+            <!-- Hero Section -->
+            <tr>
+              <td
+                align="center"
+                class="hero-pad"
+                style="padding: 65px 40px 75px 40px; background-color: #0f172a"
+              >
+                <!-- Live Masterclass Pill -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="margin-bottom: 30px"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      style="
                         border: 1px solid #334155;
                         padding: 8px 18px;
                         background-color: #020617;
-                      ">
-                    <div style="
+                      "
+                    >
+                      <span
+                        style="
                           font-size: 11px;
                           color: #94a3b8;
                           font-weight: bold;
                           letter-spacing: 3px;
                           text-transform: uppercase;
-                        ">
-                      <span style="color: #ef4444; margin-right: 5px">&#9679;</span>
-                      Live Masterclass
-                    </div>
-                  </td>
-                </tr>
-              </table>
+                        "
+                      >
+                        <span style="color: #ef4444; margin-right: 5px"
+                          >&#9679;</span
+                        >
+                        Live Masterclass
+                      </span>
+                    </td>
+                  </tr>
+                </table>
 
-              <h1 style="
+                <h1
+                  class="hero-title"
+                  style="
                     margin: 0 0 20px 0;
-                    font-size: 44px;
+                    font-size: 40px;
                     color: #f8fafc;
                     font-weight: normal;
                     line-height: 1.15;
                     letter-spacing: -1px;
-                  ">
-                Mastering Precision in<br />
-                <strong style="color: #ffffff">RF Signal Control</strong>
-              </h1>
+                  "
+                >
+                  Precision RF Signal Management with <br />
+                  <strong style="color: #ffffff"
+                    >Digital Attenuation Techniques</strong
+                  >
+                </h1>
 
-              <p style="
+                <p
+                  class="hero-sub"
+                  style="
                     margin: 0 0 45px 0;
                     font-size: 18px;
                     color: #94a3b8;
                     line-height: 1.5;
                     font-weight: normal;
-                  ">
-                Discover how advanced digital attenuators optimize your RF
-                workflow.
-              </p>
+                  "
+                >
+                  Discover how advanced digital attenuators optimize your RF
+                  workflow.
+                </p>
 
-              <!-- Premium Button -->
-              <table border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td align="center" style="
+                <!-- CTA Button -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      style="
                         background-color: #2563eb;
                         border: 1px solid #3b82f6;
                         border-bottom: 3px solid #1d4ed8;
                         padding: 18px 45px;
-                      ">
-                    <a href="https://meet.zoho.in/aiuc-vvd-upu" style="
+                      "
+                    >
+                      <a
+                        href="https://meet.zoho.in/aiuc-vvd-upu"
+                        style="
                           font-size: 14px;
                           color: #ffffff;
                           text-decoration: none;
                           font-weight: bold;
                           letter-spacing: 2px;
-                        ">RESERVE YOUR SPOT</a>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
+                        "
+                        >RESERVE YOUR SPOT</a
+                      >
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
 
-          <!-- Info & Details Container -->
-          <tr>
-            <td align="center" style="padding: 50px 40px 30px 40px; background-color: #ffffff">
-              <!-- The Hook -->
-              <p style="
+            <!-- Info & Details -->
+            <tr>
+              <td
+                align="center"
+                class="content-pad"
+                style="padding: 50px 40px 30px 40px; background-color: #ffffff"
+              >
+                <!-- Hook -->
+                <p
+                  class="hook-text"
+                  style="
                     margin: 0 0 35px 0;
                     font-size: 20px;
                     color: #1e293b;
                     line-height: 1.5;
                     font-weight: normal;
-                  ">
-                In the world of RF testing, precision is non-negotiable. Join
-                us for a deep dive into the critical role of signal control,
-                where we'll explore how even microscopic variations impact
-                system reliability.
-              </p>
+                  "
+                >
+                  In the world of RF testing, precision is non-negotiable. Join
+                  us for a deep dive into the critical role of signal control,
+                  where we'll explore how even microscopic variations impact
+                  system reliability.
+                </p>
 
-              <!-- Event Details Grid -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 45px">
-                <tr>
-                  <td width="48%" align="center" valign="top" style="
+                <!-- Event Details Grid -->
+                <!--[if (gte mso 9)|(IE)]>
+              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom:45px;" role="presentation">
+              <tr>
+                <td width="262" valign="top">
+              <![endif]-->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="margin-bottom: 45px"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      class="detail-cell"
+                      width="48%"
+                      align="center"
+                      valign="top"
+                      style="
                         padding: 25px 15px;
                         background-color: #f8fafc;
                         border-top: 3px solid #0f172a;
                         border-bottom: 1px solid #e2e8f0;
                         border-left: 1px solid #e2e8f0;
                         border-right: 1px solid #e2e8f0;
-                      ">
-                    <div style="
-                          font-size: 10px;
-                          color: #64748b;
-                          font-weight: bold;
-                          letter-spacing: 2px;
-                          margin-bottom: 12px;
-                          text-transform: uppercase;
-                        ">
-                      Date
-                    </div>
-                    <div style="
-                          font-size: 22px;
-                          color: #0f172a;
-                          font-weight: bold;
-                          letter-spacing: -0.5px;
-                        ">
-                      14th May 2026
-                    </div>
-                    <div style="
-                          font-size: 14px;
-                          color: #475569;
-                          margin-top: 4px;
-                          font-weight: bold;
-                        ">
-                      Thursday
-                    </div>
+                      "
+                    >
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              font-size: 10px;
+                              color: #64748b;
+                              font-weight: bold;
+                              letter-spacing: 2px;
+                              text-transform: uppercase;
+                              padding-bottom: 12px;
+                            "
+                          >
+                            Date
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              font-size: 22px;
+                              color: #0f172a;
+                              font-weight: bold;
+                              letter-spacing: -0.5px;
+                            "
+                          >
+                            14th May 2026
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              font-size: 14px;
+                              color: #475569;
+                              padding-top: 4px;
+                              font-weight: bold;
+                            "
+                          >
+                            Thursday
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <!--[if (gte mso 9)|(IE)]>
                   </td>
-                  <td width="4%" style="font-size: 1px; line-height: 1px">
-                    &nbsp;
-                  </td>
-                  <td width="48%" align="center" valign="top" style="
+                  <td width="16">&nbsp;</td>
+                  <td width="262" valign="top">
+                  <![endif]-->
+                    <td
+                      class="detail-spacer"
+                      width="4%"
+                      style="font-size: 1px; line-height: 1px"
+                    >
+                      &nbsp;
+                    </td>
+                    <td
+                      class="detail-cell"
+                      width="48%"
+                      align="center"
+                      valign="top"
+                      style="
                         padding: 25px 15px;
                         background-color: #f8fafc;
                         border-top: 3px solid #2563eb;
                         border-bottom: 1px solid #e2e8f0;
                         border-left: 1px solid #e2e8f0;
                         border-right: 1px solid #e2e8f0;
-                      ">
-                    <div style="
-                          font-size: 10px;
-                          color: #64748b;
-                          font-weight: bold;
-                          letter-spacing: 2px;
-                          margin-bottom: 12px;
-                          text-transform: uppercase;
-                        ">
-                      Time
-                    </div>
-                    <div style="
-                          font-size: 22px;
-                          color: #0f172a;
-                          font-weight: bold;
-                          letter-spacing: -0.5px;
-                        ">
-                      10:00 AM PST
-                    </div>
-                    <div style="
-                          font-size: 14px;
-                          color: #475569;
-                          margin-top: 4px;
-                          font-weight: bold;
-                        ">
-                      45 minutes
-                    </div>
+                      "
+                    >
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              font-size: 10px;
+                              color: #64748b;
+                              font-weight: bold;
+                              letter-spacing: 2px;
+                              text-transform: uppercase;
+                              padding-bottom: 12px;
+                            "
+                          >
+                            Time
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              font-size: 22px;
+                              color: #0f172a;
+                              font-weight: bold;
+                              letter-spacing: -0.5px;
+                            "
+                          >
+                            10:00 AM PST
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            align="center"
+                            style="
+                              font-size: 14px;
+                              color: #475569;
+                              padding-top: 4px;
+                              font-weight: bold;
+                            "
+                          >
+                            45 minutes
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <!--[if (gte mso 9)|(IE)]>
                   </td>
-                </tr>
-              </table>
+                  </tr>
+                  </table>
+                  <![endif]-->
+                  </tr>
+                </table>
 
-              <!-- What You'll Learn -->
-              <h3 style="
-                    margin: 0 0 25px 0;
-                    font-size: 14px;
-                    color: #64748b;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                  ">
-                Key Takeaways
-              </h3>
+                <!-- Key Takeaways -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      align="left"
+                      style="
+                        font-size: 14px;
+                        color: #64748b;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                        padding-bottom: 25px;
+                      "
+                    >
+                      Key Takeaways
+                    </td>
+                  </tr>
+                </table>
 
-              <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                <tr>
-                  <td style="padding-bottom: 15px">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="
-                          background-color: #f8fafc;
-                          border: 1px solid #e2e8f0;
-                          border-left: 4px solid #2563eb;
-                        ">
-                      <tr>
-                        <td width="55" align="center" valign="middle" style="padding: 18px 0 18px 18px">
-                          <table border="0" cellpadding="0" cellspacing="0">
-                            <tr>
-                              <td width="28" height="28" align="center" valign="middle" style="
-                                    background-color: #2563eb;
-                                    color: #ffffff;
-                                    font-size: 12px;
-                                    font-weight: bold;
-                                  ">
-                                01
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                        <td style="
-                              padding: 18px;
-                              font-size: 16px;
-                              color: #1e293b;
-                              line-height: 1.5;
-                            ">
-                          The core principles and operation of modern digital
-                          attenuators in complex test setups.
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding-bottom: 15px">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="
-                          background-color: #f8fafc;
-                          border: 1px solid #e2e8f0;
-                          border-left: 4px solid #2563eb;
-                        ">
-                      <tr>
-                        <td width="55" align="center" valign="middle" style="padding: 18px 0 18px 18px">
-                          <table border="0" cellpadding="0" cellspacing="0">
-                            <tr>
-                              <td width="28" height="28" align="center" valign="middle" style="
-                                    background-color: #2563eb;
-                                    color: #ffffff;
-                                    font-size: 12px;
-                                    font-weight: bold;
-                                  ">
-                                02
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                        <td style="
-                              padding: 18px;
-                              font-size: 16px;
-                              color: #1e293b;
-                              line-height: 1.5;
-                            ">
-                          Proven methods to dramatically enhance measurement
-                          reliability and confidence in your RF workflows.
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding-bottom: 15px">
-                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="
-                          background-color: #f8fafc;
-                          border: 1px solid #e2e8f0;
-                          border-left: 4px solid #2563eb;
-                        ">
-                      <tr>
-                        <td width="55" align="center" valign="middle" style="padding: 18px 0 18px 18px">
-                          <table border="0" cellpadding="0" cellspacing="0">
-                            <tr>
-                              <td width="28" height="28" align="center" valign="middle" style="
-                                    background-color: #2563eb;
-                                    color: #ffffff;
-                                    font-size: 12px;
-                                    font-weight: bold;
-                                  ">
-                                03
-                              </td>
-                            </tr>
-                          </table>
-                        </td>
-                        <td style="
-                              padding: 18px;
-                              font-size: 16px;
-                              color: #1e293b;
-                              line-height: 1.5;
-                            ">
-                          Identifying and optimizing the crucial performance
-                          factors that ultimately define true RF accuracy.
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Divider -->
-          <tr>
-            <td align="center" style="padding: 0 40px">
-              <div style="
-                    height: 1px;
-                    background-color: #e2e8f0;
-                    line-height: 1px;
-                    font-size: 1px;
-                  ">
-                &nbsp;
-              </div>
-            </td>
-          </tr>
-
-          <!-- Speaker Section -->
-          <tr>
-            <td align="left" style="padding: 40px">
-              <h3 style="
-                    margin: 0 0 25px 0;
-                    font-size: 14px;
-                    color: #64748b;
-                    font-weight: bold;
-                    text-transform: uppercase;
-                    letter-spacing: 2px;
-                  ">
-                Featured Speaker
-              </h3>
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #ffffff">
-                <tr>
-                  <td width="100" valign="top">
-                    <div style="
-                          width: 80px;
-                          height: 80px;
-                          background-color: #f8fafc;
-                          border: 1px solid #e2e8f0;
-                          text-align: center;
-                          line-height: 80px;
-                          color: #0f172a;
-                          font-size: 24px;
-                          font-weight: normal;
-                          letter-spacing: 1px;
-                        ">
-                      CV
-                    </div>
-                  </td>
-                  <td valign="top" style="padding-left: 20px">
-                    <div style="
-                          font-size: 22px;
-                          font-weight: bold;
-                          margin-bottom: 4px;
-                        ">
-                      <a href="https://www.linkedin.com/in/vishwanathan-chaithra-479570146/" style="color: #0f172a; text-decoration: none">Chaithra V.</a>
-                    </div>
-                    <div style="
-                          font-size: 14px;
-                          color: #2563eb;
-                          font-weight: bold;
-                          margin-bottom: 12px;
-                          letter-spacing: 0.5px;
-                        ">
-                      Technical Head
-                    </div>
-                    <div style="
-                          font-size: 15px;
-                          color: #475569;
-                          line-height: 1.6;
-                        ">
-                      Chaithra is a seasoned expert in hardware engineering
-                      and RF systems. She has successfully led numerous teams
-                      in overcoming complex measurement hurdles and
-                      streamlining testing protocols.
-                    </div>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <!-- Footer -->
-          <tr>
-            <td align="center" style="
-                  padding: 60px 40px;
-                  background-color: #f8fafc;
-                  border-top: 1px solid #e2e8f0;
-                ">
-              <!-- Footer Logo -->
-              <div style="padding-bottom: 20px">
-                <img src="https://stratus.campaign-image.in/images/wavenxtlogodarksinglecolo_zc_v1_329550000000136403.png" alt="WaveNxt Logo" width="110" style="
-                      display: inline-block;
-                      border: 0;
-                      vertical-align: middle;
-                    " />
-              </div>
-
-              <!-- Address Info -->
-              <div style="
-                    font-size: 13px;
-                    color: #64748b;
-                    line-height: 1.6;
-                    padding-bottom: 20px;
-                  ">
-                <strong style="color: #334155">WaveNxt Technologies Pvt. Ltd.</strong><br />
-                Bangalore, Karnataka, India 560092
-              </div>
-
-              <!-- Footer Links (Pill Buttons) -->
-              <table border="0" cellpadding="0" cellspacing="0" style="margin-bottom: 35px">
-                <tr>
-                  <td align="center" style="padding: 0 6px">
-                    <table border="0" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" style="
-                              border: 1px solid #cbd5e1;
-                              background-color: #ffffff;
-                              padding: 10px 20px;
-                            ">
-                          <a href="https://wavenxt.com" style="
-                                font-size: 11px;
-                                color: #475569;
+                <!-- Takeaway 1 -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="
+                    margin-bottom: 15px;
+                    background-color: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-left: 4px solid #2563eb;
+                  "
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      width="55"
+                      align="center"
+                      valign="middle"
+                      style="padding: 18px 0 18px 18px"
+                    >
+                      <!--[if mso]>
+                        <table
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          role="presentation"
+                        >
+                          <tr>
+                            <td
+                              width="28"
+                              height="28"
+                              align="center"
+                              valign="middle"
+                              bgcolor="#2563eb"
+                              style="
+                                width: 28px;
+                                height: 28px;
+                                background-color: #2563eb;
+                                color: #ffffff;
+                                font-size: 12px;
                                 font-weight: bold;
-                                letter-spacing: 1.5px;
-                                text-transform: uppercase;
-                                text-decoration: none;
-                              ">WEBSITE</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                  <td align="center" style="padding: 0 6px">
-                    <table border="0" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" style="
-                              border: 1px solid #cbd5e1;
-                              background-color: #ffffff;
-                              padding: 10px 20px;
-                            ">
-                          <a href="https://wavenxt.com/contact" style="
-                                font-size: 11px;
-                                color: #475569;
-                                font-weight: bold;
-                                letter-spacing: 1.5px;
-                                text-transform: uppercase;
-                                text-decoration: none;
-                              ">CONTACT</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                  <td align="center" style="padding: 0 6px">
-                    <table border="0" cellpadding="0" cellspacing="0">
-                      <tr>
-                        <td align="center" style="
-                              border: 1px solid #cbd5e1;
-                              background-color: #ffffff;
-                              padding: 10px 20px;
-                            ">
-                          <a href="https://www.linkedin.com/company/wavenxttechnologies/" style="
-                                font-size: 11px;
-                                color: #475569;
-                                font-weight: bold;
-                                letter-spacing: 1.5px;
-                                text-transform: uppercase;
-                                text-decoration: none;
-                              ">LINKEDIN</a>
-                        </td>
-                      </tr>
-                    </table>
-                  </td>
-                </tr>
-              </table>
+                                text-align: center;
+                                line-height: 28px;
+                              "
+                            >
+                              01
+                            </td>
+                          </tr>
+                        </table>
+                      <![endif]-->
+                      <!--[if !mso]><!-->
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            width="28"
+                            height="28"
+                            align="center"
+                            valign="middle"
+                            style="
+                              width: 28px;
+                              height: 28px;
+                              background-color: #2563eb;
+                              color: #ffffff;
+                              font-size: 12px;
+                              font-weight: bold;
+                              text-align: center;
+                              line-height: 28px;
+                            "
+                          >
+                            01
+                          </td>
+                        </tr>
+                      </table>
+                      <!--<![endif]-->
+                    </td>
+                    <td
+                      class="takeaway-text"
+                      style="
+                        padding: 18px;
+                        font-size: 16px;
+                        color: #1e293b;
+                        line-height: 1.5;
+                      "
+                    >
+                      The core principles and operation of modern digital
+                      attenuators in complex test setups.
+                    </td>
+                  </tr>
+                </table>
 
-              <!-- Divider -->
-              <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin: 30px 0">
-                <tr>
-                  <td style="
+                <!-- Takeaway 2 -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="
+                    margin-bottom: 15px;
+                    background-color: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-left: 4px solid #2563eb;
+                  "
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      width="55"
+                      align="center"
+                      valign="middle"
+                      style="padding: 18px 0 18px 18px"
+                    >
+                      <!--[if mso]>
+                        <table
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          role="presentation"
+                        >
+                          <tr>
+                            <td
+                              width="28"
+                              height="28"
+                              align="center"
+                              valign="middle"
+                              bgcolor="#2563eb"
+                              style="
+                                width: 28px;
+                                height: 28px;
+                                background-color: #2563eb;
+                                color: #ffffff;
+                                font-size: 12px;
+                                font-weight: bold;
+                                text-align: center;
+                                line-height: 28px;
+                              "
+                            >
+                              02
+                            </td>
+                          </tr>
+                        </table>
+                      <![endif]-->
+                      <!--[if !mso]><!-->
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            width="28"
+                            height="28"
+                            align="center"
+                            valign="middle"
+                            style="
+                              width: 28px;
+                              height: 28px;
+                              background-color: #2563eb;
+                              color: #ffffff;
+                              font-size: 12px;
+                              font-weight: bold;
+                              text-align: center;
+                              line-height: 28px;
+                            "
+                          >
+                            02
+                          </td>
+                        </tr>
+                      </table>
+                      <!--<![endif]-->
+                    </td>
+                    <td
+                      class="takeaway-text"
+                      style="
+                        padding: 18px;
+                        font-size: 16px;
+                        color: #1e293b;
+                        line-height: 1.5;
+                      "
+                    >
+                      Proven methods to dramatically enhance measurement
+                      reliability and confidence in your RF workflows.
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Takeaway 3 -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="
+                    margin-bottom: 15px;
+                    background-color: #f8fafc;
+                    border: 1px solid #e2e8f0;
+                    border-left: 4px solid #2563eb;
+                  "
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      width="55"
+                      align="center"
+                      valign="middle"
+                      style="padding: 18px 0 18px 18px"
+                    >
+                      <!--[if mso]>
+                        <table
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          role="presentation"
+                        >
+                          <tr>
+                            <td
+                              width="28"
+                              height="28"
+                              align="center"
+                              valign="middle"
+                              bgcolor="#2563eb"
+                              style="
+                                width: 28px;
+                                height: 28px;
+                                background-color: #2563eb;
+                                color: #ffffff;
+                                font-size: 12px;
+                                font-weight: bold;
+                                text-align: center;
+                                line-height: 28px;
+                              "
+                            >
+                              03
+                            </td>
+                          </tr>
+                        </table>
+                      <![endif]-->
+                      <!--[if !mso]><!-->
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            width="28"
+                            height="28"
+                            align="center"
+                            valign="middle"
+                            style="
+                              width: 28px;
+                              height: 28px;
+                              background-color: #2563eb;
+                              color: #ffffff;
+                              font-size: 12px;
+                              font-weight: bold;
+                              text-align: center;
+                              line-height: 28px;
+                            "
+                          >
+                            03
+                          </td>
+                        </tr>
+                      </table>
+                      <!--<![endif]-->
+                    </td>
+                    <td
+                      class="takeaway-text"
+                      style="
+                        padding: 18px;
+                        font-size: 16px;
+                        color: #1e293b;
+                        line-height: 1.5;
+                      "
+                    >
+                      Identifying and optimizing the crucial performance factors
+                      that ultimately define true RF accuracy.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Divider -->
+            <tr>
+              <td align="center" class="content-pad" style="padding: 0 40px">
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      style="
                         border-top: 1px solid #e2e8f0;
                         font-size: 1px;
                         line-height: 1px;
-                      ">
-                    &nbsp;
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Copyright -->
-              <div style="font-size: 11px; color: #94a3b8">
-                &copy; 2026 WaveNxt Technologies. All rights reserved.
-              </div>
-            </td>
-          </tr>
-        </table>
-        <!--[if (gte mso 9)|(IE)]>
-                </td>
-                </tr>
+                        height: 1px;
+                      "
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
                 </table>
-                <![endif]-->
-      </td>
-    </tr>
-  </table>
-</body>
+              </td>
+            </tr>
 
+            <!-- Speaker Section -->
+            <tr>
+              <td align="left" class="content-pad" style="padding: 40px">
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      align="left"
+                      style="
+                        font-size: 14px;
+                        color: #64748b;
+                        font-weight: bold;
+                        text-transform: uppercase;
+                        letter-spacing: 2px;
+                        padding-bottom: 25px;
+                      "
+                    >
+                      Featured Speaker
+                    </td>
+                  </tr>
+                </table>
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="background-color: #ffffff"
+                  role="presentation"
+                >
+                  <tr>
+                    <td width="100" valign="top">
+                      <!--[if mso]>
+                        <table
+                          border="0"
+                          cellpadding="0"
+                          cellspacing="0"
+                          role="presentation"
+                        >
+                          <tr>
+                            <td
+                              width="80"
+                              height="80"
+                              align="center"
+                              valign="middle"
+                              bgcolor="#f8fafc"
+                              style="
+                                width: 80px;
+                                height: 80px;
+                                background-color: #f8fafc;
+                                border: 1px solid #e2e8f0;
+                                text-align: center;
+                                color: #0f172a;
+                                font-size: 24px;
+                                font-weight: normal;
+                                letter-spacing: 1px;
+                                line-height: 80px;
+                              "
+                            >
+                              CV
+                            </td>
+                          </tr>
+                        </table>
+                      <![endif]-->
+                      <!--[if !mso]><!-->
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            class="speaker-avatar"
+                            width="80"
+                            height="80"
+                            align="center"
+                            valign="middle"
+                            style="
+                              width: 80px;
+                              height: 80px;
+                              background-color: #f8fafc;
+                              border: 1px solid #e2e8f0;
+                              text-align: center;
+                              color: #0f172a;
+                              font-size: 24px;
+                              font-weight: normal;
+                              letter-spacing: 1px;
+                              line-height: 80px;
+                            "
+                          >
+                            CV
+                          </td>
+                        </tr>
+                      </table>
+                      <!--<![endif]-->
+                    </td>
+                    <td
+                      valign="top"
+                      class="speaker-info"
+                      style="padding-left: 20px"
+                    >
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            style="
+                              font-size: 22px;
+                              font-weight: bold;
+                              padding-bottom: 4px;
+                            "
+                          >
+                            <a
+                              href="https://www.linkedin.com/in/vishwanathan-chaithra-479570146/"
+                              style="color: #0f172a; text-decoration: none"
+                              >Chaithra V.</a
+                            >
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 14px;
+                              color: #2563eb;
+                              font-weight: bold;
+                              letter-spacing: 0.5px;
+                              padding-bottom: 12px;
+                            "
+                          >
+                            Technical Head
+                          </td>
+                        </tr>
+                        <tr>
+                          <td
+                            style="
+                              font-size: 15px;
+                              color: #475569;
+                              line-height: 1.6;
+                            "
+                          >
+                            Chaithra is a seasoned expert in hardware
+                            engineering and RF systems. She has successfully led
+                            numerous teams in overcoming complex measurement
+                            hurdles and streamlining testing protocols.
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td
+                align="center"
+                class="content-pad"
+                style="
+                  padding: 60px 40px;
+                  background-color: #f8fafc;
+                  border-top: 1px solid #e2e8f0;
+                "
+              >
+                <!-- Footer Logo -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  role="presentation"
+                >
+                  <tr>
+                    <td align="center" style="padding-bottom: 20px">
+                      <img
+                        src="https://stratus.campaign-image.in/images/wavenxtlogodarksinglecolo_zc_v1_329550000000136403.png"
+                        alt="WaveNxt Logo"
+                        width="110"
+                        style="display: block; border: 0"
+                      />
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Address -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      align="center"
+                      style="
+                        font-size: 13px;
+                        color: #64748b;
+                        line-height: 1.6;
+                        padding-bottom: 20px;
+                      "
+                    >
+                      <strong style="color: #334155"
+                        >WaveNxt Technologies Pvt. Ltd.</strong
+                      ><br />
+                      Bangalore, Karnataka, India 560092
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Footer Links -->
+                <!--[if (gte mso 9)|(IE)]>
+              <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:35px;">
+              <tr>
+              <td align="center" valign="top" style="padding:0 6px;">
+              <![endif]-->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  style="margin-bottom: 35px"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      class="footer-btn"
+                      align="center"
+                      style="padding: 0 6px"
+                    >
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            class="footer-btn-inner"
+                            align="center"
+                            style="
+                              border: 1px solid #cbd5e1;
+                              background-color: #ffffff;
+                              padding: 10px 20px;
+                            "
+                          >
+                            <a
+                              href="https://wavenxt.com"
+                              style="
+                                font-size: 11px;
+                                color: #475569;
+                                font-weight: bold;
+                                letter-spacing: 1.5px;
+                                text-transform: uppercase;
+                                text-decoration: none;
+                              "
+                              >WEBSITE</a
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <!--[if (gte mso 9)|(IE)]>
+                  </td>
+                  <td align="center" valign="top" style="padding:0 6px;">
+                  <![endif]-->
+                    <td
+                      class="footer-btn"
+                      align="center"
+                      style="padding: 0 6px"
+                    >
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            class="footer-btn-inner"
+                            align="center"
+                            style="
+                              border: 1px solid #cbd5e1;
+                              background-color: #ffffff;
+                              padding: 10px 20px;
+                            "
+                          >
+                            <a
+                              href="https://wavenxt.com/contact"
+                              style="
+                                font-size: 11px;
+                                color: #475569;
+                                font-weight: bold;
+                                letter-spacing: 1.5px;
+                                text-transform: uppercase;
+                                text-decoration: none;
+                              "
+                              >CONTACT</a
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                    <!--[if (gte mso 9)|(IE)]>
+                  </td>
+                  <td align="center" valign="top" style="padding:0 6px;">
+                  <![endif]-->
+                    <td
+                      class="footer-btn"
+                      align="center"
+                      style="padding: 0 6px"
+                    >
+                      <table
+                        border="0"
+                        cellpadding="0"
+                        cellspacing="0"
+                        width="100%"
+                        role="presentation"
+                      >
+                        <tr>
+                          <td
+                            class="footer-btn-inner"
+                            align="center"
+                            style="
+                              border: 1px solid #cbd5e1;
+                              background-color: #ffffff;
+                              padding: 10px 20px;
+                            "
+                          >
+                            <a
+                              href="https://www.linkedin.com/company/wavenxttechnologies/"
+                              style="
+                                font-size: 11px;
+                                color: #475569;
+                                font-weight: bold;
+                                letter-spacing: 1.5px;
+                                text-transform: uppercase;
+                                text-decoration: none;
+                              "
+                              >LINKEDIN</a
+                            >
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+                <!--[if (gte mso 9)|(IE)]>
+              </td>
+              </tr>
+              </table>
+              <![endif]-->
+
+                <!-- Divider -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  width="100%"
+                  style="margin: 30px 0"
+                  role="presentation"
+                >
+                  <tr>
+                    <td
+                      style="
+                        border-top: 1px solid #e2e8f0;
+                        font-size: 1px;
+                        line-height: 1px;
+                      "
+                    >
+                      &nbsp;
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Copyright -->
+                <table
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                  role="presentation"
+                >
+                  <tr>
+                    <td align="center" style="font-size: 11px; color: #94a3b8">
+                      &copy; 2026 WaveNxt Technologies. All rights reserved.
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <!--[if (gte mso 9)|(IE)]>
+        </td>
+        </tr>
+        </table>
+        <![endif]-->
+        </td>
+      </tr>
+    </table>
+  </body>
 </html>
