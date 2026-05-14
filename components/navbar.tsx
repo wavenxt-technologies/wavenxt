@@ -631,10 +631,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
 
             <div className="relative z-10 flex items-center gap-4">
               <button
-                className={cn(
-                  "md:hidden p-2 -mr-2 transition-colors duration-300",
-                  isTransparent ? "text-white" : "text-zinc-900",
-                )}
+                className="md:hidden p-2 -mr-2 text-zinc-900 transition-colors duration-300"
                 onClick={() => setMobileMenuOpen(true)}
                 aria-label="Open mobile menu"
               >
