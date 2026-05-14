@@ -1,16 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, Mona_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Manrope, Mona_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import JsonLd from "@/components/json-ld";
-import {
-  createOrganizationJsonLd,
-  createWebSiteJsonLd,
-} from "@/lib/seo";
+import { createOrganizationJsonLd, createWebSiteJsonLd } from "@/lib/seo";
 import { getSiteUrl, siteConfig } from "@/lib/site";
 
-const geistSans = Geist({
+const geistSans = Manrope({
   variable: "--font-geist-sans",
   subsets: ["latin"],
 });
@@ -20,7 +17,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const mona = Mona_Sans({
+const mona = Manrope({
   variable: "--font-heading",
   subsets: ["latin"],
   display: "swap",

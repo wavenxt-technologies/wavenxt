@@ -6,7 +6,6 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import {
   ArrowUpRight,
-  ArrowRight,
   Video,
   Calendar,
   Clock,
@@ -16,6 +15,7 @@ import {
   RefreshCw,
   Radio,
   X,
+  Mail,
 } from "lucide-react";
 import { client, urlFor } from "@/lib/sanity";
 import { cn } from "@/lib/utils";
@@ -23,17 +23,15 @@ import { cn } from "@/lib/utils";
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 32 },
+  hidden: { opacity: 0, y: 24 },
   visible: (i: number) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.7, delay: i * 0.1, ease },
+    transition: { duration: 0.6, delay: i * 0.08, ease },
   }),
 };
 
-const stagger = {
-  visible: { transition: { staggerChildren: 0.1 } },
-};
+const stagger = { visible: { transition: { staggerChildren: 0.08 } } };
 
 const cardVariant = {
   hidden: { opacity: 0, y: 24 },
@@ -171,38 +169,127 @@ export default function WebinarsPage() {
   ).length;
 
   return (
-    <div className="min-h-screen bg-[#f7f7f5] text-zinc-900">
-      <HeroSection />
+    <main className="min-h-screen bg-[#f7f7f5] text-zinc-900">
+      {/* ── Header ── */}
+      <section className="relative overflow-hidden pb-12 pt-32 md:pb-16 md:pt-48">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute -right-32 -top-32 h-[480px] w-[480px] rounded-full bg-[#172556]/5 blur-3xl" />
+        </div>
 
-      <FilterBar
-        filter={filter}
-        setFilter={setFilter}
-        liveCount={liveCount}
-        onDemandCount={onDemandCount}
-        totalCount={webinars.length}
-        filteredCount={filtered.length}
-      />
+        <div className="relative mx-auto max-w-7xl px-6 md:px-10">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+            className="max-w-4xl"
+          >
+            <motion.div
+              variants={fadeUp}
+              custom={0}
+              className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-zinc-500"
+            >
+              <Link
+                href="/resources"
+                className="transition-colors hover:text-[#172556]"
+              >
+                Resources
+              </Link>
+              <div className="h-0.5 w-6 bg-zinc-300" />
+              <span>Webinars</span>
+            </motion.div>
 
-      <section className="bg-[#f7f7f5]">
-        <div className="mx-auto max-w-7xl px-6 py-14 md:px-10 md:py-20">
-          {status === "loading" && <LoadingSkeleton />}
-          {status === "error" && (
-            <ErrorState message={error!} onRetry={fetchWebinars} />
-          )}
-          {status === "success" && filtered.length === 0 && (
-            <EmptyState
-              filter={filter}
-              onReset={filter !== "all" ? () => setFilter("all") : undefined}
-            />
-          )}
-          {status === "success" && filtered.length > 0 && (
-            <WebinarGrid webinars={filtered} onWatch={setActiveWebinar} />
-          )}
+            <motion.h1
+              variants={fadeUp}
+              custom={1}
+              className="font-heading text-5xl font-medium leading-[1.1] tracking-tight md:text-7xl lg:text-8xl"
+            >
+              Webinars
+            </motion.h1>
+
+            {/* Filter pills */}
+            {status === "success" && webinars.length > 0 && (
+              <motion.div
+                variants={fadeUp}
+                custom={2}
+                className="mt-10 flex items-center gap-2"
+              >
+                {(
+                  [
+                    {
+                      id: "all" as WebinarFilter,
+                      label: "All",
+                      count: webinars.length,
+                    },
+                    {
+                      id: "live" as WebinarFilter,
+                      label: "Live",
+                      count: liveCount,
+                      icon: Radio,
+                    },
+                    {
+                      id: "on-demand" as WebinarFilter,
+                      label: "On Demand",
+                      count: onDemandCount,
+                      icon: Play,
+                    },
+                  ] as {
+                    id: WebinarFilter;
+                    label: string;
+                    count: number;
+                    icon?: typeof Radio;
+                  }[]
+                ).map((f) => {
+                  const isActive = filter === f.id;
+                  return (
+                    <button
+                      key={f.id}
+                      onClick={() => setFilter(f.id)}
+                      className={cn(
+                        "relative flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200",
+                        isActive
+                          ? "bg-[#172556] text-white shadow-[0_4px_12px_-4px_rgba(23,37,86,0.4)]"
+                          : "bg-white border border-zinc-200 text-zinc-500 hover:border-zinc-300 hover:text-zinc-700",
+                      )}
+                    >
+                      {f.icon && <f.icon className="size-3.5" />}
+                      {f.label}
+                      <span
+                        className={cn(
+                          "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
+                          isActive
+                            ? "bg-white/20 text-white"
+                            : "bg-zinc-100 text-zinc-400",
+                        )}
+                      >
+                        {f.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </motion.div>
+            )}
+          </motion.div>
         </div>
       </section>
 
-      <BottomCTA />
+      {/* ── Cards ── */}
+      <div className="mx-auto max-w-7xl px-6 pb-20 md:px-10 md:pb-28">
+        {status === "loading" && <LoadingSkeleton />}
+        {status === "error" && (
+          <ErrorState message={error!} onRetry={fetchWebinars} />
+        )}
+        {status === "success" && filtered.length === 0 && (
+          <EmptyState
+            filter={filter}
+            onReset={filter !== "all" ? () => setFilter("all") : undefined}
+          />
+        )}
+        {status === "success" && filtered.length > 0 && (
+          <WebinarGrid webinars={filtered} onWatch={setActiveWebinar} />
+        )}
+      </div>
 
+      {/* ── Video dialog ── */}
       <AnimatePresence>
         {activeWebinar && (
           <VideoDialog
@@ -211,7 +298,7 @@ export default function WebinarsPage() {
           />
         )}
       </AnimatePresence>
-    </div>
+    </main>
   );
 }
 
@@ -259,7 +346,6 @@ function VideoDialog({
         className="relative w-full max-w-6xl"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* ── Top bar ── */}
         <div className="mb-3 flex items-start justify-between gap-4">
           <div className="min-w-0">
             <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/35">
@@ -271,14 +357,13 @@ function VideoDialog({
           </div>
           <button
             onClick={onClose}
-            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/8 text-white/60 transition-colors hover:bg-white/15 hover:text-white"
+            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.08] text-white/60 transition-colors hover:bg-white/15 hover:text-white"
           >
             <X className="size-4" />
           </button>
         </div>
 
-        {/* ── Video ── */}
-        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-zinc-950 shadow-[0_32px_80px_-16px_rgba(0,0,0,0.8)] ring-1 ring-white/8">
+        <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-zinc-950 shadow-[0_32px_80px_-16px_rgba(0,0,0,0.8)] ring-1 ring-white/[0.08]">
           {type === "iframe" ? (
             <iframe
               src={src}
@@ -296,7 +381,6 @@ function VideoDialog({
           )}
         </div>
 
-        {/* ── Footer ── */}
         <div className="mt-4 flex items-center gap-3">
           {webinar.speaker.photo ? (
             <div className="relative size-8 shrink-0 overflow-hidden rounded-full ring-1 ring-white/20">
@@ -335,161 +419,6 @@ function VideoDialog({
 }
 
 /* ═══════════════════════════════════════════════════
-   DARK HERO
-   ═══════════════════════════════════════════════════ */
-
-function HeroSection() {
-  return (
-    <section className="relative overflow-hidden bg-[#172556]">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-40 -top-40 h-[600px] w-[600px] rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-20 -left-32 h-[400px] w-[400px] rounded-full bg-indigo-400/8 blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-36 md:px-10 md:pb-20 md:pt-44">
-        <motion.div initial="hidden" animate="visible" variants={stagger}>
-          <motion.p
-            variants={fadeUp}
-            custom={0}
-            className="text-xs font-medium uppercase tracking-[0.25em] text-blue-200/60"
-          >
-            Resources · Webinars
-          </motion.p>
-
-          <motion.h1
-            variants={fadeUp}
-            custom={1}
-            className="mt-6 max-w-4xl font-heading text-4xl font-medium leading-[1.1] tracking-tight text-white md:text-6xl"
-          >
-            Live sessions &
-            <br />
-            <span className="text-white/35">on-demand recordings</span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            custom={2}
-            className="mt-7 max-w-2xl text-base leading-relaxed text-blue-100/60 md:text-lg"
-          >
-            Join our live webinars or watch recordings on RF engineering,
-            wireless testing methodologies, and product deep dives — learn
-            directly from our engineering team.
-          </motion.p>
-
-          <motion.div
-            variants={fadeUp}
-            custom={3}
-            className="mt-8 flex items-center gap-2 text-sm text-white/30"
-          >
-            <Link href="/" className="transition-colors hover:text-white/60">
-              Home
-            </Link>
-            <span>/</span>
-            <Link
-              href="/resources/blogs"
-              className="transition-colors hover:text-white/60"
-            >
-              Resources
-            </Link>
-            <span>/</span>
-            <span className="text-white/60">Webinars</span>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
-  );
-}
-
-/* ═══════════════════════════════════════════════════
-   FILTER BAR
-   ═══════════════════════════════════════════════════ */
-
-function FilterBar({
-  filter,
-  setFilter,
-  liveCount,
-  onDemandCount,
-  totalCount,
-  filteredCount,
-}: {
-  filter: WebinarFilter;
-  setFilter: (f: WebinarFilter) => void;
-  liveCount: number;
-  onDemandCount: number;
-  totalCount: number;
-  filteredCount: number;
-}) {
-  const filters: {
-    id: WebinarFilter;
-    label: string;
-    count: number;
-    icon?: typeof Radio;
-  }[] = [
-    { id: "all", label: "All", count: totalCount },
-    { id: "live", label: "Live", count: liveCount, icon: Radio },
-    { id: "on-demand", label: "On Demand", count: onDemandCount, icon: Play },
-  ];
-
-  return (
-    <div className="sticky top-16 z-30 border-b border-zinc-200/80 bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3 md:px-10">
-        <div className="inline-flex items-center gap-0.5 rounded-xl border border-zinc-200/80 bg-zinc-50/80 p-1">
-          {filters.map((f) => {
-            const isActive = filter === f.id;
-            return (
-              <button
-                key={f.id}
-                onClick={() => setFilter(f.id)}
-                className={cn(
-                  "relative flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-200",
-                  isActive ? "text-white" : "text-zinc-500 hover:text-zinc-700",
-                )}
-              >
-                {isActive && (
-                  <motion.div
-                    layoutId="webinar-tab-bg"
-                    className="absolute inset-0 rounded-lg bg-[#172556] shadow-[0_2px_8px_-2px_rgba(23,37,86,0.3)]"
-                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                  />
-                )}
-                <span className="relative z-10 flex items-center gap-1.5">
-                  {f.icon && <f.icon className="size-3.5" />}
-                  {f.label}
-                  <span
-                    className={cn(
-                      "rounded-full px-1.5 py-0.5 text-[10px] font-semibold tabular-nums",
-                      isActive
-                        ? "bg-white/20 text-white"
-                        : "bg-zinc-200/60 text-zinc-400",
-                    )}
-                  >
-                    {f.count}
-                  </span>
-                </span>
-              </button>
-            );
-          })}
-        </div>
-
-        {totalCount > 0 && (
-          <span className="hidden text-sm tabular-nums text-zinc-400 sm:inline">
-            Showing {filteredCount} of {totalCount}
-          </span>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════
    WEBINAR GRID
    ═══════════════════════════════════════════════════ */
 
@@ -509,7 +438,7 @@ function WebinarGrid({
       initial="hidden"
       animate={inView ? "visible" : "hidden"}
       variants={stagger}
-      className="grid grid-cols-1 gap-8 md:grid-cols-2"
+      className="flex flex-col gap-5"
     >
       <AnimatePresence mode="popLayout">
         {webinars.map((webinar, i) => (
@@ -540,245 +469,167 @@ function WebinarCard({
   const upcoming = isLive && isUpcoming(webinar.startDateTime);
   const hasVideo = !isLive && !!webinar.videoUrl;
 
-  const thumbnailContent = (
-    <>
+  const imageEl = (
+    <div className="relative h-full w-full overflow-hidden bg-zinc-100">
       <Image
-        src={urlFor(webinar.thumbnail).width(960).height(540).url()}
+        src={urlFor(webinar.thumbnail).width(800).height(500).url()}
         alt={webinar.title}
         fill
-        className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-        sizes="(max-width: 768px) 100vw, 50vw"
+        className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+        sizes="(max-width: 768px) 100vw, 40vw"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent opacity-80" />
-
-      {/* Category badge */}
-      <div className="absolute left-4 top-4">
-        {isLive ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white shadow-lg shadow-red-500/20 backdrop-blur-md">
-            <span className="relative flex size-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white opacity-75" />
-              <span className="relative inline-flex size-2 rounded-full bg-white" />
-            </span>
-            {upcoming ? "Upcoming" : "Live"}
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-black/40 border border-white/10 px-3 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white backdrop-blur-md">
-            <Play className="size-3 fill-current" />
-            On Demand
-          </span>
-        )}
-      </div>
-
-      {/* Play button overlay */}
+      {/* Play circle — no overlay, just the button */}
       {hasVideo && (
         <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover:opacity-100">
           <motion.div
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className="flex size-16 items-center justify-center rounded-full border border-white/20 bg-black/30 shadow-2xl backdrop-blur-md"
+            className="flex size-16 items-center justify-center rounded-full bg-white shadow-[0_8px_32px_rgba(0,0,0,0.18)]"
           >
-            <Play className="ml-1 size-6 fill-white text-white" />
+            <Play className="ml-1 size-6 fill-[#172556] text-[#172556]" />
           </motion.div>
         </div>
       )}
-    </>
+    </div>
   );
 
   return (
-    <motion.div
-      variants={cardVariant}
-      custom={index}
-      className="group flex h-full"
-    >
-      <div className="flex w-full flex-col overflow-hidden rounded-[24px] border border-zinc-200/70 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300/80 hover:shadow-[0_20px_40px_-16px_rgba(0,0,0,0.12)]">
-        {/* ── Thumbnail ── */}
-        {hasVideo ? (
-          <Link
-            href={`/resources/webinars/${webinar._id}`}
-            className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-100 block"
-          >
-            {thumbnailContent}
-          </Link>
-        ) : (
-          <div className="relative aspect-[16/9] w-full overflow-hidden bg-zinc-100">
-            {thumbnailContent}
-          </div>
-        )}
-
-        {/* ── Body ── */}
-        <div className="flex flex-1 flex-col p-6 sm:p-8">
-          <div className="mb-4 flex items-center gap-3 text-[13px] font-medium text-zinc-500">
-            {isLive && webinar.startDateTime ? (
-              <div className="flex items-center gap-1.5 rounded-md bg-zinc-100/80 px-2.5 py-1 text-zinc-700">
-                <Calendar className="size-3.5 text-zinc-500" />
-                <span>{formatDateTime(webinar.startDateTime)}</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-1.5 rounded-md bg-zinc-100/80 px-2.5 py-1 text-zinc-600">
-                <Clock className="size-3.5 text-zinc-400" />
-                <span>{formatDate(webinar.createdAt)}</span>
-              </div>
-            )}
-          </div>
-
+    <motion.div variants={cardVariant} custom={index} className="group">
+      <div className="grid overflow-hidden rounded-2xl border border-zinc-200/80 bg-white shadow-[0_2px_16px_-4px_rgba(0,0,0,0.07)] transition-all duration-300 hover:border-zinc-300/80 hover:shadow-[0_8px_40px_-8px_rgba(0,0,0,0.12)] md:grid-cols-[2fr_3fr]">
+        {/* ── Image ── */}
+        <div className="relative aspect-[4/3] md:aspect-auto md:min-h-[240px]">
           {hasVideo ? (
-            <Link href={`/resources/webinars/${webinar._id}`}>
-              <h3 className="line-clamp-2 font-heading text-xl font-semibold leading-tight tracking-tight text-zinc-900 transition-colors duration-200 group-hover:text-[#172556]">
-                {webinar.title}
-              </h3>
+            <Link
+              href={`/resources/webinars/${webinar._id}`}
+              className="absolute inset-0"
+            >
+              {imageEl}
             </Link>
           ) : (
-            <h3 className="line-clamp-2 font-heading text-xl font-semibold leading-tight tracking-tight text-zinc-900">
-              {webinar.title}
-            </h3>
+            <div className="absolute inset-0">{imageEl}</div>
           )}
 
-          <p className="mt-3 line-clamp-3 text-[15px] leading-relaxed text-zinc-500">
-            {webinar.description}
-          </p>
+          {/* Badge sits on image, white pill so it's legible without any overlay */}
+          <div className="absolute left-4 top-4 z-10">
+            {isLive ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-red-600 shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+                <span className="relative flex size-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-red-500" />
+                </span>
+                {upcoming ? "Upcoming" : "Live"}
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-zinc-700 shadow-[0_2px_8px_rgba(0,0,0,0.12)]">
+                <Play className="size-2.5 fill-zinc-700" />
+                On Demand
+              </span>
+            )}
+          </div>
+        </div>
 
-          <div className="mt-auto pt-8">
-            <div className="h-px w-full bg-zinc-100" />
-
-            {/* ── Speaker + CTA ── */}
-            <div className="mt-6 flex items-center justify-between gap-4">
-              <div className="flex items-center gap-3 min-w-0">
-                {webinar.speaker.photo ? (
-                  <div className="relative size-10 shrink-0 overflow-hidden rounded-full ring-2 ring-white shadow-sm border border-zinc-100">
-                    <Image
-                      src={urlFor(webinar.speaker.photo)
-                        .width(80)
-                        .height(80)
-                        .url()}
-                      alt={webinar.speaker.name}
-                      fill
-                      className="object-cover"
-                      sizes="40px"
-                    />
-                  </div>
-                ) : (
-                  <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-100 border border-zinc-200/50">
-                    <User className="size-4 text-zinc-400" />
-                  </div>
+        {/* ── Content ── */}
+        <div className="flex flex-col justify-between p-7 md:p-8">
+          <div>
+            {/* Date + type row */}
+            <div className="flex items-center gap-3">
+              <span
+                className={cn(
+                  "h-1.5 w-1.5 rounded-full",
+                  isLive ? "bg-red-500" : "bg-[#172556]",
                 )}
+              />
+              <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-zinc-400">
+                {isLive && webinar.startDateTime
+                  ? formatDateTime(webinar.startDateTime)
+                  : formatDate(webinar.createdAt)}
+              </span>
+            </div>
 
-                <div className="min-w-0">
-                  <p className="truncate text-[14px] font-semibold text-zinc-900">
-                    {webinar.speaker.name}
-                  </p>
-                  <p className="truncate text-[12px] font-medium text-zinc-500">
-                    {webinar.speaker.designation}
-                  </p>
+            {/* Title */}
+            {hasVideo ? (
+              <Link href={`/resources/webinars/${webinar._id}`}>
+                <h3 className="mt-3 line-clamp-2 font-heading text-xl font-semibold leading-snug tracking-tight text-zinc-900 transition-colors duration-200 group-hover:text-[#172556] md:text-[1.35rem]">
+                  {webinar.title}
+                </h3>
+              </Link>
+            ) : (
+              <h3 className="mt-3 line-clamp-2 font-heading text-xl font-semibold leading-snug tracking-tight text-zinc-900 md:text-[1.35rem]">
+                {webinar.title}
+              </h3>
+            )}
+
+            <p className="mt-3 line-clamp-2 text-[13.5px] leading-relaxed text-zinc-500">
+              {webinar.description}
+            </p>
+          </div>
+
+          {/* ── Footer ── */}
+          <div className="mt-6 flex items-center justify-between gap-4 border-t border-zinc-100 pt-5">
+            <div className="flex min-w-0 items-center gap-3">
+              {webinar.speaker.photo ? (
+                <div className="relative size-9 shrink-0 overflow-hidden rounded-full ring-2 ring-zinc-100">
+                  <Image
+                    src={urlFor(webinar.speaker.photo)
+                      .width(72)
+                      .height(72)
+                      .url()}
+                    alt={webinar.speaker.name}
+                    fill
+                    className="object-cover"
+                    sizes="36px"
+                  />
                 </div>
-              </div>
-
-              <div className="shrink-0">
-                {isLive && webinar.meetingLink ? (
-                  <a
-                    href={webinar.meetingLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#172556] px-4 text-[13px] font-semibold text-white shadow-sm transition-all hover:bg-[#1e3070] hover:shadow-md"
-                    >
-                      {upcoming ? "Register" : "Join"}
-                      <ArrowUpRight className="size-3.5" />
-                    </motion.span>
-                  </a>
-                ) : webinar.videoUrl ? (
-                  <Link href={`/resources/webinars/${webinar._id}`}>
-                    <motion.span
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className="inline-flex h-9 items-center justify-center gap-1.5 rounded-full bg-[#172556] px-4 text-[13px] font-semibold text-white shadow-sm transition-all hover:bg-[#1e3070] hover:shadow-md"
-                    >
-                      Watch
-                      <Play className="size-3 fill-current" />
-                    </motion.span>
-                  </Link>
-                ) : null}
+              ) : (
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-[#172556]/[0.07]">
+                  <User className="size-3.5 text-[#172556]" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <p className="truncate text-sm font-semibold text-zinc-900">
+                  {webinar.speaker.name}
+                </p>
+                <p className="truncate text-[11px] text-zinc-400">
+                  {webinar.speaker.designation}
+                </p>
               </div>
             </div>
+
+            {isLive && webinar.meetingLink ? (
+              <a
+                href={webinar.meetingLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="shrink-0"
+              >
+                <motion.span
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#172556] px-5 text-[13px] font-semibold text-white shadow-[0_4px_14px_-4px_rgba(23,37,86,0.4)] transition-all hover:bg-[#1e3070]"
+                >
+                  {upcoming ? "Register" : "Join"}
+                  <ArrowUpRight className="size-3.5" />
+                </motion.span>
+              </a>
+            ) : webinar.videoUrl ? (
+              <Link
+                href={`/resources/webinars/${webinar._id}`}
+                className="shrink-0"
+              >
+                <motion.span
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.96 }}
+                  className="inline-flex h-9 items-center gap-2 rounded-xl bg-[#172556] px-5 text-[13px] font-semibold text-white shadow-[0_4px_14px_-4px_rgba(23,37,86,0.4)] transition-all hover:bg-[#1e3070]"
+                >
+                  Watch now
+                  <Play className="size-3 fill-current" />
+                </motion.span>
+              </Link>
+            ) : null}
           </div>
         </div>
       </div>
     </motion.div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════
-   BOTTOM CTA
-   ═══════════════════════════════════════════════════ */
-
-function BottomCTA() {
-  return (
-    <section className="relative overflow-hidden bg-[#172556] text-white">
-      <div className="pointer-events-none absolute inset-0">
-        <div className="absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-indigo-400/10 blur-3xl" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
-            backgroundSize: "32px 32px",
-          }}
-        />
-      </div>
-
-      <div className="relative mx-auto max-w-7xl px-6 py-20 md:px-10 md:py-28">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-80px" }}
-          variants={stagger}
-          className="grid gap-10 md:grid-cols-12 md:items-center"
-        >
-          <motion.div variants={fadeUp} custom={0} className="md:col-span-7">
-            <p className="text-xs uppercase tracking-[0.2em] text-blue-200/70">
-              Learn More
-            </p>
-            <h2 className="mt-4 font-heading text-3xl font-medium tracking-tight md:text-4xl">
-              Explore our engineering blog
-            </h2>
-            <p className="mt-5 max-w-xl leading-relaxed text-blue-100/60">
-              Read in-depth articles on RF testing, wireless measurement
-              techniques, and the latest industry insights from our team.
-            </p>
-          </motion.div>
-
-          <motion.div
-            variants={fadeUp}
-            custom={1}
-            className="flex flex-wrap gap-3 md:col-span-5 md:justify-end"
-          >
-            <Link href="/resources/blogs">
-              <motion.span
-                whileHover={{ scale: 1.015 }}
-                whileTap={{ scale: 0.985 }}
-                className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100"
-              >
-                Browse Blog
-                <ArrowRight className="size-4" />
-              </motion.span>
-            </Link>
-            <Link href="/contact">
-              <motion.span
-                whileHover={{ scale: 1.015 }}
-                whileTap={{ scale: 0.985 }}
-                className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/10"
-              >
-                Get in Touch
-                <ArrowUpRight className="size-3.5" />
-              </motion.span>
-            </Link>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
   );
 }
 
@@ -788,25 +639,30 @@ function BottomCTA() {
 
 function LoadingSkeleton() {
   return (
-    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-      {Array.from({ length: 4 }).map((_, i) => (
+    <div className="flex flex-col gap-5">
+      {Array.from({ length: 3 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse overflow-hidden rounded-2xl border border-zinc-200/80 bg-white"
+          className="animate-pulse grid overflow-hidden rounded-2xl border border-zinc-200/80 bg-white md:grid-cols-[2fr_3fr]"
         >
-          <div className="aspect-[16/10] bg-zinc-100" />
-          <div className="p-5 space-y-3">
-            <div className="h-5 w-4/5 rounded bg-zinc-100" />
-            <div className="h-4 w-full rounded bg-zinc-100" />
-            <div className="h-4 w-3/4 rounded bg-zinc-100" />
-            <div className="h-3 w-28 rounded bg-zinc-50" />
-            <div className="border-t border-zinc-100 pt-4 flex items-center gap-3">
-              <div className="size-9 shrink-0 rounded-full bg-zinc-100" />
-              <div className="flex-1 space-y-1.5">
-                <div className="h-3 w-24 rounded bg-zinc-100" />
-                <div className="h-2.5 w-16 rounded bg-zinc-50" />
+          <div className="aspect-[4/3] bg-zinc-100 md:aspect-auto md:min-h-[240px]" />
+          <div className="flex flex-col justify-between p-7 md:p-8">
+            <div className="space-y-3">
+              <div className="h-3 w-32 rounded bg-zinc-100" />
+              <div className="h-6 w-4/5 rounded bg-zinc-100" />
+              <div className="h-6 w-2/3 rounded bg-zinc-100" />
+              <div className="h-4 w-full rounded bg-zinc-100" />
+              <div className="h-4 w-3/4 rounded bg-zinc-100" />
+            </div>
+            <div className="flex items-center justify-between border-t border-zinc-100 pt-5">
+              <div className="flex items-center gap-3">
+                <div className="size-9 rounded-full bg-zinc-100" />
+                <div className="space-y-1.5">
+                  <div className="h-3 w-24 rounded bg-zinc-100" />
+                  <div className="h-2.5 w-16 rounded bg-zinc-50" />
+                </div>
               </div>
-              <div className="h-8 w-20 rounded-xl bg-zinc-100" />
+              <div className="h-9 w-28 rounded-xl bg-zinc-100" />
             </div>
           </div>
         </div>
@@ -824,20 +680,20 @@ function ErrorState({
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-28">
-      <div className="flex size-16 items-center justify-center rounded-2xl bg-red-50">
-        <AlertCircle className="size-7 text-red-400" />
+      <div className="flex size-14 items-center justify-center rounded-2xl bg-red-50">
+        <AlertCircle className="size-6 text-red-400" />
       </div>
-      <h3 className="mt-6 font-heading text-xl font-medium text-zinc-900">
+      <h3 className="mt-6 font-heading text-xl font-semibold text-zinc-900">
         Something went wrong
       </h3>
-      <p className="mt-3 max-w-sm text-center text-sm leading-relaxed text-zinc-500">
+      <p className="mt-2 max-w-sm text-center text-sm leading-relaxed text-zinc-500">
         {message}
       </p>
       <motion.button
         onClick={onRetry}
         whileHover={{ scale: 1.015 }}
         whileTap={{ scale: 0.985 }}
-        className="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.4)] transition-all hover:bg-[#1e3070]"
+        className="mt-8 inline-flex items-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(23,37,86,0.4)]"
       >
         <RefreshCw className="size-4" />
         Try again
@@ -859,11 +715,11 @@ function EmptyState({
       desc: "We're planning some great sessions. Check back soon for live webinars and on-demand recordings.",
     },
     live: {
-      title: "No live webinars scheduled",
+      title: "No live sessions scheduled",
       desc: "There are no upcoming live sessions right now. Browse our on-demand recordings instead.",
     },
     "on-demand": {
-      title: "No recordings available",
+      title: "No recordings yet",
       desc: "We haven't uploaded any on-demand recordings yet. Check our live webinar schedule instead.",
     },
   };
@@ -871,26 +727,45 @@ function EmptyState({
   const { title, desc } = messages[filter];
 
   return (
-    <div className="flex flex-col items-center justify-center py-28">
-      <div className="flex size-16 items-center justify-center rounded-2xl bg-zinc-100">
-        <Video className="size-7 text-zinc-400" />
+    <div className="relative overflow-hidden py-28 md:py-40">
+      {/* Ghost text */}
+      <span className="pointer-events-none absolute inset-x-0 top-1/2 -translate-y-1/2 select-none text-center font-heading text-[18vw] font-black leading-none tracking-tighter text-zinc-900/[0.03]">
+        Coming Soon
+      </span>
+
+      <div className="relative flex flex-col items-center text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-zinc-400">
+          Stay tuned
+        </p>
+        <h2 className="mt-5 font-heading text-4xl font-medium leading-tight tracking-tight text-zinc-900 md:text-6xl">
+          {title}
+        </h2>
+        <p className="mt-5 max-w-md text-base leading-relaxed text-zinc-500 md:text-lg">
+          {desc}
+        </p>
+        <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
+          {onReset && (
+            <motion.button
+              onClick={onReset}
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.985 }}
+              className="inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-6 py-3 text-sm font-semibold text-zinc-700 shadow-sm transition-all hover:border-zinc-300"
+            >
+              View all webinars
+            </motion.button>
+          )}
+          <Link href="/contact">
+            <motion.span
+              whileHover={{ scale: 1.015 }}
+              whileTap={{ scale: 0.985 }}
+              className="inline-flex items-center gap-2 rounded-xl bg-[#172556] px-7 py-3 text-sm font-semibold text-white shadow-[0_8px_24px_-8px_rgba(23,37,86,0.35)]"
+            >
+              Get in touch
+              <ArrowUpRight className="size-4" />
+            </motion.span>
+          </Link>
+        </div>
       </div>
-      <h3 className="mt-6 font-heading text-xl font-medium text-zinc-900">
-        {title}
-      </h3>
-      <p className="mt-3 max-w-sm text-center text-sm leading-relaxed text-zinc-500">
-        {desc}
-      </p>
-      {onReset && (
-        <motion.button
-          onClick={onReset}
-          whileHover={{ scale: 1.015 }}
-          whileTap={{ scale: 0.985 }}
-          className="mt-8 inline-flex items-center gap-2 rounded-xl border border-zinc-300 bg-white px-5 py-2.5 text-sm font-medium text-zinc-700 transition-all hover:border-zinc-400 hover:shadow-sm"
-        >
-          View all webinars
-        </motion.button>
-      )}
     </div>
   );
 }

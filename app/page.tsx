@@ -65,14 +65,14 @@ function Hero() {
 
   const textY = useTransform(scrollYProgress, [0, 1], [0, 80]);
   const textOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.1]);
+  const videoScale = useTransform(scrollYProgress, [0, 1], [1, 1.08]);
 
   return (
     <section
       ref={containerRef}
-      className="relative flex min-h-screen items-center overflow-hidden bg-zinc-900"
+      className="relative flex min-h-screen flex-col overflow-hidden bg-[#eeede9]"
     >
-      {/* Video background */}
+      {/* Video */}
       <motion.div style={{ scale: videoScale }} className="absolute inset-0">
         <video
           autoPlay
@@ -86,103 +86,149 @@ function Hero() {
         </video>
       </motion.div>
 
-      {/* Smooth uniform translucent overlay */}
-      <div className="absolute inset-0 bg-black/50 backdrop-blur-[2px]" />
+      {/* Overlays — dark glass */}
+      <div className="pointer-events-none absolute inset-0 z-[1]">
+        {/* Deep dark ellipse centred on the content area — keeps navbar zone lighter */}
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              "radial-gradient(ellipse 120% 60% at 28% 50%, rgba(4,6,14,0.75) 0%, rgba(4,6,14,0.52) 32%, rgba(4,6,14,0.14) 68%, transparent 85%)",
+          }}
+        />
+        {/* Extra left ramp for text column */}
+        <div
+          className="absolute inset-y-0 left-0 w-[55%]"
+          style={{
+            background:
+              "linear-gradient(to right, rgba(4,6,14,0.18) 0%, transparent 100%)",
+          }}
+        />
+        {/* Navbar strip — boost white so dark links stay readable */}
+        <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-white/55 to-transparent" />
+        {/* Bottom dissolve to page colour */}
+        <div
+          className="absolute inset-x-0 bottom-0 h-[40vh]"
+          style={{
+            background:
+              "linear-gradient(to top, #f7f7f5 0%, rgba(247,247,245,0.88) 20%, rgba(247,247,245,0.38) 45%, transparent 100%)",
+          }}
+        />
+      </div>
 
-      <div
-        className="pointer-events-none absolute inset-x-0 bottom-0 h-40 z-10"
-        style={{
-          background:
-            "linear-gradient(to top, #f7f7f5 0%, rgba(247,247,245,0.6) 40%, rgba(247,247,245,0) 100%)",
-        }}
-      />
+      {/* ── Hero content ── */}
+      <div className="relative z-10 flex flex-1 items-center">
+        <div className="mx-auto w-full max-w-7xl px-6 py-32 md:px-10">
+          <motion.div style={{ y: textY, opacity: textOpacity }}>
+            <motion.div initial="hidden" animate="visible" variants={stagger}>
+              {/* Badge */}
+              <motion.div
+                variants={fadeUp}
+                custom={0}
+                className="inline-flex items-center gap-2.5 rounded-full border border-white/25 bg-white/[0.14] px-4 py-2 backdrop-blur-md"
+              >
+                <span className="relative flex size-1.5">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+                </span>
+                <span className="text-[11px] font-medium uppercase tracking-widest text-white/95">
+                  Chosen by global RF engineers
+                </span>
+              </motion.div>
 
-      {/* Content — left aligned but vertically centered */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-20 md:px-10 flex flex-col justify-center">
-        <motion.div style={{ y: textY, opacity: textOpacity }}>
-          <motion.div initial="hidden" animate="visible" variants={stagger}>
-            <motion.div
-              variants={fadeUp}
-              custom={0}
-              className="inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.07] px-4 py-2 backdrop-blur-md"
-            >
-              <span className="relative flex size-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
-              </span>
-              <span className="text-[11px] font-medium uppercase tracking-widest text-white/70">
-                Chosen by global RF engineers
-              </span>
-            </motion.div>
-            {/* Heading */}
-            <motion.h1
-              variants={fadeUp}
-              custom={1}
-              className="mt-8 max-w-5xl font-heading text-[clamp(2.5rem,5vw,5rem)] font-medium leading-[1.05] tracking-tight text-white"
-            >
-              RF test solutions engineered
-              <br />
-              <span className="text-white/40">for absolute accuracy</span>
-            </motion.h1>
-            {/* Description */}
-            <motion.p
-              variants={fadeUp}
-              custom={2}
-              className="mt-7 max-w-lg text-base leading-relaxed text-white/90 md:text-lg"
-            >
-              From programmable attenuators to complete handover test systems —
-              engineered for absolute certainty in every measurement cycle.
-            </motion.p>
-            {/* CTAs */}
-            <motion.div
-              variants={fadeUp}
-              custom={3}
-              className="mt-10 flex flex-wrap items-center gap-4"
-            >
-              <Link href="/products">
-                <motion.span
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="group inline-flex items-center gap-2.5 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-zinc-900 transition-shadow hover:shadow-[0_0_30px_rgba(255,255,255,0.12)]"
-                >
-                  Explore Products
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
-                </motion.span>
-              </Link>
-              <Link href="/contact">
-                <motion.span
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="inline-flex items-center gap-2.5 rounded-xl border border-white/15 bg-white/6 px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:border-white/25 hover:bg-white/10"
-                >
-                  Get in Touch
-                  <ArrowUpRight className="size-3.5" />
-                </motion.span>
-              </Link>
-            </motion.div>
-            {/* Specs strip */}
-            <motion.div
-              variants={fadeUp}
-              custom={4}
-              className="mt-10 flex flex-wrap items-center gap-8"
-            >
-              {[
-                { icon: Radio, value: "200 – 8000 MHz" },
-                { icon: Cpu, value: "Solid-State" },
-                { icon: Network, value: "API Controlled" },
-              ].map((item) => (
-                <div
-                  key={item.value}
-                  className="flex items-center gap-2.5 text-sm text-white"
-                >
-                  <item.icon className="size-4 text-white" />
-                  <span className="font-medium">{item.value}</span>
-                </div>
-              ))}
+              {/* Heading */}
+              <motion.h1
+                variants={fadeUp}
+                custom={1}
+                className="mt-8 font-heading text-[clamp(2.9rem,5vw,5.8rem)] font-medium leading-[1.05] tracking-tight"
+              >
+                <span className="text-white">RF test solutions engineered</span>
+                <br />
+                <span className="text-white/50">for absolute accuracy.</span>
+              </motion.h1>
+
+              {/* Description */}
+              <motion.p
+                variants={fadeUp}
+                custom={2}
+                className="mt-6 max-w-[42ch] text-[17px] leading-relaxed text-white/70"
+              >
+                From programmable attenuators to complete handover test systems
+                — built for certainty in every measurement cycle.
+              </motion.p>
+
+              {/* CTAs */}
+              <motion.div
+                variants={fadeUp}
+                custom={3}
+                className="mt-9 flex flex-wrap items-center gap-3"
+              >
+                <Link href="/products">
+                  <motion.span
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="group inline-flex items-center gap-2.5 rounded-xl bg-white px-7 py-3.5 text-sm font-semibold text-zinc-900 shadow-[0_8px_28px_-8px_rgba(0,0,0,0.4)] transition-all hover:bg-zinc-50 hover:shadow-[0_12px_36px_-8px_rgba(0,0,0,0.45)]"
+                  >
+                    Explore Products
+                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  </motion.span>
+                </Link>
+                <Link href="/contact">
+                  <motion.span
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="inline-flex items-center gap-2.5 rounded-xl border border-white/30 bg-white/[0.12] px-7 py-3.5 text-sm font-medium text-white backdrop-blur-sm transition-all hover:border-white/45 hover:bg-white/[0.18]"
+                  >
+                    Get in Touch
+                    <ArrowUpRight className="size-3.5" />
+                  </motion.span>
+                </Link>
+              </motion.div>
+
+              {/* Spec badges */}
+              <motion.div
+                variants={fadeUp}
+                custom={4}
+                className="mt-8 flex flex-wrap items-center gap-2"
+              >
+                {["200 – 8000 MHz", "Solid-State", "API Controlled"].map(
+                  (tag) => (
+                    <div
+                      key={tag}
+                      className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/[0.12] px-4 py-1.5 backdrop-blur-md"
+                    >
+                      <span className="size-1 shrink-0 rounded-full bg-white/60" />
+                      <span className="text-[11px] font-medium tracking-wide text-white/85">
+                        {tag}
+                      </span>
+                    </div>
+                  ),
+                )}
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.4, duration: 0.6 }}
+        style={{ opacity: textOpacity }}
+        className="absolute bottom-10 left-1/2 z-10 -translate-x-1/2"
+      >
+        <div className="flex flex-col items-center gap-2">
+          <span className="text-[10px] font-medium uppercase tracking-[0.25em] text-white/35">
+            Scroll
+          </span>
+          <motion.div
+            animate={{ y: [0, 5, 0] }}
+            transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            className="h-7 w-px bg-gradient-to-b from-white/35 to-transparent"
+          />
+        </div>
+      </motion.div>
     </section>
   );
 }
@@ -1046,8 +1092,7 @@ function GlobalPresence() {
             </motion.div>
           </div>
 
-          {/* Bottom CTA bar */}
-          <motion.div variants={fadeUp} custom={2} className="mt-16">
+          {/* <motion.div variants={fadeUp} custom={2} className="mt-16">
             <div className="relative overflow-hidden rounded-3xl bg-[#172556] p-8 md:p-12">
               <div className="pointer-events-none absolute inset-0">
                 <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-blue-500/10 blur-3xl" />
@@ -1096,7 +1141,7 @@ function GlobalPresence() {
                 </div>
               </div>
             </div>
-          </motion.div>
+          </motion.div> */}
         </motion.div>
       </div>
     </section>

@@ -223,12 +223,14 @@ export function VideoGate({
 }: VideoGateProps) {
   const storageKey = `webinar_gate_${webinarId}`;
 
-  const [unlocked,   setUnlocked]   = useState(false);
-  const [sheetOpen,  setSheetOpen]  = useState(false);
+  const [unlocked, setUnlocked] = useState(false);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-  const [submitted,  setSubmitted]  = useState(false);
-  const [form,       setForm]       = useState<FormData>(EMPTY_FORM);
-  const [errors,     setErrors]     = useState<Partial<Record<keyof FormData, string>>>({});
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState<FormData>(EMPTY_FORM);
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>(
+    {},
+  );
 
   useEffect(() => {
     try {
@@ -367,10 +369,15 @@ export function VideoGate({
                 className="flex flex-col flex-1 items-center justify-center px-6 py-12 text-center gap-6"
               >
                 <div className="flex size-16 items-center justify-center rounded-full bg-emerald-50 ring-1 ring-emerald-100">
-                  <CheckCircle2 className="size-8 text-emerald-500" strokeWidth={1.75} />
+                  <CheckCircle2
+                    className="size-8 text-emerald-500"
+                    strokeWidth={1.75}
+                  />
                 </div>
                 <div className="space-y-1.5">
-                  <p className="text-[17px] font-semibold text-zinc-900">You&rsquo;re all set!</p>
+                  <p className="text-[17px] font-semibold text-zinc-900">
+                    You&rsquo;re all set!
+                  </p>
                   <p className="text-[13px] text-zinc-400 leading-relaxed max-w-[240px] mx-auto">
                     Thanks for registering. Your webinar is ready to watch.
                   </p>

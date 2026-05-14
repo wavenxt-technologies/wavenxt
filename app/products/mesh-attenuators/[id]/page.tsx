@@ -643,8 +643,8 @@ export default function MeshAttenuatorModelPage() {
                 Functional Diagram
               </h2>
               <p className="mt-6 text-lg leading-relaxed text-zinc-600">
-                A fully non-blocking mesh topology ensures seamless 
-                multipath emulation and full interconnectivity.
+                A fully non-blocking mesh topology ensures seamless multipath
+                emulation and full interconnectivity.
               </p>
             </motion.div>
 
@@ -656,7 +656,11 @@ export default function MeshAttenuatorModelPage() {
               <div className="relative overflow-hidden rounded-[2rem] border border-zinc-200/80 bg-white p-3 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)]">
                 <div className="relative flex aspect-[16/9] w-full items-center justify-center rounded-2xl border border-zinc-100 bg-zinc-50/50 overflow-hidden">
                   <Image
-                    src={id === "nxa-b4p" ? "/diagram/mesh4.png" : "/diagram/mesh9.png"}
+                    src={
+                      id === "nxa-b4p"
+                        ? "/diagram/mesh4.png"
+                        : "/diagram/mesh9.png"
+                    }
                     alt="Mesh Attenuator Functional Diagram"
                     fill
                     className="object-contain p-4"
@@ -786,7 +790,9 @@ export default function MeshAttenuatorModelPage() {
 /* ── Software Request Form (used inside Sheet) ─────────────────────── */
 
 function SoftwareForm({ product }: { product: string }) {
-  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [status, setStatus] = useState<
+    "idle" | "loading" | "success" | "error"
+  >("idle");
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -818,9 +824,12 @@ function SoftwareForm({ product }: { product: string }) {
         <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-50">
           <ShieldCheck className="size-6 text-emerald-600" />
         </div>
-        <h3 className="mt-5 font-heading text-xl font-medium text-zinc-900">Request Submitted</h3>
+        <h3 className="mt-5 font-heading text-xl font-medium text-zinc-900">
+          Request Submitted
+        </h3>
         <p className="mt-2 text-sm leading-relaxed text-zinc-500">
-          We&apos;ll send the {product} software and documentation to your email within 24 hours.
+          We&apos;ll send the {product} software and documentation to your email
+          within 24 hours.
         </p>
       </div>
     );
@@ -844,23 +853,51 @@ function SoftwareForm({ product }: { product: string }) {
       <form className="mt-6 flex flex-1 flex-col gap-4" onSubmit={handleSubmit}>
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-zinc-700">Full Name</label>
-            <input name="name" type="text" required className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10" placeholder="John Doe" />
+            <label className="text-xs font-medium text-zinc-700">
+              Full Name
+            </label>
+            <input
+              name="name"
+              type="text"
+              required
+              className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
+              placeholder="John Doe"
+            />
           </div>
           <div className="space-y-1.5">
-            <label className="text-xs font-medium text-zinc-700">Phone Number</label>
-            <input name="phone" type="tel" className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10" placeholder="+1 (555) 000-0000" />
+            <label className="text-xs font-medium text-zinc-700">
+              Phone Number
+            </label>
+            <input
+              name="phone"
+              type="tel"
+              className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
+              placeholder="+1 (555) 000-0000"
+            />
           </div>
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-zinc-700">Work Email</label>
-          <input name="email" type="email" required className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10" placeholder="john@company.com" />
+          <label className="text-xs font-medium text-zinc-700">
+            Work Email
+          </label>
+          <input
+            name="email"
+            type="email"
+            required
+            className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
+            placeholder="john@company.com"
+          />
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium text-zinc-700">What do you need?</label>
-          <select name="requestType" className="w-full appearance-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10">
+          <label className="text-xs font-medium text-zinc-700">
+            What do you need?
+          </label>
+          <select
+            name="requestType"
+            className="w-full appearance-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
+          >
             <option>Software GUI</option>
             <option>REST API Documentation</option>
             <option>Other Support</option>
@@ -871,19 +908,32 @@ function SoftwareForm({ product }: { product: string }) {
           <label className="text-xs font-medium text-zinc-700">
             Message <span className="text-zinc-400">(optional)</span>
           </label>
-          <textarea name="message" rows={3} className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10" placeholder="Anything specific about your setup or requirements..." />
+          <textarea
+            name="message"
+            rows={3}
+            className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
+            placeholder="Anything specific about your setup or requirements..."
+          />
         </div>
 
         <div className="mt-auto pt-4">
-          <button type="submit" disabled={status === "loading"} className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#172556]/15 transition-colors hover:bg-[#1e3070] disabled:opacity-60">
+          <button
+            type="submit"
+            disabled={status === "loading"}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#172556]/15 transition-colors hover:bg-[#1e3070] disabled:opacity-60"
+          >
             {status === "loading" ? "Sending..." : "Submit Request"}
             {status !== "loading" && <ArrowUpRight className="size-4" />}
           </button>
           {status === "error" && (
-            <p className="mt-3 text-center text-sm text-red-500">Something went wrong. Please try again.</p>
+            <p className="mt-3 text-center text-sm text-red-500">
+              Something went wrong. Please try again.
+            </p>
           )}
           {status === "idle" && (
-            <p className="mt-3 text-center text-[11px] text-zinc-400">We typically respond within 24 hours.</p>
+            <p className="mt-3 text-center text-[11px] text-zinc-400">
+              We typically respond within 24 hours.
+            </p>
           )}
         </div>
       </form>

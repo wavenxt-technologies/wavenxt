@@ -308,46 +308,56 @@ export default async function WebinarDetailPage({
           </div>
 
           {/* Speaker card */}
-          <div className="h-fit rounded-2xl border border-zinc-200/80 bg-white p-7 shadow-sm">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-zinc-400">
-              Speaker
-            </p>
+          <div className="h-fit overflow-hidden rounded-[32px] border border-zinc-200/80 bg-white shadow-sm transition-all duration-300 hover:shadow-xl hover:shadow-zinc-200/50">
+            <div className="h-24 bg-[#172556]" />
+            <div className="relative -mt-12 px-6 pb-8">
+              <div className="flex flex-col items-center text-center">
+                {webinar.speaker.photo ? (
+                  <div className="relative size-24 overflow-hidden rounded-2xl border-4 border-white bg-white shadow-md">
+                    <Image
+                      src={urlFor(webinar.speaker.photo)
+                        .width(192)
+                        .height(192)
+                        .url()}
+                      alt={webinar.speaker.name}
+                      fill
+                      className="object-cover"
+                      sizes="96px"
+                    />
+                  </div>
+                ) : (
+                  <div className="flex size-24 items-center justify-center rounded-2xl border-4 border-white bg-zinc-100 shadow-md">
+                    <User className="size-10 text-zinc-300" />
+                  </div>
+                )}
 
-            <div className="mt-5 flex items-center gap-4">
-              {webinar.speaker.photo ? (
-                <div className="relative size-14 shrink-0 overflow-hidden rounded-full ring-2 ring-white shadow-sm border border-zinc-100">
-                  <Image
-                    src={urlFor(webinar.speaker.photo)
-                      .width(112)
-                      .height(112)
-                      .url()}
-                    alt={webinar.speaker.name}
-                    fill
-                    className="object-cover"
-                    sizes="56px"
-                  />
+                <div className="mt-5">
+                  <h3 className="font-heading text-lg font-bold text-zinc-900">
+                    {webinar.speaker.name}
+                  </h3>
+                  <p className="mt-1 text-sm font-medium text-zinc-500">
+                    {webinar.speaker.designation}
+                  </p>
                 </div>
-              ) : (
-                <div className="flex size-14 shrink-0 items-center justify-center rounded-full bg-zinc-100 border border-zinc-200/50">
-                  <User className="size-5 text-zinc-400" />
-                </div>
-              )}
-              <div className="min-w-0">
-                <p className="text-base font-semibold text-zinc-900">
-                  {webinar.speaker.name}
-                </p>
-                <p className="mt-0.5 text-[13px] text-zinc-500">
-                  {webinar.speaker.designation}
-                </p>
-              </div>
-            </div>
 
-            <div className="mt-6 border-t border-zinc-100 pt-5">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-zinc-400">Published</span>
-                <span className="font-medium text-zinc-700">
-                  {formatDate(webinar.createdAt)}
-                </span>
+                <div className="mt-8 w-full space-y-4 border-t border-zinc-100 pt-6">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Published
+                    </span>
+                    <span className="text-xs font-semibold text-zinc-700">
+                      {formatDateShort(webinar.createdAt)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+                      Category
+                    </span>
+                    <span className="text-xs font-bold text-[#172556] capitalize">
+                      {webinar.category?.replace("-", " ")}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -440,51 +450,6 @@ export default async function WebinarDetailPage({
         </div>
       )}
 
-      {/* ── Bottom CTA ── */}
-      <section className="relative overflow-hidden bg-[#172556] text-white">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-blue-500/10 blur-3xl" />
-          <div className="absolute -bottom-32 -left-32 h-[400px] w-[400px] rounded-full bg-indigo-400/10 blur-3xl" />
-          <div
-            className="absolute inset-0 opacity-[0.03]"
-            style={{
-              backgroundImage:
-                "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
-              backgroundSize: "32px 32px",
-            }}
-          />
-        </div>
-        <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-10 md:py-20">
-          <div className="flex flex-col items-start gap-6 md:flex-row md:items-center md:justify-between">
-            <div>
-              <p className="text-xs uppercase tracking-[0.2em] text-blue-200/70">
-                More resources
-              </p>
-              <h2 className="mt-3 font-heading text-2xl font-medium tracking-tight md:text-3xl">
-                Browse all webinars
-              </h2>
-              <p className="mt-3 max-w-lg text-sm leading-relaxed text-blue-100/60">
-                Explore our full library of live sessions and on-demand
-                recordings covering RF engineering, wireless testing, and more.
-              </p>
-            </div>
-            <div className="flex shrink-0 flex-wrap gap-3">
-              <Link href="/resources/webinars">
-                <span className="inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 text-sm font-medium text-zinc-900 transition-colors hover:bg-zinc-100">
-                  All Webinars
-                  <ArrowLeft className="size-3.5 rotate-180" />
-                </span>
-              </Link>
-              <Link href="/contact">
-                <span className="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/[0.06] px-6 py-3 text-sm font-medium text-white backdrop-blur-sm transition-colors hover:bg-white/10">
-                  Get in Touch
-                  <ArrowUpRight className="size-3.5" />
-                </span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }

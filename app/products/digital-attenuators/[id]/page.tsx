@@ -405,7 +405,7 @@ export default function DigitalAttenuatorProduct() {
             {/* Right: product image */}
             <motion.div variants={fadeUp} custom={3} className="md:col-span-5">
               <div className="overflow-hidden">
-                <div className="overflow-hidden rounded-xl border border-zinc-100">
+                <div className="overflow-hidden rounded-xl">
                   <div className="relative aspect-[4/3] w-full">
                     <Image
                       src={m.image}

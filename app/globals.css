@@ -94,7 +94,12 @@
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-geist-sans)
+    font-family: var(--font-geist-sans);
+    font-variant-numeric: tabular-nums;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    letter-spacing: 0.015em;
+    line-height: 1.8;
   }
 
   html {

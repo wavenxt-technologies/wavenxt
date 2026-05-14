@@ -100,7 +100,9 @@ function normalizeSiteUrl(url: string) {
 }
 
 export function getSiteUrl() {
-  return normalizeSiteUrl(process.env.NEXT_PUBLIC_SITE_URL ?? "https://wavenxt.com");
+  return normalizeSiteUrl(
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://wavenxt.com",
+  );
 }
 
 export function absoluteUrl(path = "/") {

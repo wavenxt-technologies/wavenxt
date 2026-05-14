@@ -77,7 +77,7 @@ const productItems: ProductItem[] = [
     href: "/products/digital-attenuators",
     tag: "Programmable",
     desc: "Precise RF signal control for Wi-Fi and cellular validation — 95 dB dynamic range with 0.25 dB resolution across 12 models.",
-    image: "/images/group-atten2.webp",
+    image: "/images/group-atten.webp",
     subModels: [
       {
         name: "8 GHz Series",
@@ -188,7 +188,7 @@ export default function Navbar() {
 
 function NavbarContent({ pathname }: { pathname: string }) {
   const [activeDropdown, setActiveDropdown] = useState<DropdownType | null>(
-    null
+    null,
   );
   const [activeIndex, setActiveIndex] = useState(0);
   const [scrolled, setScrolled] = useState(false);
@@ -258,7 +258,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
             "border-b transition-all duration-300",
             isTransparent
               ? "border-transparent bg-transparent"
-              : "border-zinc-200/60 bg-[#f7f7f5]"
+              : "border-zinc-200/60 bg-[#f7f7f5]",
           )}
         >
           <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-10">
@@ -272,16 +272,13 @@ function NavbarContent({ pathname }: { pathname: string }) {
                 alt="Wavenxt"
                 width={160}
                 height={40}
-                className={cn(
-                  "h-7 w-auto object-contain transition-all duration-300",
-                  isTransparent && "brightness-0 invert"
-                )}
+                className="h-7 w-auto object-contain transition-all duration-300"
                 priority
               />
             </Link>
 
             {/* Center nav */}
-            <ul className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-0.5">
+            <ul className="hidden md:flex absolute text-sm left-1/2 -translate-x-1/2 items-center gap-0.5">
               {navLinks.map((link) => {
                 const isActive =
                   link.href === "/"
@@ -294,9 +291,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
                 return (
                   <li
                     key={link.href}
-                    className={
-                      link.dropdownType === "resources" ? "relative" : ""
-                    }
+                    className={link.dropdownType ? "relative" : ""}
                     onMouseEnter={
                       link.dropdownType
                         ? () => handleDropdownEnter(link.dropdownType!)
@@ -314,13 +309,9 @@ function NavbarContent({ pathname }: { pathname: string }) {
                       }
                       className={cn(
                         "relative flex items-center gap-1 rounded-lg px-6 py-2.5 transition-colors duration-300",
-                        isTransparent
-                          ? isActive
-                            ? "font-medium text-white"
-                            : "text-white/60 hover:text-white"
-                          : isActive
-                            ? "font-medium text-zinc-900"
-                            : "text-zinc-500 hover:text-zinc-800"
+                        isActive
+                          ? "font-medium text-zinc-900"
+                          : "text-zinc-500 hover:text-zinc-800",
                       )}
                     >
                       {link.label}
@@ -329,15 +320,10 @@ function NavbarContent({ pathname }: { pathname: string }) {
                           animate={{ rotate: isThisDropdownOpen ? 180 : 0 }}
                           transition={{ duration: 0.2, ease }}
                         >
-                          <ChevronDown
-                            className={cn(
-                              "size-3 transition-colors duration-300",
-                              isTransparent ? "text-white/40" : "text-zinc-400"
-                            )}
-                          />
+                          <ChevronDown className="size-3 text-zinc-400 transition-colors duration-300" />
                         </motion.span>
                       )}
-                      {isActive && !isTransparent && (
+                      {isActive && (
                         <motion.span
                           layoutId="nav-underline"
                           className="absolute inset-x-1.5 -bottom-[calc(0.5rem+1px)] h-0.5 bg-zinc-600"
@@ -355,59 +341,282 @@ function NavbarContent({ pathname }: { pathname: string }) {
                       <AnimatePresence>
                         {activeDropdown === "resources" && (
                           <motion.div
-                            initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                            initial={{ opacity: 0, y: 8, scale: 0.97 }}
                             animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
                             transition={{ duration: 0.2, ease }}
                             className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4"
                           >
-                            <div className="w-[420px] overflow-hidden rounded-2xl border border-zinc-200/80 bg-white p-2 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.18)]">
-                              <div className="flex flex-col gap-1">
-                                {resourceItems.map((item) => {
-                                  const Icon = item.icon;
-                                  return (
-                                    <Link
-                                      key={item.href}
-                                      href={item.href}
-                                      onClick={() => setActiveDropdown(null)}
-                                      className="group relative flex items-start gap-4 rounded-xl p-3.5 transition-all duration-200 hover:bg-zinc-50"
-                                    >
-                                      <div className="mt-0.5 flex size-11 shrink-0 items-center justify-center rounded-lg bg-zinc-100/80 text-zinc-600 transition-all duration-200 group-hover:bg-white group-hover:text-[#172556] group-hover:shadow-sm ring-1 ring-zinc-200/50 group-hover:ring-black/5">
-                                        <Icon className="size-5" />
-                                      </div>
-                                      <div className="flex flex-col">
-                                        <div className="flex items-center gap-1.5">
-                                          <p className="text-[15px] font-semibold text-zinc-900 transition-colors group-hover:text-[#172556]">
-                                            {item.name}
-                                          </p>
-                                          <ArrowUpRight className="size-3.5 opacity-0 -translate-x-1 translate-y-1 text-[#172556] transition-all duration-200 group-hover:opacity-100 group-hover:translate-x-0 group-hover:translate-y-0" />
-                                        </div>
-                                        <p className="mt-1 text-[13px] leading-relaxed text-zinc-500">
-                                          {item.desc}
-                                        </p>
-                                      </div>
-                                    </Link>
-                                  );
-                                })}
-                              </div>
-
-                              <div className="mt-2 rounded-xl bg-zinc-50 p-4 ring-1 ring-inset ring-zinc-900/5">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex flex-col">
-                                    <span className="text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                                      Need support?
-                                    </span>
-                                    <span className="mt-0.5 text-[13px] font-medium text-zinc-900">
-                                      Contact our engineering team
-                                    </span>
-                                  </div>
+                            <div className="w-[300px] overflow-hidden rounded-2xl border border-zinc-200/70 bg-white p-1.5 shadow-[0_20px_60px_-12px_rgba(0,0,0,0.16),0_0_0_1px_rgba(0,0,0,0.03)]">
+                              {resourceItems.map((item) => {
+                                const Icon = item.icon;
+                                return (
                                   <Link
-                                    href="/contact"
+                                    key={item.href}
+                                    href={item.href}
                                     onClick={() => setActiveDropdown(null)}
-                                    className="flex size-8 items-center justify-center rounded-full bg-white text-zinc-600 shadow-sm ring-1 ring-zinc-900/10 transition-all hover:bg-zinc-50 hover:text-[#172556]"
+                                    className="group flex items-start gap-3 rounded-xl px-3.5 py-3.5 transition-colors duration-150 hover:bg-zinc-50"
                                   >
-                                    <ArrowRight className="size-4" />
+                                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#172556]/[0.06] text-[#172556] transition-all duration-150 group-hover:bg-[#172556] group-hover:text-white">
+                                      <Icon className="size-3.5" />
+                                    </div>
+                                    <div className="min-w-0 flex-1">
+                                      <div className="flex items-center justify-between gap-2">
+                                        <span className="text-[14px] font-medium text-zinc-700 transition-colors duration-150 group-hover:text-zinc-900">
+                                          {item.name}
+                                        </span>
+                                        <ArrowUpRight className="size-3.5 shrink-0 text-zinc-300 opacity-0 transition-all duration-150 group-hover:opacity-100 group-hover:text-[#172556]" />
+                                      </div>
+                                      <p className="mt-0.5 text-[12px] leading-relaxed text-zinc-400">
+                                        {item.desc}
+                                      </p>
+                                    </div>
                                   </Link>
+                                );
+                              })}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    )}
+
+                    {/* ── Products dropdown (inline in li) ── */}
+                    {link.dropdownType === "products" && (
+                      <AnimatePresence>
+                        {activeDropdown === "products" && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+                            transition={{ duration: 0.2, ease }}
+                            className="fixed left-1/2 top-16 z-50 -translate-x-1/2 pt-4"
+                          >
+                            <div className="w-[980px] overflow-hidden rounded-2xl border border-zinc-200/70 shadow-[0_20px_60px_-12px_rgba(0,0,0,0.16),0_0_0_1px_rgba(0,0,0,0.03)]">
+                              <div className="flex">
+                                {/* Dark navy sidebar */}
+                                <div className="relative w-[30%] shrink-0 overflow-hidden bg-[#111e3d] px-8 py-8">
+                                  <svg
+                                    aria-hidden="true"
+                                    className="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 opacity-[0.09]"
+                                    viewBox="0 0 200 200"
+                                    fill="none"
+                                  >
+                                    {[28, 56, 84, 112, 140, 168].map((r) => (
+                                      <circle
+                                        key={r}
+                                        cx="200"
+                                        cy="200"
+                                        r={r}
+                                        stroke="white"
+                                        strokeWidth="1"
+                                      />
+                                    ))}
+                                    <circle
+                                      cx="200"
+                                      cy="200"
+                                      r="3"
+                                      fill="white"
+                                      fillOpacity="0.4"
+                                    />
+                                  </svg>
+
+                                  <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.24em] text-white/30">
+                                    Products
+                                  </p>
+
+                                  <div className="flex flex-col">
+                                    {productItems.map((item, idx) => (
+                                      <Link
+                                        key={item.href}
+                                        href={item.href}
+                                        onMouseEnter={() => setActiveIndex(idx)}
+                                        onClick={() => setActiveDropdown(null)}
+                                        className="group flex items-center gap-3 border-b border-white/[0.06] py-[11px] last:border-0 transition-all duration-150"
+                                      >
+                                        <span
+                                          className={cn(
+                                            "w-5 shrink-0 font-mono text-[10px] tabular-nums transition-colors duration-150",
+                                            activeIndex === idx
+                                              ? "text-white/40"
+                                              : "text-white/15",
+                                          )}
+                                        >
+                                          {String(idx + 1).padStart(2, "0")}
+                                        </span>
+                                        <span
+                                          className={cn(
+                                            "flex-1 font-heading text-[15px] font-medium tracking-tight transition-colors duration-150",
+                                            activeIndex === idx
+                                              ? "text-white"
+                                              : "text-white/45 group-hover:text-white/70",
+                                          )}
+                                        >
+                                          {item.name}
+                                        </span>
+                                        <ArrowRight
+                                          className={cn(
+                                            "size-3.5 shrink-0 transition-all duration-150",
+                                            activeIndex === idx
+                                              ? "text-white/45 opacity-100"
+                                              : "opacity-0",
+                                          )}
+                                        />
+                                      </Link>
+                                    ))}
+                                  </div>
+
+                                  <div className="mt-5 border-t border-white/[0.07] pt-5">
+                                    <Link
+                                      href="/products"
+                                      onClick={() => setActiveDropdown(null)}
+                                      className="group inline-flex items-center gap-1.5 text-[11px] font-medium text-white/35 transition-colors hover:text-white/65"
+                                    >
+                                      Browse all products
+                                      <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
+                                    </Link>
+                                  </div>
+                                </div>
+
+                                {/* White detail panel */}
+                                <div className="flex-1 bg-white">
+                                  <AnimatePresence mode="wait">
+                                    <motion.div
+                                      key={activeProduct.href}
+                                      initial={{ opacity: 0, x: 10 }}
+                                      animate={{ opacity: 1, x: 0 }}
+                                      exit={{ opacity: 0 }}
+                                      transition={{
+                                        duration: 0.18,
+                                        ease: [0.16, 1, 0.3, 1],
+                                      }}
+                                      className="flex h-full"
+                                    >
+                                      {/* Image */}
+                                      <div className="relative w-[50%] shrink-0 flex items-center justify-center bg-[#f6f6f4] p-5">
+                                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.75)_0%,transparent_70%)]" />
+                                        <motion.div
+                                          initial={{ opacity: 0, scale: 0.93 }}
+                                          animate={{ opacity: 1, scale: 1 }}
+                                          transition={{
+                                            duration: 0.35,
+                                            ease: [0.16, 1, 0.3, 1],
+                                          }}
+                                          className="relative w-full aspect-square"
+                                        >
+                                          <Image
+                                            src={activeProduct.image}
+                                            alt={activeProduct.name}
+                                            fill
+                                            sizes="20vw"
+                                            className="object-cover drop-shadow-xl"
+                                            priority
+                                          />
+                                        </motion.div>
+                                      </div>
+
+                                      {/* Details */}
+                                      <div className="flex flex-1 flex-col justify-between p-8">
+                                        <div>
+                                          <motion.span
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            transition={{ delay: 0.06 }}
+                                            className="inline-flex rounded-md bg-[#172556]/[0.07] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#172556]"
+                                          >
+                                            {activeProduct.tag}
+                                          </motion.span>
+
+                                          <motion.h3
+                                            initial={{ opacity: 0, y: 5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.1 }}
+                                            className="mt-3 font-heading text-xl font-medium tracking-tight text-zinc-900"
+                                          >
+                                            {activeProduct.name}
+                                          </motion.h3>
+
+                                          <motion.p
+                                            initial={{ opacity: 0, y: 5 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ delay: 0.14 }}
+                                            className="mt-2 text-[13px] leading-relaxed text-zinc-500"
+                                          >
+                                            {activeProduct.desc}
+                                          </motion.p>
+
+                                          {activeProduct.subModels.length >
+                                            0 && (
+                                            <motion.div
+                                              initial={{ opacity: 0 }}
+                                              animate={{ opacity: 1 }}
+                                              transition={{ delay: 0.18 }}
+                                              className="mt-4"
+                                            >
+                                              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-300">
+                                                Available Series
+                                              </p>
+                                              <div className="flex flex-col gap-1">
+                                                {activeProduct.subModels.map(
+                                                  (sub) => (
+                                                    <Link
+                                                      key={sub.name}
+                                                      href={sub.href}
+                                                      onClick={() =>
+                                                        setActiveDropdown(null)
+                                                      }
+                                                      className="group/sub flex items-center justify-between rounded-lg border border-transparent bg-zinc-50 px-3 py-2 transition-all duration-150 hover:border-[#172556]/12 hover:bg-[#172556]/[0.04]"
+                                                    >
+                                                      <div className="flex items-center gap-2">
+                                                        <span className="text-[12px] font-semibold text-zinc-700 transition-colors duration-150 group-hover/sub:text-[#172556]">
+                                                          {sub.name}
+                                                        </span>
+                                                        <span className="h-2.5 w-px bg-zinc-200" />
+                                                        <span className="font-mono text-[10px] text-zinc-400">
+                                                          {sub.spec}
+                                                        </span>
+                                                      </div>
+                                                      <ArrowRight className="size-3 text-zinc-300 transition-all duration-150 group-hover/sub:translate-x-0.5 group-hover/sub:text-[#172556]" />
+                                                    </Link>
+                                                  ),
+                                                )}
+                                              </div>
+                                            </motion.div>
+                                          )}
+
+                                          {activeProduct.subModels.length ===
+                                            0 && (
+                                            <motion.p
+                                              initial={{ opacity: 0 }}
+                                              animate={{ opacity: 1 }}
+                                              transition={{ delay: 0.18 }}
+                                              className="mt-3 text-[12px] text-zinc-400"
+                                            >
+                                              Multiple configurations available
+                                              — visit the product page.
+                                            </motion.p>
+                                          )}
+                                        </div>
+
+                                        <motion.div
+                                          initial={{ opacity: 0 }}
+                                          animate={{ opacity: 1 }}
+                                          transition={{ delay: 0.22 }}
+                                          className="pt-4"
+                                        >
+                                          <Link
+                                            href={activeProduct.href}
+                                            onClick={() =>
+                                              setActiveDropdown(null)
+                                            }
+                                            className="group inline-flex items-center gap-2 text-sm font-semibold text-[#172556] transition-colors hover:text-[#1e3070]"
+                                          >
+                                            View full details
+                                            <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                                          </Link>
+                                        </motion.div>
+                                      </div>
+                                    </motion.div>
+                                  </AnimatePresence>
                                 </div>
                               </div>
                             </div>
@@ -424,7 +633,7 @@ function NavbarContent({ pathname }: { pathname: string }) {
               <button
                 className={cn(
                   "md:hidden p-2 -mr-2 transition-colors duration-300",
-                  isTransparent ? "text-white" : "text-zinc-900"
+                  isTransparent ? "text-white" : "text-zinc-900",
                 )}
                 onClick={() => setMobileMenuOpen(true)}
                 aria-label="Open mobile menu"
@@ -434,211 +643,6 @@ function NavbarContent({ pathname }: { pathname: string }) {
             </div>
           </nav>
         </div>
-
-        {/* Products mega menu */}
-        <AnimatePresence>
-          {activeDropdown === "products" && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="absolute left-0 right-0 top-full hidden md:block"
-              onMouseEnter={() => handleDropdownEnter("products")}
-              onMouseLeave={handleDropdownLeave}
-            >
-              <motion.div
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -6 }}
-                transition={{ duration: 0.2, ease }}
-                className="border-b border-zinc-100 bg-white shadow-[0_16px_48px_-12px_rgba(0,0,0,0.08)]"
-              >
-                <div className="mx-auto max-w-7xl px-6 md:px-10">
-                  <div className="grid grid-cols-12 gap-0">
-                    {/* ── Left: product list ── */}
-                    <div className="col-span-3 border-r border-zinc-100 py-5 pr-4">
-                      <div className="flex flex-col gap-0.5">
-                        {productItems.map((item, idx) => (
-                          <Link
-                            key={item.href}
-                            href={item.href}
-                            onMouseEnter={() => setActiveIndex(idx)}
-                            className={cn(
-                              "group flex items-center gap-3.5 rounded-lg px-3 py-3 transition-all duration-150",
-                              activeIndex === idx
-                                ? "bg-zinc-50"
-                                : "hover:bg-zinc-50/60"
-                            )}
-                          >
-                            <div
-                              className={cn(
-                                "relative size-10 shrink-0 overflow-hidden rounded-lg border transition-all duration-150",
-                                activeIndex === idx
-                                  ? "border-zinc-200 shadow-sm"
-                                  : "border-zinc-100"
-                              )}
-                            >
-                              <Image
-                                src={item.image}
-                                alt={item.name}
-                                fill
-                                quality={100}
-                                priority
-                                sizes="100vw"
-                                className="object-cover"
-                              />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <p
-                                className={cn(
-                                  "truncate text-sm font-medium transition-colors duration-150",
-                                  activeIndex === idx
-                                    ? "text-zinc-900"
-                                    : "text-zinc-600"
-                                )}
-                              >
-                                {item.name}
-                              </p>
-                              <p className="truncate text-xs text-zinc-400">
-                                {item.tag}
-                              </p>
-                            </div>
-                            <ChevronDown
-                              className={cn(
-                                "size-3.5 -rotate-90 shrink-0 transition-all duration-150",
-                                activeIndex === idx
-                                  ? "text-zinc-400 opacity-100"
-                                  : "opacity-0"
-                              )}
-                            />
-                          </Link>
-                        ))}
-                      </div>
-
-                      <div className="mt-3 border-t border-zinc-100 pt-3 px-3">
-                        <Link
-                          href="/products"
-                          className="group inline-flex items-center gap-1.5 text-[13px] font-medium text-zinc-400 transition-colors hover:text-[#172556]"
-                        >
-                          View all products
-                          <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
-                        </Link>
-                      </div>
-                    </div>
-
-                    {/* ── Right: detail panel ── */}
-                    <div className="col-span-9 py-5 pl-6">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={activeProduct.href}
-                          initial={{ opacity: 0, x: 4 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -4 }}
-                          transition={{ duration: 0.15, ease }}
-                          className="grid h-full grid-cols-9 gap-6"
-                        >
-                          {/* Image + overview */}
-                          <div className="col-span-6 flex flex-col">
-                            <div className="overflow-hidden rounded-xl border border-zinc-100 bg-zinc-50">
-                              <div className="relative aspect-[4/3] w-full">
-                                <Image
-                                  src={activeProduct.image}
-                                  alt={activeProduct.name}
-                                  fill
-                                  sizes="280px"
-                                  className="object-cover"
-                                  priority
-                                />
-                              </div>
-                            </div>
-                            <div className="mt-3.5 flex-1">
-                              <p className="text-[13px] leading-relaxed text-zinc-500">
-                                {activeProduct.desc}
-                              </p>
-                              <Link
-                                href={activeProduct.href}
-                                className="mt-2.5 inline-flex items-center gap-1 text-[13px] font-semibold text-[#172556] transition-colors hover:text-[#1e3070]"
-                              >
-                                View product
-                                <ArrowUpRight className="size-3.5" />
-                              </Link>
-                            </div>
-                          </div>
-
-                          {/* Sub-models / details */}
-                          <div className="col-span-3 flex flex-col">
-                            <div className="mb-3.5 flex items-center justify-between">
-                              <h3 className="font-heading text-base font-semibold text-zinc-900">
-                                {activeProduct.name}
-                              </h3>
-                              <span className="rounded-full bg-zinc-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
-                                {activeProduct.tag}
-                              </span>
-                            </div>
-
-                            {activeProduct.subModels.length > 0 ? (
-                              <div className="flex flex-col gap-2">
-                                {activeProduct.subModels.map((sub) => (
-                                  <Link
-                                    key={sub.name}
-                                    href={sub.href}
-                                    className="group flex items-center justify-between rounded-lg border border-zinc-100 bg-zinc-50/50 px-4 py-3 transition-all duration-150 hover:border-zinc-200 hover:bg-white hover:shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
-                                  >
-                                    <div>
-                                      <p className="text-sm font-medium text-zinc-800 transition-colors group-hover:text-[#172556]">
-                                        {sub.name}
-                                      </p>
-                                      <p className="mt-0.5 text-xs text-zinc-400">
-                                        {sub.spec}
-                                      </p>
-                                    </div>
-                                    <ArrowRight className="size-3.5 text-zinc-300 transition-all duration-150 group-hover:translate-x-0.5 group-hover:text-[#172556]" />
-                                  </Link>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="flex flex-1 flex-col justify-center rounded-xl bg-zinc-50/80 px-5 py-6">
-                                <p className="text-sm leading-relaxed text-zinc-500">
-                                  Multiple configurations available. Visit the
-                                  product page for full specifications and
-                                  ordering options.
-                                </p>
-                                <Link
-                                  href={activeProduct.href}
-                                  className="mt-3 inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#172556] transition-colors hover:text-[#1e3070]"
-                                >
-                                  See all configurations
-                                  <ArrowRight className="size-3.5" />
-                                </Link>
-                              </div>
-                            )}
-
-                            {/* Contact nudge */}
-                            <div className="mt-auto pt-3">
-                              <Link
-                                href="/contact"
-                                className="flex items-center justify-between rounded-lg bg-zinc-50 px-4 py-3 transition-all duration-150 hover:bg-[#172556]/[0.04]"
-                              >
-                                <span className="text-[13px] text-zinc-500">
-                                  Need a custom configuration?
-                                </span>
-                                <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-[#172556]">
-                                  Let&apos;s talk
-                                  <ArrowUpRight className="size-3" />
-                                </span>
-                              </Link>
-                            </div>
-                          </div>
-                        </motion.div>
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
 
         {/* Mobile Menu */}
         <AnimatePresence>
@@ -739,21 +743,6 @@ function NavbarContent({ pathname }: { pathname: string }) {
           )}
         </AnimatePresence>
       </motion.header>
-
-      {/* Overlay backdrop — products mega menu only */}
-      <AnimatePresence>
-        {activeDropdown === "products" && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/5 backdrop-blur-[2px]"
-            onClick={() => setActiveDropdown(null)}
-            style={{ top: "3.5rem" }}
-          />
-        )}
-      </AnimatePresence>
     </>
   );
 }
