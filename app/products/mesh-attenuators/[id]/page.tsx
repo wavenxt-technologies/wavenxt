@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, notFound } from "next/navigation";
@@ -790,35 +790,20 @@ export default function MeshAttenuatorModelPage() {
 /* ── Software Request Form (used inside Sheet) ─────────────────────── */
 
 function SoftwareForm({ product }: { product: string }) {
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
+  const [submitted, setSubmitted] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setStatus("loading");
-    const fd = new FormData(e.currentTarget);
-    try {
-      const res = await fetch("/api/software-request", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fd.get("name"),
-          email: fd.get("email"),
-          phone: fd.get("phone"),
-          requestType: fd.get("requestType"),
-          message: fd.get("message"),
-          product,
-        }),
-      });
-      if (!res.ok) throw new Error();
-      setStatus("success");
-    } catch {
-      setStatus("error");
-    }
+    const form = formRef.current;
+    if (!form) return;
+    const spm = form.querySelector<HTMLInputElement>("#zc_spmSubmit");
+    if (spm) spm.remove();
+    form.submit();
+    setSubmitted(true);
   }
 
-  if (status === "success") {
+  if (submitted) {
     return (
       <div className="flex flex-1 flex-col items-center justify-center text-center px-4">
         <div className="flex size-14 items-center justify-center rounded-2xl bg-emerald-50">
@@ -850,41 +835,81 @@ function SoftwareForm({ product }: { product: string }) {
         </p>
       </SheetHeader>
 
-      <form className="mt-6 flex flex-1 flex-col gap-4" onSubmit={handleSubmit}>
+      <form
+        ref={formRef}
+        action="https://vtzl-zgph.maillist-manage.in/weboptin.zc"
+        method="POST"
+        target="_blank"
+        onSubmit={handleSubmit}
+        className="mt-6 flex flex-1 flex-col gap-4"
+      >
+        <input type="hidden" name="zc_trackCode" value="ZCFORMVIEW" />
+        <input type="hidden" name="viewFrom" value="URL_ACTION" />
+        <input type="hidden" name="submitType" value="optinCustomView" />
+        <input type="hidden" name="lD" value="1492cbfa9dc6423c" />
+        <input type="hidden" name="emailReportId" value="" />
+        <input type="hidden" name="zx" value="1dfc37c691" />
+        <input type="hidden" name="zcvers" value="2.0" />
+        <input type="hidden" name="oldListIds" value="" />
+        <input type="hidden" name="mode" value="OptinCreateView" />
+        <input type="hidden" name="zcld" value="1492cbfa9dc6423c" />
+        <input type="hidden" name="zctd" value="1492cbfa9dbb2e31" />
+        <input type="hidden" name="zc_formIx" value="3z1c59a72ed18b0ba7967f14f14605e7bba44cf78ad8b7e12c4ea3069eb0340b30" />
+        <input type="hidden" name="scriptless" value="yes" />
+        <input type="hidden" id="zc_spmSubmit" name="zc_spmSubmit" value="ZCSPMSUBMIT" />
+
         <div className="grid gap-4 sm:grid-cols-2">
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-zinc-700">
-              Full Name
+              First Name <span className="text-red-500">*</span>
             </label>
             <input
-              name="name"
+              name="FIRSTNAME"
               type="text"
               required
+              maxLength={100}
               className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
-              placeholder="John Doe"
+              placeholder="John"
             />
           </div>
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-zinc-700">
-              Phone Number
+              Last Name <span className="text-red-500">*</span>
             </label>
             <input
-              name="phone"
-              type="tel"
+              name="LASTNAME"
+              type="text"
+              required
+              maxLength={50}
               className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
-              placeholder="+1 (555) 000-0000"
+              placeholder="Doe"
             />
           </div>
         </div>
 
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-zinc-700">
-            Work Email
+            Company Name <span className="text-red-500">*</span>
           </label>
           <input
-            name="email"
+            name="COMPANYNAME"
+            type="text"
+            required
+            maxLength={100}
+            className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
+            placeholder="Acme Corp"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-zinc-700">
+            Contact Email <span className="text-red-500">*</span>
+          </label>
+          <input
+            name="CONTACT_EMAIL"
             type="email"
             required
+            maxLength={100}
             className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
             placeholder="john@company.com"
           />
@@ -892,25 +917,40 @@ function SoftwareForm({ product }: { product: string }) {
 
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-zinc-700">
-            What do you need?
+            Phone <span className="text-red-500">*</span>
+          </label>
+          <input
+            name="PHONE"
+            type="tel"
+            required
+            maxLength={20}
+            className="w-full rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
+            placeholder="+1 (555) 000-0000"
+          />
+        </div>
+
+        <div className="space-y-1.5">
+          <label className="text-xs font-medium text-zinc-700">
+            Operating System
           </label>
           <select
-            name="requestType"
+            name="CONTACT_CF6"
             className="w-full appearance-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
           >
-            <option>Software GUI</option>
-            <option>REST API Documentation</option>
-            <option>Other Support</option>
+            <option value="Windows 64-bit">Windows 64-bit</option>
+            <option value="Linux">Linux</option>
+            <option value="macOS">macOS</option>
           </select>
         </div>
 
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-zinc-700">
-            Message <span className="text-zinc-400">(optional)</span>
+            Note <span className="text-zinc-400">(optional)</span>
           </label>
           <textarea
-            name="message"
+            name="NOTE"
             rows={3}
+            maxLength={300}
             className="w-full resize-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 placeholder:text-zinc-400 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
             placeholder="Anything specific about your setup or requirements..."
           />
@@ -919,22 +959,14 @@ function SoftwareForm({ product }: { product: string }) {
         <div className="mt-auto pt-4">
           <button
             type="submit"
-            disabled={status === "loading"}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#172556]/15 transition-colors hover:bg-[#1e3070] disabled:opacity-60"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-[#172556]/15 transition-colors hover:bg-[#1e3070]"
           >
-            {status === "loading" ? "Sending..." : "Submit Request"}
-            {status !== "loading" && <ArrowUpRight className="size-4" />}
+            Submit Request
+            <ArrowUpRight className="size-4" />
           </button>
-          {status === "error" && (
-            <p className="mt-3 text-center text-sm text-red-500">
-              Something went wrong. Please try again.
-            </p>
-          )}
-          {status === "idle" && (
-            <p className="mt-3 text-center text-[11px] text-zinc-400">
-              We typically respond within 24 hours.
-            </p>
-          )}
+          <p className="mt-3 text-center text-[11px] text-zinc-400">
+            We typically respond within 24 hours.
+          </p>
         </div>
       </form>
     </>

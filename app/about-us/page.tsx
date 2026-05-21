@@ -389,7 +389,7 @@ export default function AboutUs() {
                   whileTap={{ scale: 0.985 }}
                 >
                   <Link
-                    href="/contact"
+                    href="/resources/blogs"
                     className="inline-flex items-center gap-2 rounded-xl bg-[#172556] px-6 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.5)] transition-colors hover:bg-[#1e3070]"
                   >
                     Our Blogs
