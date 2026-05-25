@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
+import posthog from "posthog-js";
 import { Mail, Phone, ArrowUpRight, CheckCircle } from "lucide-react";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
@@ -66,14 +67,23 @@ export default function SupportPage() {
           name: fd.get("name"),
           email: fd.get("email"),
           phone: fd.get("phone"),
+          companyName: fd.get("companyName"),
+          companyLocation: fd.get("companyLocation"),
           subject: fd.get("subject"),
           message: fd.get("message"),
         }),
       });
       if (!res.ok) throw new Error();
       setStatus("success");
-    } catch {
+      posthog.capture("contact_form_submitted", {
+        subject: fd.get("subject"),
+        company_name: fd.get("companyName"),
+        company_location: fd.get("companyLocation"),
+      });
+    } catch (err) {
       setStatus("error");
+      posthog.captureException(err);
+      posthog.capture("contact_form_errored");
     }
   }
 
@@ -197,19 +207,53 @@ export default function SupportPage() {
                   htmlFor="phone"
                   className="text-sm font-medium text-zinc-700"
                 >
-                  Phone{" "}
-                  <span className="font-normal text-zinc-400">(Optional)</span>
+                  Phone
                 </label>
                 <input
                   id="phone"
                   name="phone"
                   type="tel"
+                  required
                   className={fieldClass}
                   placeholder="+00 00000 00000"
                 />
               </motion.div>
 
               <motion.div variants={fadeUp} custom={4}>
+                <label
+                  htmlFor="companyName"
+                  className="text-sm font-medium text-zinc-700"
+                >
+                  Company Name
+                </label>
+                <input
+                  id="companyName"
+                  name="companyName"
+                  type="text"
+                  required
+                  className={fieldClass}
+                  placeholder="Your company name"
+                />
+              </motion.div>
+
+              <motion.div variants={fadeUp} custom={5}>
+                <label
+                  htmlFor="companyLocation"
+                  className="text-sm font-medium text-zinc-700"
+                >
+                  Company Location
+                </label>
+                <input
+                  id="companyLocation"
+                  name="companyLocation"
+                  type="text"
+                  required
+                  className={fieldClass}
+                  placeholder="City, Country"
+                />
+              </motion.div>
+
+              <motion.div variants={fadeUp} custom={6}>
                 <label
                   htmlFor="subject"
                   className="text-sm font-medium text-zinc-700"
@@ -228,7 +272,7 @@ export default function SupportPage() {
 
               <motion.div
                 variants={fadeUp}
-                custom={5}
+                custom={7}
                 className="md:col-span-2"
               >
                 <label
@@ -249,7 +293,7 @@ export default function SupportPage() {
 
               <motion.div
                 variants={fadeUp}
-                custom={6}
+                custom={9}
                 className="md:col-span-2"
               >
                 <motion.button
@@ -332,7 +376,7 @@ export default function SupportPage() {
             <div className="aspect-4/3 w-full">
               <iframe
                 title="Wavenxt Location Map"
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.560391827154!2d77.58399237578841!3d13.063630612852435!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae18223d26c1f7%3A0xe2ff1b42fcbf6c3a!2sPremier%20Measurement%20Solutions%20Private%20Limited!5e0!3m2!1sen!2sin!4v1775478059147!5m2!1sen!2sin"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3655.50447002028!2d77.58505916438378!3d13.060210396071286!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae190063326461%3A0xf8207aa7a8b242e5!2sWaveNXT%20Technologies!5e0!3m2!1sen!2sin!4v1779711211153!5m2!1sen!2sin"
                 className="h-full w-full border-0"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"

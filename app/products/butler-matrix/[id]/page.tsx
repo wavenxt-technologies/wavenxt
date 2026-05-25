@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, notFound } from "next/navigation";
+import posthog from "posthog-js";
 import {
   ArrowUpRight,
   FileDown,
@@ -167,7 +168,15 @@ export default function ButlerMatrixModelPage() {
                 custom={4}
                 className="mt-8 flex flex-wrap gap-3"
               >
-                <Link href="/contact">
+                <Link
+                  href="/contact"
+                  onClick={() =>
+                    posthog.capture("product_quote_requested", {
+                      product_model: model.model,
+                      product_category: "butler_matrix",
+                    })
+                  }
+                >
                   <motion.span
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
@@ -509,6 +518,12 @@ export default function ButlerMatrixModelPage() {
                     href={`/datasheet/bulter-matrix/${model.model}.pdf`}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      posthog.capture("product_datasheet_downloaded", {
+                        product_model: model.model,
+                        product_category: "butler_matrix",
+                      })
+                    }
                     className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200/80 bg-white px-5 py-3 text-sm font-medium text-zinc-700 shadow-[0_1px_0_0_rgba(0,0,0,0.03)] transition-all hover:shadow-sm"
                   >
                     <FileDown className="size-4 text-zinc-400" /> Download

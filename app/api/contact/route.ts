@@ -1,13 +1,14 @@
 import nodemailer from "nodemailer";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { name, email, phone, subject, message } = body;
+    const { name, email, phone, companyName, companyLocation, subject, message } = body;
 
-    if (!name || !email || !subject || !message) {
+    if (!name || !email || !phone || !companyName || !companyLocation || !subject || !message) {
       return Response.json(
-        { error: "Name, email, subject, and message are required." },
+        { error: "All fields are required." },
         { status: 400 },
       );
     }
@@ -35,11 +36,24 @@ export async function POST(request: Request) {
         <table style="border-collapse:collapse;width:100%;max-width:600px;">
           <tr><td style="padding:8px 12px;font-weight:600;color:#555;border-bottom:1px solid #eee;">Name</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${name}</td></tr>
           <tr><td style="padding:8px 12px;font-weight:600;color:#555;border-bottom:1px solid #eee;">Email</td><td style="padding:8px 12px;border-bottom:1px solid #eee;"><a href="mailto:${email}">${email}</a></td></tr>
-          <tr><td style="padding:8px 12px;font-weight:600;color:#555;border-bottom:1px solid #eee;">Phone</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${phone || "—"}</td></tr>
+          <tr><td style="padding:8px 12px;font-weight:600;color:#555;border-bottom:1px solid #eee;">Phone</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${phone}</td></tr>
+          <tr><td style="padding:8px 12px;font-weight:600;color:#555;border-bottom:1px solid #eee;">Company Name</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${companyName}</td></tr>
+          <tr><td style="padding:8px 12px;font-weight:600;color:#555;border-bottom:1px solid #eee;">Company Location</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${companyLocation}</td></tr>
           <tr><td style="padding:8px 12px;font-weight:600;color:#555;border-bottom:1px solid #eee;">Subject</td><td style="padding:8px 12px;border-bottom:1px solid #eee;">${subject}</td></tr>
           <tr><td style="padding:8px 12px;font-weight:600;color:#555;vertical-align:top;">Message</td><td style="padding:8px 12px;white-space:pre-wrap;">${message}</td></tr>
         </table>
       `,
+    });
+
+    const posthog = getPostHogClient();
+    posthog.capture({
+      distinctId: email,
+      event: "contact_email_sent",
+      properties: {
+        subject,
+        company_name: companyName,
+        company_location: companyLocation,
+      },
     });
 
     return Response.json({ success: true });

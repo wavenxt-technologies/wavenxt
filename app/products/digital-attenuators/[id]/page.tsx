@@ -4,6 +4,7 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useParams, notFound } from "next/navigation";
+import posthog from "posthog-js";
 import {
   ArrowUpRight,
   FileDown,
@@ -383,7 +384,16 @@ export default function DigitalAttenuatorProduct() {
                 custom={4}
                 className="mt-8 flex flex-wrap gap-3"
               >
-                <Link href="/contact">
+                <Link
+                  href="/contact"
+                  onClick={() =>
+                    posthog.capture("product_quote_requested", {
+                      product_model: m.raw,
+                      product_category: "digital_attenuator",
+                      channels: m.ch,
+                    })
+                  }
+                >
                   <motion.span
                     whileHover={{ y: -2 }}
                     whileTap={{ scale: 0.98 }}
@@ -733,6 +743,13 @@ export default function DigitalAttenuatorProduct() {
                       href={`/datasheet/digital-attenuators/${m.ch}/${m.raw}.pdf`}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={() =>
+                        posthog.capture("product_datasheet_downloaded", {
+                          product_model: m.raw,
+                          product_category: "digital_attenuator",
+                          channels: m.ch,
+                        })
+                      }
                       className="group flex items-center gap-3.5 rounded-xl border border-zinc-100 bg-zinc-50/60 px-4 py-3.5 transition-all hover:border-zinc-200 hover:bg-white hover:shadow-sm"
                     >
                       <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[#172556]/5 text-[#172556] transition-colors group-hover:bg-[#172556] group-hover:text-white">

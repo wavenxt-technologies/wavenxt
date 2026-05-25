@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { Play, ChevronRight, Loader2, Lock, CheckCircle2 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import posthog from "posthog-js";
 import {
   Sheet,
   SheetContent,
@@ -254,6 +255,21 @@ export function VideoGate({
 
     setSubmitting(true);
     submitToZoho(form);
+    posthog.capture("webinar_registration_submitted", {
+      webinar_id: webinarId,
+      webinar_title: title,
+      company: form.company,
+      job_title: form.jobTitle,
+      country: form.country,
+    });
+    posthog.identify(form.email, {
+      email: form.email,
+      first_name: form.firstName,
+      last_name: form.lastName,
+      company: form.company,
+      job_title: form.jobTitle,
+      country: form.country,
+    });
 
     setTimeout(() => {
       try {
@@ -384,6 +400,10 @@ export function VideoGate({
                 </div>
                 <button
                   onClick={() => {
+                    posthog.capture("webinar_unlocked", {
+                      webinar_id: webinarId,
+                      webinar_title: title,
+                    });
                     setSheetOpen(false);
                     setTimeout(() => setUnlocked(true), 250);
                   }}
