@@ -4,6 +4,13 @@ import { useState, type FormEvent } from "react";
 import { motion } from "framer-motion";
 import posthog from "posthog-js";
 import { Mail, Phone, ArrowUpRight, CheckCircle } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
 
@@ -50,41 +57,28 @@ const contactDetails = [
 const fieldClass =
   "mt-2 w-full rounded-xl border border-zinc-300/80 bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-200 focus:border-[#172556] focus:bg-white focus:ring-2 focus:ring-[#172556]/10";
 
-export default function SupportPage() {
-  const [status, setStatus] = useState<
-    "idle" | "loading" | "success" | "error"
-  >("idle");
+const solutionOptions = [
+  "Digital Attenuators",
+  "Mesh Attenuators",
+  "Matrix Systems",
+  "Butler Matrix",
+  "Custom Design",
+];
 
-  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
-    e.preventDefault();
-    setStatus("loading");
+export default function SupportPage() {
+  const [status, setStatus] = useState<"idle" | "success">("idle");
+  const [solution, setSolution] = useState("");
+
+  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    // Do not preventDefault — the form posts to Zoho via the hidden iframe.
     const fd = new FormData(e.currentTarget);
-    try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: fd.get("name"),
-          email: fd.get("email"),
-          phone: fd.get("phone"),
-          companyName: fd.get("companyName"),
-          companyLocation: fd.get("companyLocation"),
-          subject: fd.get("subject"),
-          message: fd.get("message"),
-        }),
-      });
-      if (!res.ok) throw new Error();
-      setStatus("success");
-      posthog.capture("contact_form_submitted", {
-        subject: fd.get("subject"),
-        company_name: fd.get("companyName"),
-        company_location: fd.get("companyLocation"),
-      });
-    } catch (err) {
-      setStatus("error");
-      posthog.captureException(err);
-      posthog.capture("contact_form_errored");
-    }
+    setStatus("success");
+    posthog.capture("contact_form_submitted", {
+      subject: fd.get("JOB_TITLE"),
+      company_name: fd.get("COMPANYNAME"),
+      company_location: fd.get("COUNTRY"),
+      solutions: fd.get("CONTACT_CF5"),
+    });
   }
 
   return (
@@ -164,20 +158,28 @@ export default function SupportPage() {
               </div>
             )}
 
+            {/*
+              Form posts directly to Zoho Campaigns via a hidden iframe so the
+              page never navigates away. Field names match Zoho's expected keys.
+            */}
             <form
+              action="https://vtzl-zgph.maillist-manage.in/weboptin.zc"
+              method="POST"
+              target="zoho-signup-frame"
               className={`mt-8 grid gap-5 md:grid-cols-2 ${status === "success" ? "hidden" : ""}`}
               onSubmit={handleSubmit}
             >
+              {/* ── Visible fields ── */}
               <motion.div variants={fadeUp} custom={1}>
                 <label
-                  htmlFor="name"
+                  htmlFor="FIRSTNAME"
                   className="text-sm font-medium text-zinc-700"
                 >
                   Name
                 </label>
                 <input
-                  id="name"
-                  name="name"
+                  id="FIRSTNAME"
+                  name="FIRSTNAME"
                   type="text"
                   required
                   className={fieldClass}
@@ -187,14 +189,14 @@ export default function SupportPage() {
 
               <motion.div variants={fadeUp} custom={2}>
                 <label
-                  htmlFor="email"
+                  htmlFor="CONTACT_EMAIL"
                   className="text-sm font-medium text-zinc-700"
                 >
                   Email
                 </label>
                 <input
-                  id="email"
-                  name="email"
+                  id="CONTACT_EMAIL"
+                  name="CONTACT_EMAIL"
                   type="email"
                   required
                   className={fieldClass}
@@ -204,14 +206,14 @@ export default function SupportPage() {
 
               <motion.div variants={fadeUp} custom={3}>
                 <label
-                  htmlFor="phone"
+                  htmlFor="PHONE"
                   className="text-sm font-medium text-zinc-700"
                 >
                   Phone
                 </label>
                 <input
-                  id="phone"
-                  name="phone"
+                  id="PHONE"
+                  name="PHONE"
                   type="tel"
                   required
                   className={fieldClass}
@@ -221,14 +223,14 @@ export default function SupportPage() {
 
               <motion.div variants={fadeUp} custom={4}>
                 <label
-                  htmlFor="companyName"
+                  htmlFor="COMPANYNAME"
                   className="text-sm font-medium text-zinc-700"
                 >
                   Company Name
                 </label>
                 <input
-                  id="companyName"
-                  name="companyName"
+                  id="COMPANYNAME"
+                  name="COMPANYNAME"
                   type="text"
                   required
                   className={fieldClass}
@@ -238,14 +240,14 @@ export default function SupportPage() {
 
               <motion.div variants={fadeUp} custom={5}>
                 <label
-                  htmlFor="companyLocation"
+                  htmlFor="COUNTRY"
                   className="text-sm font-medium text-zinc-700"
                 >
                   Company Location
                 </label>
                 <input
-                  id="companyLocation"
-                  name="companyLocation"
+                  id="COUNTRY"
+                  name="COUNTRY"
                   type="text"
                   required
                   className={fieldClass}
@@ -254,15 +256,39 @@ export default function SupportPage() {
               </motion.div>
 
               <motion.div variants={fadeUp} custom={6}>
+                <label className="text-sm font-medium text-zinc-700">
+                  Solutions
+                </label>
+                {/* Hidden input carries the value in the native form POST */}
+                <input type="hidden" name="CONTACT_CF5" value={solution} />
+                <Select value={solution} onValueChange={(v) => setSolution(v ?? "")} required>
+                  <SelectTrigger className="mt-2 w-full rounded-xl border border-zinc-300/80 bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 outline-none transition-all duration-200 focus:border-[#172556] focus:bg-white focus:ring-2 focus:ring-[#172556]/10 data-placeholder:text-zinc-400">
+                    <SelectValue placeholder="Select a solution" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {solutionOptions.map((opt) => (
+                      <SelectItem key={opt} value={opt}>
+                        {opt}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </motion.div>
+
+              <motion.div
+                variants={fadeUp}
+                custom={7}
+                className="md:col-span-2"
+              >
                 <label
-                  htmlFor="subject"
+                  htmlFor="JOB_TITLE"
                   className="text-sm font-medium text-zinc-700"
                 >
                   Subject
                 </label>
                 <input
-                  id="subject"
-                  name="subject"
+                  id="JOB_TITLE"
+                  name="JOB_TITLE"
                   type="text"
                   required
                   className={fieldClass}
@@ -272,24 +298,54 @@ export default function SupportPage() {
 
               <motion.div
                 variants={fadeUp}
-                custom={7}
+                custom={8}
                 className="md:col-span-2"
               >
                 <label
-                  htmlFor="message"
+                  htmlFor="NOTE"
                   className="text-sm font-medium text-zinc-700"
                 >
                   Message
                 </label>
                 <textarea
-                  id="message"
-                  name="message"
+                  id="NOTE"
+                  name="NOTE"
                   required
                   rows={6}
                   className={`${fieldClass} resize-none`}
                   placeholder="Tell us about your requirement or issue..."
                 />
               </motion.div>
+
+              {/* ── Zoho required hidden fields ── */}
+              <input type="hidden" name="zc_trackCode" value="ZCFORMVIEW" />
+              <input type="hidden" name="viewFrom" value="URL_ACTION" />
+              <input type="hidden" name="submitType" value="optinCustomView" />
+              <input type="hidden" name="lD" value="1492cbfa9dc0a5ba" />
+              <input type="hidden" name="emailReportId" value="" />
+              <input type="hidden" name="zx" value="1dfc37c691" />
+              <input type="hidden" name="zcvers" value="2.0" />
+              <input type="hidden" name="oldListIds" value="" />
+              <input type="hidden" name="mode" value="OptinCreateView" />
+              <input type="hidden" name="zcld" value="1492cbfa9dc0a5ba" />
+              <input type="hidden" name="zctd" value="1492cbfa9dbb2e31" />
+              <input type="hidden" name="document_domain" value="" />
+              <input
+                type="hidden"
+                name="zc_Url"
+                value="vtzl-zgph.maillist-manage.in"
+              />
+              <input type="hidden" name="new_optin_response_in" value="1" />
+              <input
+                type="hidden"
+                name="duplicate_optin_response_in"
+                value="0"
+              />
+              <input
+                type="hidden"
+                name="zc_formIx"
+                value="3z9aec480a2f989d896f5f16b6a5c9270d1bf5144ba7f6d0ba5bfe7597ceb4bc5b"
+              />
 
               <motion.div
                 variants={fadeUp}
@@ -298,18 +354,12 @@ export default function SupportPage() {
               >
                 <motion.button
                   type="submit"
-                  disabled={status === "loading"}
                   whileHover={{ scale: 1.015 }}
                   whileTap={{ scale: 0.985 }}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#172556] px-7 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.5)] transition-colors hover:bg-[#1e3070] disabled:opacity-60"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#172556] px-7 py-3 text-sm font-medium text-white shadow-[0_10px_24px_-10px_rgba(23,37,86,0.5)] transition-colors hover:bg-[#1e3070]"
                 >
-                  {status === "loading" ? "Sending..." : "Submit Inquiry"}
+                  Submit Inquiry
                 </motion.button>
-                {status === "error" && (
-                  <p className="mt-2 text-sm text-red-500">
-                    Something went wrong. Please try again.
-                  </p>
-                )}
               </motion.div>
             </form>
           </motion.div>
@@ -479,6 +529,9 @@ export default function SupportPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* Hidden iframe — receives Zoho's response so the page never navigates */}
+      <iframe name="zoho-signup-frame" style={{ display: "none" }} />
     </div>
   );
 }
