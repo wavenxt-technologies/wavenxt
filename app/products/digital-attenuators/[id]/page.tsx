@@ -924,8 +924,23 @@ export default function DigitalAttenuatorProduct() {
 
 /* ── Software Request Form (used inside Sheet) ─────────────────────── */
 
+const softwareFiles: Record<string, { href: string; label: string; meta: string } | null> = {
+  "Windows 64-bit": {
+    href: "/software/MT-Attenuator_1.7.1_x64_win.zip",
+    label: "Download for Windows",
+    meta: "MT-Attenuator_1.7.1_x64_win · ZIP",
+  },
+  Linux: {
+    href: "/software/MT%20Attenuator_1.7.1_linux.deb",
+    label: "Download for Linux",
+    meta: "MT-Attenuator_1.7.1_linux · DEB",
+  },
+  macOS: null,
+};
+
 function SoftwareForm({ product }: { product: string }) {
   const [submitted, setSubmitted] = useState(false);
+  const [selectedOS, setSelectedOS] = useState("Windows 64-bit");
   const formRef = useRef<HTMLFormElement>(null);
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -955,26 +970,28 @@ function SoftwareForm({ product }: { product: string }) {
           We&apos;ll send the {product} software and documentation to your email
           within 24 hours.
         </p>
-        <div className="mt-8 w-full max-w-xs">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
-            Available now
-          </p>
-          <a
-            href="/software/MT-Attenuator_x64.zip"
-            download
-            className="group flex w-full items-center gap-3.5 rounded-xl border border-zinc-200 bg-white px-5 py-4 text-left shadow-sm transition-all hover:border-[#172556]/30 hover:shadow-md"
-          >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#172556]/5 text-[#172556] transition-colors group-hover:bg-[#172556] group-hover:text-white">
-              <Download className="size-5" />
-            </span>
-            <div className="min-w-0 flex-1">
-              <p className="text-sm font-semibold text-zinc-900">
-                Download for Windows
-              </p>
-              <p className="text-xs text-zinc-400">MT-Attenuator_x64</p>
-            </div>
-          </a>
-        </div>
+        {softwareFiles[selectedOS] && (
+          <div className="mt-8 w-full max-w-xs">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
+              Available now
+            </p>
+            <a
+              href={softwareFiles[selectedOS]!.href}
+              download
+              className="group flex w-full items-center gap-3.5 rounded-xl border border-zinc-200 bg-white px-5 py-4 text-left shadow-sm transition-all hover:border-[#172556]/30 hover:shadow-md"
+            >
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-[#172556]/5 text-[#172556] transition-colors group-hover:bg-[#172556] group-hover:text-white">
+                <Download className="size-5" />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-zinc-900">
+                  {softwareFiles[selectedOS]!.label}
+                </p>
+                <p className="text-xs text-zinc-400">{softwareFiles[selectedOS]!.meta}</p>
+              </div>
+            </a>
+          </div>
+        )}
       </div>
     );
   }
@@ -1102,6 +1119,8 @@ function SoftwareForm({ product }: { product: string }) {
           </label>
           <select
             name="CONTACT_CF6"
+            value={selectedOS}
+            onChange={(e) => setSelectedOS(e.target.value)}
             className="w-full appearance-none rounded-lg border border-zinc-200 bg-white px-3.5 py-2.5 text-sm text-zinc-900 transition-colors focus:border-[#172556]/40 focus:outline-none focus:ring-2 focus:ring-[#172556]/10"
           >
             <option value="Windows 64-bit">Windows 64-bit</option>

@@ -79,6 +79,8 @@ function Hero() {
           muted
           loop
           playsInline
+          preload="auto"
+          poster="/hero-poster.webp"
           aria-hidden="true"
           className="h-full w-full object-cover"
         >

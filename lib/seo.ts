@@ -41,12 +41,15 @@ function organizationEntity() {
     alternateName: siteConfig.name,
     url: absoluteUrl("/"),
     logo: absoluteUrl("/logo.png"),
+    image: absoluteUrl("/logo.png"),
     email: siteConfig.email.sales,
     telephone: siteConfig.phone.mobileDisplay,
+    foundingDate: siteConfig.foundingYear,
     address: {
       "@type": "PostalAddress",
       ...siteConfig.address,
     },
+    ...(siteConfig.socials.length > 0 ? { sameAs: [...siteConfig.socials] } : {}),
   };
 }
 
@@ -201,6 +204,89 @@ export function createContactPageJsonLd({
     description,
     url: absoluteUrl(path),
     mainEntity: createOrganizationJsonLd(),
+  };
+}
+
+type BlogPostingInput = {
+  title: string;
+  description: string;
+  path: string;
+  image?: string;
+  authorName: string;
+  datePublished: string;
+  dateModified?: string;
+  keywords?: string[];
+  articleSection?: string;
+};
+
+export function createBlogPostingJsonLd({
+  title,
+  description,
+  path,
+  image,
+  authorName,
+  datePublished,
+  dateModified,
+  keywords = [],
+  articleSection,
+}: BlogPostingInput) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description,
+    url: absoluteUrl(path),
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": absoluteUrl(path),
+    },
+    ...(image ? { image: [image] } : {}),
+    datePublished,
+    dateModified: dateModified ?? datePublished,
+    author: {
+      "@type": "Person",
+      name: authorName,
+    },
+    publisher: organizationEntity(),
+    ...(keywords.length > 0 ? { keywords: keywords.join(", ") } : {}),
+    ...(articleSection ? { articleSection } : {}),
+    inLanguage: "en",
+    isPartOf: {
+      "@type": "Blog",
+      name: `${siteConfig.name} Blog`,
+      url: absoluteUrl("/resources/blogs"),
+    },
+  };
+}
+
+type VideoObjectInput = {
+  name: string;
+  description: string;
+  path: string;
+  thumbnailUrl?: string;
+  uploadDate: string;
+  contentUrl?: string;
+};
+
+export function createVideoObjectJsonLd({
+  name,
+  description,
+  path,
+  thumbnailUrl,
+  uploadDate,
+  contentUrl,
+}: VideoObjectInput) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "VideoObject",
+    name,
+    description,
+    url: absoluteUrl(path),
+    ...(thumbnailUrl ? { thumbnailUrl: [thumbnailUrl] } : {}),
+    uploadDate,
+    ...(contentUrl ? { contentUrl } : {}),
+    publisher: organizationEntity(),
+    inLanguage: "en",
   };
 }
 

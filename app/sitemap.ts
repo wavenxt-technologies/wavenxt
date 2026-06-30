@@ -7,9 +7,72 @@ import {
 } from "@/app/products/digital-attenuators/data";
 import { matrixModels } from "@/app/products/matrix-systems/data";
 import { meshModels } from "@/app/products/mesh-attenuators/data";
+import { client, urlFor } from "@/lib/sanity";
 import { absoluteUrl, productFamilies } from "@/lib/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+// Refresh the sitemap periodically so newly published blogs/webinars appear.
+export const revalidate = 3600;
+
+type SanityBlog = {
+  slug?: { current?: string };
+  _updatedAt?: string;
+  publishedAt?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  mainImage?: any;
+};
+
+type SanityWebinar = {
+  _id: string;
+  _updatedAt?: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  thumbnail?: any;
+};
+
+const BLOG_SITEMAP_QUERY = `*[_type == "blog" && defined(slug.current)]{
+  slug, _updatedAt, publishedAt, mainImage
+}`;
+
+const WEBINAR_SITEMAP_QUERY = `*[_type == "webinar" && category == "on-demand"]{
+  _id, _updatedAt, thumbnail
+}`;
+
+async function getBlogRoutes(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const blogs = await client.fetch<SanityBlog[]>(BLOG_SITEMAP_QUERY);
+    return blogs
+      .filter((blog) => blog.slug?.current)
+      .map((blog) => ({
+        url: absoluteUrl(`/resources/blogs/${blog.slug!.current}`),
+        lastModified: new Date(blog._updatedAt ?? blog.publishedAt ?? Date.now()),
+        changeFrequency: "monthly" as const,
+        priority: 0.7,
+        ...(blog.mainImage
+          ? { images: [urlFor(blog.mainImage).width(1200).height(630).url()] }
+          : {}),
+      }));
+  } catch {
+    return [];
+  }
+}
+
+async function getWebinarRoutes(): Promise<MetadataRoute.Sitemap> {
+  try {
+    const webinars = await client.fetch<SanityWebinar[]>(WEBINAR_SITEMAP_QUERY);
+    return webinars.map((webinar) => ({
+      url: absoluteUrl(`/resources/webinars/${webinar._id}`),
+      lastModified: new Date(webinar._updatedAt ?? Date.now()),
+      changeFrequency: "monthly" as const,
+      priority: 0.6,
+      ...(webinar.thumbnail
+        ? { images: [urlFor(webinar.thumbnail).width(1200).height(675).url()] }
+        : {}),
+    }));
+  } catch {
+    return [];
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date();
 
   const staticRoutes: MetadataRoute.Sitemap = [
@@ -46,6 +109,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.85,
       images: [absoluteUrl(family.image)],
     })),
+    {
+      url: absoluteUrl("/resources/blogs"),
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.8,
+    },
+    {
+      url: absoluteUrl("/resources/webinars"),
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
   ];
 
   const digitalRoutes = digitalAttenuatorModelIds
@@ -91,6 +166,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     images: [absoluteUrl("/images/splitter.webp")],
   };
 
+  const [blogRoutes, webinarRoutes] = await Promise.all([
+    getBlogRoutes(),
+    getWebinarRoutes(),
+  ]);
+
   return [
     ...staticRoutes,
     ...digitalRoutes,
@@ -98,5 +178,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...butlerRoutes,
     ...matrixRoutes,
     splitterRoute,
+    ...blogRoutes,
+    ...webinarRoutes,
   ];
 }

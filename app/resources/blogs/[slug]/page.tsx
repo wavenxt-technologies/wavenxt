@@ -14,6 +14,16 @@ import {
 import { client, urlFor } from "@/lib/sanity";
 import ReadingProgress from "@/components/reading-progress";
 import TableOfContents from "@/components/blog-toc";
+import JsonLd from "@/components/json-ld";
+import {
+  createBlogPostingJsonLd,
+  createBreadcrumbJsonLd,
+} from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
+
+// Statically generate known posts and revalidate periodically (ISR) so pages
+// are fast (good Core Web Vitals) yet pick up new/edited content.
+export const revalidate = 600;
 
 /* ─── Types ─── */
 
@@ -25,6 +35,7 @@ interface TableRow {
 
 interface Blog {
   _id: string;
+  _updatedAt?: string;
   title: string;
   slug: { current: string };
   mainImage: { asset: { _ref: string }; alt?: string };
@@ -52,12 +63,25 @@ type RelatedBlog = Pick<
 /* ─── Queries ─── */
 
 const BLOG_QUERY = `*[_type == "blog" && slug.current == $slug][0] {
-  _id, title, slug, mainImage, excerpt, body, category, tags, author, publishedAt
+  _id, _updatedAt, title, slug, mainImage, excerpt, body, category, tags, author, publishedAt
 }`;
+
+const SLUGS_QUERY = `*[_type == "blog" && defined(slug.current)].slug.current`;
 
 const RELATED_QUERY = `*[_type == "blog" && slug.current != $slug] | order(publishedAt desc) [0...3] {
   _id, title, slug, mainImage, excerpt, category, author, publishedAt
 }`;
+
+/* ─── Static params (ISR) ─── */
+
+export async function generateStaticParams() {
+  try {
+    const slugs = await client.fetch<string[]>(SLUGS_QUERY);
+    return slugs.filter(Boolean).map((slug) => ({ slug }));
+  } catch {
+    return [];
+  }
+}
 
 /* ─── Metadata ─── */
 
@@ -69,14 +93,33 @@ export async function generateMetadata({
   const { slug } = await params;
   try {
     const blog = await client.fetch<Blog | null>(BLOG_QUERY, { slug });
-    if (!blog) return { title: "Blog Not Found" };
+    if (!blog) return { title: "Blog Not Found", robots: { index: false } };
+
+    const path = `/resources/blogs/${slug}`;
+    const ogImage = urlFor(blog.mainImage).width(1200).height(630).url();
+
     return {
       title: blog.title,
       description: blog.excerpt,
+      keywords: blog.tags,
+      authors: blog.author ? [{ name: blog.author }] : undefined,
+      alternates: { canonical: path },
       openGraph: {
+        type: "article",
+        url: absoluteUrl(path),
         title: blog.title,
         description: blog.excerpt,
-        images: [urlFor(blog.mainImage).width(1200).height(630).url()],
+        publishedTime: blog.publishedAt,
+        modifiedTime: blog._updatedAt ?? blog.publishedAt,
+        authors: blog.author ? [blog.author] : undefined,
+        tags: blog.tags,
+        images: [{ url: ogImage, width: 1200, height: 630, alt: blog.title }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: blog.title,
+        description: blog.excerpt,
+        images: [ogImage],
       },
     };
   } catch {
@@ -333,8 +376,31 @@ export default async function BlogPage({
   const readTime = estimateReadTime(blog.body);
   const headings = extractHeadings(blog.body);
 
+  const blogPath = `/resources/blogs/${slug}`;
+  const ogImage = urlFor(blog.mainImage).width(1200).height(630).url();
+
   return (
     <div className="min-h-screen bg-[#f7f7f5]">
+      <JsonLd
+        data={[
+          createBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/resources/blogs" },
+            { name: blog.title, path: blogPath },
+          ]),
+          createBlogPostingJsonLd({
+            title: blog.title,
+            description: blog.excerpt,
+            path: blogPath,
+            image: ogImage,
+            authorName: blog.author,
+            datePublished: blog.publishedAt,
+            dateModified: blog._updatedAt,
+            keywords: blog.tags,
+            articleSection: blog.category,
+          }),
+        ]}
+      />
       <ReadingProgress />
 
       {/* ════════════════════════════════════════

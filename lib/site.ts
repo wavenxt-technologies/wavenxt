@@ -23,6 +23,11 @@ export const siteConfig = {
     postalCode: "560092",
     addressCountry: "IN",
   },
+  // Public social/profile URLs. Fill these in (LinkedIn, X/Twitter, YouTube,
+  // Google Business Profile, etc.) — they power the `sameAs` entity links that
+  // help Google build a verified Knowledge Graph panel for the brand.
+  socials: [] as string[],
+  foundingYear: "2023",
   keywords: [
     "RF test solutions",
     "wireless validation systems",

@@ -11,12 +11,21 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 import { client, urlFor } from "@/lib/sanity";
+import JsonLd from "@/components/json-ld";
+import {
+  createBreadcrumbJsonLd,
+  createVideoObjectJsonLd,
+} from "@/lib/seo";
+import { absoluteUrl } from "@/lib/site";
 import { VideoGate } from "./VideoGate";
+
+export const revalidate = 600;
 
 /* ─── Types ─── */
 
 interface Webinar {
   _id: string;
+  _updatedAt?: string;
   category: "live" | "on-demand";
   title: string;
   thumbnail: { asset: { _ref: string } };
@@ -46,15 +55,28 @@ type RelatedWebinar = Pick<
 /* ─── Queries ─── */
 
 const WEBINAR_QUERY = `*[_type == "webinar" && _id == $id][0] {
-  _id, category, title, thumbnail, description, speaker,
+  _id, _updatedAt, category, title, thumbnail, description, speaker,
   meetingLink, startDateTime, createdAt,
   "videoUrl": video.asset->url
 }`;
+
+const ONDEMAND_IDS_QUERY = `*[_type == "webinar" && category == "on-demand"]._id`;
 
 const RELATED_QUERY = `*[_type == "webinar" && category == "on-demand" && _id != $id] | order(createdAt desc) [0...3] {
   _id, title, thumbnail, description, speaker, createdAt,
   "videoUrl": video.asset->url
 }`;
+
+/* ─── Static params (ISR) ─── */
+
+export async function generateStaticParams() {
+  try {
+    const ids = await client.fetch<string[]>(ONDEMAND_IDS_QUERY);
+    return ids.filter(Boolean).map((id) => ({ id }));
+  } catch {
+    return [];
+  }
+}
 
 /* ─── Metadata ─── */
 
@@ -66,14 +88,27 @@ export async function generateMetadata({
   const { id } = await params;
   try {
     const webinar = await client.fetch<Webinar | null>(WEBINAR_QUERY, { id });
-    if (!webinar) return { title: "Webinar Not Found" };
+    if (!webinar) return { title: "Webinar Not Found", robots: { index: false } };
+
+    const path = `/resources/webinars/${id}`;
+    const ogImage = urlFor(webinar.thumbnail).width(1200).height(630).url();
+
     return {
       title: webinar.title,
       description: webinar.description,
+      alternates: { canonical: path },
       openGraph: {
+        type: "video.other",
+        url: absoluteUrl(path),
         title: webinar.title,
         description: webinar.description,
-        images: [urlFor(webinar.thumbnail).width(1200).height(630).url()],
+        images: [{ url: ogImage, width: 1200, height: 630, alt: webinar.title }],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: webinar.title,
+        description: webinar.description,
+        images: [ogImage],
       },
     };
   } catch {
@@ -172,8 +207,28 @@ export default async function WebinarDetailPage({
   const hasVideo = !!webinar.videoUrl;
   const embed = hasVideo ? getEmbedSrc(webinar.videoUrl!) : null;
 
+  const webinarPath = `/resources/webinars/${id}`;
+  const thumbUrl = urlFor(webinar.thumbnail).width(1200).height(675).url();
+
   return (
     <div className="min-h-screen bg-[#f7f7f5] text-zinc-900">
+      <JsonLd
+        data={[
+          createBreadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Webinars", path: "/resources/webinars" },
+            { name: webinar.title, path: webinarPath },
+          ]),
+          createVideoObjectJsonLd({
+            name: webinar.title,
+            description: webinar.description,
+            path: webinarPath,
+            thumbnailUrl: thumbUrl,
+            uploadDate: webinar.createdAt,
+            contentUrl: webinar.videoUrl,
+          }),
+        ]}
+      />
       {/* ── Dark hero ── */}
       <section className="relative overflow-hidden bg-[#172556]">
         <div className="pointer-events-none absolute inset-0">
