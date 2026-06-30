@@ -935,7 +935,7 @@ const softwareFiles: Record<string, { href: string; label: string; meta: string 
     label: "Download for Linux",
     meta: "MT-Attenuator_1.7.1_linux · DEB",
   },
-  macOS: null,
+
 };
 
 function SoftwareForm({ product }: { product: string }) {
@@ -1125,7 +1125,7 @@ function SoftwareForm({ product }: { product: string }) {
           >
             <option value="Windows 64-bit">Windows 64-bit</option>
             <option value="Linux">Linux</option>
-            <option value="macOS">macOS</option>
+
           </select>
         </div>
 
