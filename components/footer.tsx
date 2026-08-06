@@ -330,12 +330,9 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} Wavenxt Technologies &middot; All rights reserved
             </p>
             <div className="flex gap-5">
-              <a href="#" className="text-xs text-zinc-400 transition-colors hover:text-zinc-700">
-                Privacy
-              </a>
-              <a href="#" className="text-xs text-zinc-400 transition-colors hover:text-zinc-700">
-                Terms
-              </a>
+              <Link href="/terms" className="text-xs text-zinc-400 transition-colors hover:text-zinc-700">
+                Terms &amp; Conditions of Sale
+              </Link>
             </div>
           </div>
         </div>
