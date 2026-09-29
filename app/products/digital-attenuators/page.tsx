@@ -23,7 +23,12 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.08 } },
 };
 
+const channelColumns = [1, 2, 4, 8, 12, 16, 24];
+
 const channelGradients: Record<number, string> = {
+  24: "bg-linear-to-br from-fuchsia-500/10 to-transparent",
+  16: "bg-linear-to-br from-purple-500/10 to-transparent",
+  12: "bg-linear-to-br from-sky-500/10 to-transparent",
   8: "bg-linear-to-br from-indigo-500/10 to-transparent",
   4: "bg-linear-to-br from-blue-500/10 to-transparent",
   2: "bg-linear-to-br from-teal-500/10 to-transparent",
@@ -135,14 +140,17 @@ export default function DigitalAttenuators() {
             </motion.div>
 
             {/* Table Header (Desktop) */}
-            <div className="hidden md:grid grid-cols-[1.5fr_repeat(4,1fr)] gap-px py-6 border-b border-zinc-200/80">
+            <div className="hidden lg:grid grid-cols-[1.3fr_repeat(7,1fr)] gap-4 py-6 border-b border-zinc-200/80">
               <div className="flex items-center">
                 <p className="text-xs font-semibold uppercase tracking-widest text-[#172556]/60">
                   Frequency Band
                 </p>
               </div>
-              {[8, 4, 2, 1].map((ch) => (
-                <div key={ch} className="flex items-center justify-center">
+              {channelColumns.map((ch) => (
+                <div
+                  key={ch}
+                  className="flex items-center justify-center text-center"
+                >
                   <span className="text-xs font-semibold uppercase tracking-widest text-[#172556]/60">
                     {ch} Channels
                   </span>
@@ -157,9 +165,9 @@ export default function DigitalAttenuators() {
                   key={group.band}
                   variants={fadeUp}
                   custom={gi + 1}
-                  className="grid grid-cols-1 md:grid-cols-[1.5fr_repeat(4,1fr)] gap-4 md:gap-6 py-10 md:py-12 border-t border-zinc-200/80 first:border-0 items-center"
+                  className="grid grid-cols-1 lg:grid-cols-[1.3fr_repeat(7,1fr)] gap-4 py-10 md:py-12 border-t border-zinc-200/80 first:border-0 items-center"
                 >
-                  <div className="flex flex-col justify-center pr-6 mb-6 md:mb-0">
+                  <div className="flex flex-col justify-center pr-6 mb-6 lg:mb-0">
                     <span className="inline-flex items-center self-start rounded-full bg-[#172556]/5 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-[#172556] mb-3">
                       {group.tag}
                     </span>
@@ -172,31 +180,33 @@ export default function DigitalAttenuators() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 md:contents">
+                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-4 lg:contents">
+                    {/* Models are in ascending channel order, so bands without
+                        12/16/24 channels simply end after the 8 channel card */}
                     {group.models.map((m) => (
                       <Link
                         key={m.model}
                         href={`/products/digital-attenuators/${m.model.toLowerCase()}`}
-                        className="group relative flex flex-col justify-between overflow-hidden rounded-[1.5rem] border border-zinc-200/60 bg-[#f7f7f5] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] md:h-45"
+                        className="group relative flex flex-col justify-between overflow-hidden rounded-[1.5rem] border border-zinc-200/60 bg-[#f7f7f5] p-5 transition-all duration-300 hover:-translate-y-1 hover:border-zinc-300 hover:bg-white hover:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.08)] lg:h-45"
                       >
                         {/* Dynamic Channel Accent Gradient */}
                         <div
                           className={`pointer-events-none absolute inset-0 transition-opacity duration-300 ${channelGradients[m.channel] || ""}`}
                         />
 
-                        <div className="relative z-10 md:hidden mb-4">
+                        <div className="relative z-10 lg:hidden mb-4">
                           <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 transition-colors group-hover:text-zinc-600">
                             {m.channel} Channels
                           </p>
                         </div>
 
                         <div className="relative z-10">
-                          <p className="font-heading text-2xl font-medium tracking-tight text-zinc-900 transition-colors group-hover:text-[#172556]">
+                          <p className="font-heading text-2xl lg:text-xl xl:text-2xl font-medium tracking-tight text-zinc-900 transition-colors group-hover:text-[#172556]">
                             {m.model}
                           </p>
                         </div>
 
-                        <div className="relative z-10 mt-8 md:mt-auto flex items-end justify-between border-t border-zinc-200/60 pt-4">
+                        <div className="relative z-10 mt-8 lg:mt-auto flex items-end justify-between border-t border-zinc-200/60 pt-4">
                           <span className="text-xs font-medium text-zinc-500">
                             SMA / PoE
                           </span>

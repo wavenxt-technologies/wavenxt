@@ -14,7 +14,7 @@ import {
   Globe,
   Shield,
   GitBranch,
-  Clock,
+  Activity,
   Monitor,
   Download,
 } from "lucide-react";
@@ -27,6 +27,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import {
+  getDigitalAttenuatorSiblings,
   parseDigitalAttenuatorModel,
   type DigitalAttenuatorModel,
 } from "../data";
@@ -50,186 +51,196 @@ const stagger = {
 
 /* ── Static spec table ───────────────────────────────────────────────── */
 
-const getDatasheetRows = (freqTag: string, ch: string) => {
-  const is8GHz = freqTag === "8";
-  const is3GHz = freqTag === "3";
-
-  return [
-    {
-      parameter: "Impedance",
-      condition: "",
-      min: "",
-      typ: "50",
-      max: "",
-      unit: "Ω",
-    },
-    {
-      parameter: "Channels",
-      condition: "",
-      min: "",
-      typ: ch,
-      max: "",
-      unit: "",
-    },
-    {
-      parameter: "Attenuation Range",
-      condition: "",
-      min: "0",
-      typ: "",
-      max: "95",
-      unit: "dB",
-    },
-    {
-      parameter: "Shielding",
-      condition: "",
-      min: "",
-      typ: "110",
-      max: "",
-      unit: "dB",
-    },
-    {
-      parameter: "Isolation between Channels",
-      condition: "",
-      min: "",
-      typ: "90",
-      max: "",
-      unit: "dB",
-    },
-    {
-      parameter: "Step Size",
-      condition: "",
-      min: "",
-      typ: "0.25",
-      max: "",
-      unit: "dB",
-    },
-    ...(is3GHz
-      ? [
-          {
-            parameter: "Insertion Loss",
-            condition: "< 3 GHz",
-            min: "",
-            typ: "4.5",
-            max: "6.5",
-            unit: "dB",
-          },
-        ]
-      : [
-          {
-            parameter: "Insertion Loss",
-            condition: "< 2.5 GHz",
-            min: "",
-            typ: "4.5",
-            max: "6",
-            unit: "dB",
-          },
-          {
-            parameter: "Insertion Loss",
-            condition: "< 6 GHz",
-            min: "",
-            typ: "6",
-            max: "7",
-            unit: "dB",
-          },
-          ...(is8GHz
-            ? [
-                {
-                  parameter: "Insertion Loss",
-                  condition: "< 8 GHz",
-                  min: "",
-                  typ: "8",
-                  max: "10",
-                  unit: "dB",
-                },
-              ]
-            : []),
-        ]),
-    {
-      parameter: "Attenuation Accuracy",
-      condition: "",
-      min: "",
-      typ: "±0.25",
-      max: "±1.5",
-      unit: "dB",
-    },
-    {
-      parameter: "Switching Speed",
-      condition: "",
-      min: "",
-      typ: "2",
-      max: "",
-      unit: "µs",
-    },
-    {
-      parameter: "Maximum Input Level",
-      condition: "Operating",
-      min: "",
-      typ: "+28",
-      max: "",
-      unit: "dBm",
-    },
-    {
-      parameter: "Maximum Input Level",
-      condition: "Absolute",
-      min: "",
-      typ: "+33",
-      max: "",
-      unit: "dBm",
-    },
-    {
-      parameter: "Input IP3",
-      condition: "",
-      min: "",
-      typ: "58",
-      max: "",
-      unit: "dBm",
-    },
-    {
-      parameter: "Operating Modes",
-      condition: "",
-      min: "",
-      typ: "Uni / Bi-Directional",
-      max: "",
-      unit: "",
-    },
-    {
-      parameter: "Control",
-      condition: "",
-      min: "",
-      typ: "Application / REST APIs",
-      max: "",
-      unit: "",
-    },
-    {
-      parameter: "Power",
-      condition: "",
-      min: "",
-      typ: "PoE/USB",
-      max: "",
-      unit: "",
-    },
-    {
-      parameter: "Operating Temperature",
-      condition: "",
-      min: "−30",
-      typ: "",
-      max: "+70",
-      unit: "°C",
-    },
-  ];
-};
+// Every value below comes from the model's datasheet PDF.
+const getDatasheetRows = (m: DigitalAttenuatorModel) => [
+  {
+    parameter: "Frequency Range",
+    condition: "",
+    min: "200",
+    typ: "",
+    max: m.freq.band.split("–")[1].replace("MHz", "").trim(),
+    unit: "MHz",
+  },
+  {
+    parameter: "Impedance",
+    condition: "",
+    min: "",
+    typ: "50",
+    max: "",
+    unit: "Ω",
+  },
+  {
+    parameter: "Channels",
+    condition: "",
+    min: "",
+    typ: m.ch,
+    max: "",
+    unit: "",
+  },
+  {
+    parameter: "Attenuation Range",
+    condition: "",
+    min: "0",
+    typ: "",
+    max: "95",
+    unit: "dB",
+  },
+  {
+    parameter: "Shielding",
+    condition: "",
+    min: "",
+    typ: "110",
+    max: "",
+    unit: "dB",
+  },
+  {
+    parameter: "Isolation between Channels",
+    condition: "",
+    min: "",
+    typ: "90",
+    max: "",
+    unit: "dB",
+  },
+  {
+    parameter: "Step Size",
+    condition: "",
+    min: "",
+    typ: "0.25",
+    max: "",
+    unit: "dB",
+  },
+  ...m.insertionLoss.map((row) => ({
+    parameter: "Insertion Loss",
+    condition: row.condition,
+    min: "",
+    typ: row.typ,
+    max: row.max,
+    unit: "dB",
+  })),
+  {
+    parameter: "Attenuation Accuracy",
+    condition: "",
+    min: "",
+    typ: "±0.25",
+    max: "±1.5",
+    unit: "dB",
+  },
+  {
+    parameter: "Switching Speed",
+    condition: "",
+    min: "",
+    typ: "2",
+    max: "",
+    unit: "µs",
+  },
+  {
+    parameter: "Maximum Input Level",
+    condition: "Operating",
+    min: "",
+    typ: "+28",
+    max: "",
+    unit: "dBm",
+  },
+  {
+    parameter: "Maximum Input Level",
+    condition: "Absolute max",
+    min: "",
+    typ: "+33",
+    max: "",
+    unit: "dBm",
+  },
+  {
+    parameter: "Input IP3",
+    condition: "",
+    min: "",
+    typ: "58",
+    max: "",
+    unit: "dBm",
+  },
+  {
+    parameter: "0.1 dB Compression",
+    condition: "",
+    min: "",
+    typ: "34",
+    max: "",
+    unit: "dBm",
+  },
+  {
+    parameter: "Operating Modes",
+    condition: "",
+    min: "",
+    typ: "Uni / Bi-Directional",
+    max: "",
+    unit: "",
+  },
+  {
+    parameter: "Control",
+    condition: "",
+    min: "",
+    typ: "GUI control or APIs",
+    max: "",
+    unit: "",
+  },
+  {
+    parameter: "Power",
+    condition: "",
+    min: "",
+    typ: "Power over Ethernet (PoE)",
+    max: "",
+    unit: "",
+  },
+  {
+    parameter: "Operating Temperature",
+    condition: "",
+    min: "−30",
+    typ: "",
+    max: "+70",
+    unit: "°C",
+  },
+  {
+    parameter: "RF Connectors",
+    condition: "",
+    min: "",
+    typ: "SMA",
+    max: "",
+    unit: "",
+  },
+  {
+    parameter: "Control Interface",
+    condition: "",
+    min: "",
+    typ: "Ethernet or USB",
+    max: "",
+    unit: "",
+  },
+  {
+    parameter: "Operating System",
+    condition: "",
+    min: "",
+    typ: "Windows, Linux and Mac",
+    max: "",
+    unit: "",
+  },
+  {
+    parameter: "Custom APIs as per User Requirements",
+    condition: "",
+    min: "",
+    typ: "Yes",
+    max: "",
+    unit: "",
+  },
+];
 
 /* ── Applications ────────────────────────────────────────────────────── */
 
 const applications = [
-  "Wi-Fi & 5G Device Characterisation",
-  "Throughput vs. Range Mapping",
-  "Roaming & Handover Validation",
-  "Mesh & Band-Steering Tests",
-  "Receiver Sensitivity Testing",
-  "Device Verification Testbeds",
-  "Automated Manufacturing Test",
-  "MIMO & Multi-Antenna Testing",
+  "Wi-Fi (up to 802.11be) & Cellular (GSM, UMTS, LTE, 5G FR1) Testing",
+  "Throughput vs. Range Measurements",
+  "Wi-Fi or Cellular Roaming Measurements",
+  "Mesh & Band-Steering",
+  "Receiver Sensitivity Measurements",
+  "System Design & Device Verification Testbeds",
+  "Engineering Development & Automated Manufacturing Test",
 ];
 
 /* ── Feature icons ───────────────────────────────────────────────────── */
@@ -241,7 +252,7 @@ const featureIcons = [
   Globe,
   Shield,
   GitBranch,
-  Clock,
+  Activity,
   Monitor,
 ];
 
@@ -259,49 +270,45 @@ export default function DigitalAttenuatorProduct() {
     { label: "Dynamic Range", value: "95 dB" },
     { label: "Step Size", value: "0.25 dB" },
     { label: "Connector", value: "SMA Female" },
-    { label: "Power", value: "PoE/USB" },
+    { label: "Power", value: "PoE" },
   ];
 
   const featuresData = [
     {
       title: "Broad Frequency Coverage",
-      desc: `Precision attenuation from 200 MHz to ${m.freq.max} — covering 5G FR1, Wi-Fi 6/6E/7, LTE, and all major cellular bands.`,
+      desc: `Attenuation from 200 MHz to ${m.freq.max} for Wi-Fi up to 802.11be and GSM, UMTS, LTE-FDD, LTE-TDD and 5G FR1 testing.`,
     },
     {
       title: "95 dB Dynamic Range",
-      desc: "Wide 0–95 dB attenuation range with 0.25 dB resolution for accurate, repeatable signal power control in every scenario.",
+      desc: "0–95 dB attenuation range in 0.25 dB steps, with ±0.25 dB typical attenuation accuracy.",
     },
     {
-      title: "PoE/USB Powered",
-      desc: "Power and control over a single Ethernet cable or USB — no external PSU, minimal cabling, plug-and-play in any lab rack.",
+      title: "PoE Powered",
+      desc: "Powered over Ethernet (PoE), with an Ethernet or USB control interface.",
     },
     {
       title: "Browser & API Control",
-      desc: "Built-in web GUI plus REST and USB APIs allow manual control or seamless integration with any automation framework.",
+      desc: "Programmable via browser GUI or APIs, in uni- or bi-directional mode. Custom APIs available as per user requirements.",
     },
     {
       title: "Complete RF Shielding",
-      desc: "110 dB enclosure shielding and 90 dB channel isolation ensure interference-free measurements on all active paths.",
+      desc: "Completely shielded — 110 dB shielding and 90 dB isolation between channels.",
     },
     {
       title: `${m.chNum}-Channel Architecture`,
-      desc: `${m.chNum} fully independent RF paths with 2 µs switching for concurrent multi-device or multi-band test setups.`,
+      desc: `${m.chNum} individual attenuator channels with 2 µs switching speed.`,
     },
     {
-      title: "24/7 Automated Operation",
-      desc: "Designed for continuous unattended use in engineering characterisation and high-volume production test lines.",
+      title: "High Linearity",
+      desc: "58 dBm input IP3 and 34 dBm 0.1 dB compression, with +28 dBm maximum operating input level.",
     },
     {
       title: "Cross-Platform Software",
-      desc: "Control GUI and APIs run natively on Windows, Linux, and Mac OS — no proprietary drivers or licence fees.",
+      desc: "Supports Windows, Linux and Mac OS.",
     },
   ];
 
-  const siblings = ["8", "4", "2", "1"]
-    .filter((c) => c !== m.ch)
-    .map((c) => parseDigitalAttenuatorModel(`mt${m.freqTag}${c}a`))
-    .filter((item): item is DigitalAttenuatorModel => item !== null)
-    .slice(0, 3);
+  const siblings = getDigitalAttenuatorSiblings(m).slice(0, 3);
 
   return (
     <div className="min-h-screen bg-[#f7f7f5] text-zinc-900">
@@ -375,8 +382,8 @@ export default function DigitalAttenuatorProduct() {
               >
                 The {m.model} is a fully shielded, digitally controlled{" "}
                 {m.chNum}-channel RF attenuator covering {m.freq.band}.
-                PoE/USB-powered with browser and API control — built for
-                high-accuracy automated test environments.
+                PoE-powered with Ethernet or USB interface, programmable via
+                browser or APIs — built for high-accuracy automated RF testing.
               </motion.p>
 
               <motion.div
@@ -694,7 +701,7 @@ export default function DigitalAttenuatorProduct() {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-zinc-100/80">
-                        {getDatasheetRows(m.freqTag, m.ch).map((row, i) => (
+                        {getDatasheetRows(m).map((row, i) => (
                           <tr
                             key={i}
                             className="transition-colors hover:bg-zinc-50/50"
@@ -724,6 +731,34 @@ export default function DigitalAttenuatorProduct() {
                   </div>
                 </div>
               </div>
+
+              {m.mechanical.length > 0 && (
+                <div>
+                  <p className="mb-4 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+                    <span className="h-px w-6 bg-zinc-200" /> Mechanical
+                    Specifications
+                  </p>
+                  <div className="overflow-x-auto rounded-2xl border border-zinc-200/80 bg-white shadow-[0_1px_0_0_rgba(0,0,0,0.03)]">
+                    <table className="w-full text-sm">
+                      <tbody className="divide-y divide-zinc-100/80">
+                        {m.mechanical.map((row) => (
+                          <tr
+                            key={row.parameter}
+                            className="transition-colors hover:bg-zinc-50/50"
+                          >
+                            <td className="px-5 py-3.5 font-medium text-zinc-900">
+                              {row.parameter}
+                            </td>
+                            <td className="px-5 py-3.5 text-zinc-500">
+                              {row.value}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              )}
             </motion.div>
 
             {/* Sticky Sidebar */}
@@ -784,7 +819,7 @@ export default function DigitalAttenuatorProduct() {
                         }
                       />
                       <SheetContent className="flex w-full flex-col overflow-y-auto sm:max-w-md">
-                        <SoftwareForm product={m.model} />
+                        <SoftwareForm product={m.model} chNum={m.chNum} />
                       </SheetContent>
                     </Sheet>
                   </div>
@@ -795,8 +830,8 @@ export default function DigitalAttenuatorProduct() {
                     Need a different channel count?
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-                    Available in 1, 2, 4, and 8-channel configurations across
-                    three frequency bands.
+                    Available in 1, 2, 4 and 8-channel configurations across
+                    three frequency bands, plus 12, 16 and 24 channels at 8 GHz.
                   </p>
                   <Link
                     href="/contact"
@@ -844,6 +879,9 @@ export default function DigitalAttenuatorProduct() {
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {siblings.map((sib, idx) => {
                 const chGradients: Record<string, string> = {
+                  24: "bg-gradient-to-br from-fuchsia-500/10 to-transparent",
+                  16: "bg-gradient-to-br from-purple-500/10 to-transparent",
+                  12: "bg-gradient-to-br from-sky-500/10 to-transparent",
                   8: "bg-gradient-to-br from-indigo-500/10 to-transparent",
                   4: "bg-gradient-to-br from-blue-500/10 to-transparent",
                   2: "bg-gradient-to-br from-cyan-500/10 to-transparent",
@@ -897,14 +935,14 @@ export default function DigitalAttenuatorProduct() {
                             Power
                           </p>
                           <p className="text-sm font-semibold text-zinc-700 transition-colors group-hover:text-[#172556]">
-                            PoE/USB
+                            PoE
                           </p>
                         </div>
                       </div>
 
                       <div className="relative z-10 mt-6 flex items-center justify-between">
                         <span className="text-xs font-medium text-zinc-500">
-                          SMA · PoE/USB · REST API
+                          SMA · PoE · Ethernet/USB
                         </span>
                         <span className="flex size-8 items-center justify-center rounded-xl bg-[#f7f7f5] text-[#172556] shadow-sm ring-1 ring-zinc-200/50 transition-colors duration-300 group-hover:bg-[#172556] group-hover:text-white group-hover:ring-[#172556]">
                           <ArrowUpRight className="size-3.5 transition-transform duration-300 group-hover:scale-110" />
@@ -924,21 +962,40 @@ export default function DigitalAttenuatorProduct() {
 
 /* ── Software Request Form (used inside Sheet) ─────────────────────── */
 
-const softwareFiles: Record<string, { href: string; label: string; meta: string } | null> = {
-  "Windows 64-bit": {
-    href: "/software/MT-Attenuator_1.7.1_x64_win.zip",
+// The 12/16/24 channel models use v1.8.1; the 1–8 channel models use v1.7.3.
+const windowsSoftware = {
+  highDensity: {
+    href: "/software/MT-Attenuator_1.8.1_x64-setup.exe",
     label: "Download for Windows",
-    meta: "MT-Attenuator_1.7.1_x64_win · ZIP",
+    meta: "MT-Attenuator_1.8.1_x64-setup · EXE",
   },
+  standard: {
+    href: "/software/MT-Attenuator_1.7.3_x64_installer.exe",
+    label: "Download for Windows",
+    meta: "MT-Attenuator_1.7.3_x64_installer · EXE",
+  },
+};
+
+const getSoftwareFiles = (
+  chNum: number,
+): Record<string, { href: string; label: string; meta: string } | null> => ({
+  "Windows 64-bit":
+    chNum > 8 ? windowsSoftware.highDensity : windowsSoftware.standard,
   Linux: {
     href: "/software/MT%20Attenuator_1.7.1_linux.deb",
     label: "Download for Linux",
     meta: "MT-Attenuator_1.7.1_linux · DEB",
   },
+});
 
-};
-
-function SoftwareForm({ product }: { product: string }) {
+function SoftwareForm({
+  product,
+  chNum,
+}: {
+  product: string;
+  chNum: number;
+}) {
+  const softwareFiles = getSoftwareFiles(chNum);
   const [submitted, setSubmitted] = useState(false);
   const [selectedOS, setSelectedOS] = useState("Windows 64-bit");
   const formRef = useRef<HTMLFormElement>(null);

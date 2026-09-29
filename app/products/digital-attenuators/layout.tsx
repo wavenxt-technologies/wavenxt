@@ -8,7 +8,7 @@ import {
 import { digitalAttenuatorGroups } from "./data";
 
 const description =
-  "Programmable RF digital attenuators with 95 dB dynamic range, 0.25 dB step resolution, PoE or USB control, and 12 models from 200 MHz to 8 GHz.";
+  "Programmable RF digital attenuators with 95 dB dynamic range, 0.25 dB step resolution, PoE power with Ethernet or USB control, and 15 models from 200 MHz to 8 GHz.";
 
 const items = digitalAttenuatorGroups.flatMap((group) =>
   group.models.map((model) => ({

@@ -78,7 +78,7 @@ export default async function DigitalAttenuatorModelLayout({
               { name: "Channels", value: `${model.chNum}` },
               { name: "Dynamic Range", value: "95 dB" },
               { name: "Step Size", value: "0.25 dB" },
-              { name: "Power", value: "PoE/USB" },
+              { name: "Power", value: "PoE" },
             ],
           }),
         ]}
