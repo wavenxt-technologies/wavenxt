@@ -57,19 +57,29 @@ const contactDetails = [
 const fieldClass =
   "mt-2 w-full rounded-xl border border-zinc-300/80 bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 placeholder:text-zinc-400 outline-none transition-all duration-200 focus:border-[#172556] focus:bg-white focus:ring-2 focus:ring-[#172556]/10";
 
+// `value` must match the Zoho Campaigns picklist exactly (including Zoho's
+// "Custom Desgin" spelling), otherwise Zoho rejects the submission.
 const solutionOptions = [
-  "Digital Attenuators",
-  "Mesh Attenuators",
-  "Matrix Systems",
-  "Butler Matrix",
-  "Custom Design",
+  { label: "Digital Attenuators", value: "Digital Attenuators" },
+  { label: "Mesh Attenuators", value: "Mesh Attenuators" },
+  { label: "Matrix Systems", value: "Matrix Systems" },
+  { label: "Butler Matrix", value: "Butler Matrix" },
+  { label: "Custom Design", value: "Custom Desgin" },
 ];
 
 export default function SupportPage() {
   const [status, setStatus] = useState<"idle" | "success">("idle");
   const [solution, setSolution] = useState("");
+  const [solutionError, setSolutionError] = useState(false);
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    // Solutions is mandatory in Zoho; the custom Select isn't covered by
+    // native form validation, so block the submit here if it's empty.
+    if (!solution) {
+      e.preventDefault();
+      setSolutionError(true);
+      return;
+    }
     // Do not preventDefault — the form posts to Zoho via the hidden iframe.
     const fd = new FormData(e.currentTarget);
     setStatus("success");
@@ -261,18 +271,33 @@ export default function SupportPage() {
                 </label>
                 {/* Hidden input carries the value in the native form POST */}
                 <input type="hidden" name="CONTACT_CF5" value={solution} />
-                <Select value={solution} onValueChange={(v) => setSolution(v ?? "")} required>
-                  <SelectTrigger className="mt-2 w-full rounded-xl border border-zinc-300/80 bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 outline-none transition-all duration-200 focus:border-[#172556] focus:bg-white focus:ring-2 focus:ring-[#172556]/10 data-placeholder:text-zinc-400">
+                <Select
+                  value={solution}
+                  onValueChange={(v) => {
+                    setSolution(v ?? "");
+                    setSolutionError(false);
+                  }}
+                  items={solutionOptions}
+                >
+                  <SelectTrigger
+                    aria-invalid={solutionError || undefined}
+                    className={`mt-2 w-full rounded-xl border bg-zinc-50/80 px-4 py-3 text-sm text-zinc-900 outline-none transition-all duration-200 focus:border-[#172556] focus:bg-white focus:ring-2 focus:ring-[#172556]/10 data-placeholder:text-zinc-400 ${solutionError ? "border-red-400" : "border-zinc-300/80"}`}
+                  >
                     <SelectValue placeholder="Select a solution" />
                   </SelectTrigger>
                   <SelectContent>
                     {solutionOptions.map((opt) => (
-                      <SelectItem key={opt} value={opt}>
-                        {opt}
+                      <SelectItem key={opt.value} value={opt.value}>
+                        {opt.label}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
+                {solutionError && (
+                  <p className="mt-1.5 text-xs text-red-600">
+                    Please select a solution.
+                  </p>
+                )}
               </motion.div>
 
               <motion.div
