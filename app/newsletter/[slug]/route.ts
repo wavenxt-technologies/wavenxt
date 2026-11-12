@@ -9,6 +9,7 @@ import path from "path";
 // U8xF9lmH → WaveNxt - Digital Attenuator
 // pR23T6F0 → WaveNxt - 16x8 Matrix System
 // KN3XzHQy → WaveNxt - Programmable Mesh Attenuator
+// tJE3Cm0E → WaveNxt - MT-128A Digital Attenuator
 const newsletters: Record<string, string> = {
   "NSL5IY2e": "NSL5IY2e.html",
   "u8aBZKdH": "u8aBZKdH.html",
@@ -17,6 +18,7 @@ const newsletters: Record<string, string> = {
   "U8xF9lmH": "U8xF9lmH.html",
   "pR23T6F0": "pR23T6F0.html",
   "KN3XzHQy": "KN3XzHQy.html",
+  "tJE3Cm0E": "tJE3Cm0E.html",
 };
 
 export async function GET(
