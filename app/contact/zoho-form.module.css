@@ -1,0 +1,279 @@
+/*
+  Styles for the Zoho Campaigns "Evaluation Request Form".
+  Zoho's own IDs and class names are kept in the markup, so they are
+  targeted with :global() under the local .zoho wrapper.
+*/
+
+.zoho {
+  --navy: #172556;
+  --navy-hover: #1e3070;
+  --ink: #18181b;
+  --muted: #71717a;
+  --line: rgb(212 212 216 / 0.8);
+  --field: rgb(250 250 250 / 0.8);
+  --error: #dc2626;
+
+  color: var(--ink);
+}
+
+/* ── Heading ── */
+
+.zoho :global(#SIGNUP_HEADING) {
+  font-family: var(--font-heading), sans-serif;
+  font-size: 1.875rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+}
+
+.zoho :global(#SIGNUP_DESCRIPTION) {
+  margin-top: 0.75rem;
+  max-width: 36rem;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+  color: #52525b;
+}
+
+/* ── Error banner ── */
+
+.zoho :global(#errorMsgDiv) {
+  margin-top: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(220 38 38 / 0.2);
+  background: rgb(254 242 242 / 0.8);
+  padding: 0.75rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: #b91c1c;
+}
+
+/* ── Fields ── */
+
+.zoho :global(.zcsffieldsdiv) {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.zoho label {
+  display: inline-flex;
+  gap: 0.125rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #3f3f46;
+}
+
+.zoho label span {
+  color: var(--navy);
+  opacity: 0.55;
+}
+
+.zoho :global(.zcinputbox) {
+  position: relative;
+  margin-top: 0.5rem;
+}
+
+.zoho input:not([type="submit"]):not([type="hidden"]),
+.zoho select,
+.zoho textarea {
+  display: block;
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--line);
+  background: var(--field);
+  padding: 0.75rem 1rem;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--ink);
+  outline: none;
+  transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.zoho input::placeholder,
+.zoho textarea::placeholder {
+  color: #a1a1aa;
+}
+
+.zoho input:not([type="submit"]):hover,
+.zoho select:hover,
+.zoho textarea:hover {
+  border-color: #a1a1aa;
+}
+
+.zoho input:not([type="submit"]):focus,
+.zoho select:focus,
+.zoho textarea:focus {
+  border-color: var(--navy);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgb(23 37 86 / 0.1);
+}
+
+/* Only flag fields after the visitor has interacted with them */
+.zoho input:not([type="submit"]):user-invalid,
+.zoho select:user-invalid,
+.zoho textarea:user-invalid {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgb(220 38 38 / 0.08);
+}
+
+.zoho textarea {
+  min-height: 8.5rem;
+  resize: vertical;
+}
+
+/* Native select with a custom chevron */
+.zoho select {
+  appearance: none;
+  padding-right: 2.75rem;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%2371717a' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 6l4 4 4-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+.zoho select:invalid {
+  color: #a1a1aa;
+}
+
+.zoho select option {
+  color: var(--ink);
+}
+
+/* ── Footer: required note + submit ── */
+
+.footer {
+  margin-top: 1.75rem;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 1rem;
+}
+
+.zoho :global(#REQUIRED_FIELD_TEXT) {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+.zoho :global(#zcWebOptin) {
+  display: inline-flex;
+  width: 100%;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  border-radius: 0.75rem;
+  background: var(--navy);
+  padding: 0.75rem 1.75rem;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -10px rgb(23 37 86 / 0.5);
+  transition:
+    background-color 200ms ease,
+    transform 150ms ease;
+}
+
+.zoho :global(#zcWebOptin):hover {
+  background: var(--navy-hover);
+}
+
+.zoho :global(#zcWebOptin):active {
+  transform: scale(0.985);
+}
+
+.zoho :global(#zcWebOptin):focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 3px;
+}
+
+/* ── Privacy note ── */
+
+.zoho :global(#privacyNotes) {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  padding-top: 1.25rem;
+  font-size: 0.75rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ── Success state ── */
+
+.zoho :global(#Zc_SignupSuccess) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 1rem;
+  background: rgb(236 253 245 / 0.6);
+  padding: 3rem 1.5rem;
+  text-align: center;
+}
+
+.successIcon {
+  display: flex;
+  width: 3.5rem;
+  height: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  background: #d1fae5;
+  color: #059669;
+}
+
+.successIcon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.zoho :global(#signupSuccessMsg) {
+  margin-top: 1.25rem;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 1.25rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.zoho :global(#Zc_SignupSuccess) p {
+  margin-top: 0.5rem;
+  max-width: 24rem;
+  font-size: 0.875rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+/* ── Larger screens ── */
+
+@media (min-width: 768px) {
+  .zoho :global(#SIGNUP_HEADING) {
+    font-size: 2.25rem;
+  }
+
+  .zoho :global(.zcsffieldsdiv) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .footer {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .zoho :global(#zcWebOptin) {
+    width: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zoho * {
+    transition: none !important;
+  }
+}

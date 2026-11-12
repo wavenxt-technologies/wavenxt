@@ -8,20 +8,21 @@ import {
   motion,
   AnimatePresence,
   useMotionValueEvent,
+  useReducedMotion,
   useScroll,
+  type Variants,
 } from "framer-motion";
 import {
-  ArrowUpRight,
-  ArrowRight,
-  ChevronDown,
-  Menu,
-  X,
-  BookOpen,
-  Video,
-} from "lucide-react";
+  CaretDown,
+  CaretRight,
+  Play,
+} from "@phosphor-icons/react";
 import { cn } from "@/lib/utils";
 
-const ease = [0.22, 1, 0.36, 1] as [number, number, number, number];
+const ease = [0.32, 0.72, 0, 1] as [number, number, number, number];
+
+const focusRing =
+  "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0b3d91]";
 
 /* ─── Nav data ─── */
 
@@ -41,17 +42,21 @@ const navLinks: NavLink[] = [
   { href: "/contact", label: "Contact" },
 ];
 
+// Order of the flyout triggers, used to slide content in the right direction
+const dropdownOrder: Record<DropdownType, number> = {
+  products: 0,
+  resources: 1,
+};
+
 const resourceItems = [
   {
     name: "Blogs",
     href: "/resources/blogs",
-    icon: BookOpen,
     desc: "Articles and insights on RF engineering, wireless testing, and industry trends",
   },
   {
     name: "Webinars",
     href: "/resources/webinars",
-    icon: Video,
     desc: "Live sessions and on-demand recordings from our engineering experts",
   },
 ];
@@ -82,7 +87,7 @@ const productItems: ProductItem[] = [
       {
         name: "8 GHz Series",
         href: "/products/digital-attenuators/mt88a",
-        spec: "200–8000 MHz · 1–8 ch",
+        spec: "200–8000 MHz · 1–24 ch",
       },
       {
         name: "6 GHz Series",
@@ -176,6 +181,13 @@ const productItems: ProductItem[] = [
   },
 ];
 
+function isLinkActive(link: NavLink, pathname: string) {
+  if (link.href === "/") return pathname === "/";
+  if (link.dropdownType === "resources")
+    return pathname.startsWith("/resources");
+  return pathname.startsWith(link.href);
+}
+
 /* ═══════════════════════════════════════════════════
    NAVBAR
    ═══════════════════════════════════════════════════ */
@@ -190,39 +202,74 @@ function NavbarContent({ pathname }: { pathname: string }) {
   const [activeDropdown, setActiveDropdown] = useState<DropdownType | null>(
     null,
   );
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const openTimer = useRef<NodeJS.Timeout | null>(null);
+  const closeTimer = useRef<NodeJS.Timeout | null>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  const dur = (seconds: number) => (reduceMotion ? 0 : seconds);
 
-  const activeProduct = productItems[activeIndex];
   const isHome = pathname === "/";
   const isTransparent =
     isHome && !scrolled && !activeDropdown && !mobileMenuOpen;
 
   const { scrollY } = useScroll();
   useMotionValueEvent(scrollY, "change", (latest) => {
-    setScrolled(latest > 50);
+    setScrolled(latest > 12);
   });
 
-  function handleDropdownEnter(type: DropdownType) {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setActiveDropdown(type);
+  function clearTimers() {
+    if (openTimer.current) clearTimeout(openTimer.current);
+    if (closeTimer.current) clearTimeout(closeTimer.current);
   }
 
-  function handleDropdownLeave() {
-    timeoutRef.current = setTimeout(() => {
-      setActiveDropdown(null);
-      setActiveIndex(0);
-    }, 200);
+  function openDropdown(type: DropdownType) {
+    clearTimers();
+    if (activeDropdown === type) return;
+    // Switch instantly between flyouts; a short intent delay on first open
+    // keeps the menu from flashing when the pointer sweeps across the bar.
+    if (activeDropdown) {
+      setDirection(
+        dropdownOrder[type] > dropdownOrder[activeDropdown] ? 1 : -1,
+      );
+      setActiveDropdown(type);
+      return;
+    }
+    openTimer.current = setTimeout(() => {
+      setDirection(0);
+      setActiveDropdown(type);
+    }, 90);
+  }
+
+  function closeDropdown(delay = 180) {
+    clearTimers();
+    closeTimer.current = setTimeout(() => setActiveDropdown(null), delay);
+  }
+
+  function closeNow() {
+    clearTimers();
+    setActiveDropdown(null);
+  }
+
+  function handleTriggerKeyDown(
+    e: React.KeyboardEvent<HTMLAnchorElement>,
+    type: DropdownType,
+  ) {
+    if (e.key !== "ArrowDown") return;
+    e.preventDefault();
+    clearTimers();
+    setDirection(0);
+    setActiveDropdown(type);
+    setTimeout(
+      () => panelRef.current?.querySelector<HTMLElement>("a")?.focus(),
+      60,
+    );
   }
 
   useEffect(() => {
-    if (mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.body.style.overflow = mobileMenuOpen ? "hidden" : "unset";
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -230,516 +277,951 @@ function NavbarContent({ pathname }: { pathname: string }) {
 
   useEffect(() => {
     return () => {
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
+      if (openTimer.current) clearTimeout(openTimer.current);
+      if (closeTimer.current) clearTimeout(closeTimer.current);
     };
   }, []);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setActiveDropdown(null);
+      if (e.key !== "Escape") return;
+      // Return focus to the trigger when closing from inside the flyout
+      if (
+        activeDropdown &&
+        panelRef.current?.contains(document.activeElement)
+      ) {
+        document.getElementById(`nav-trigger-${activeDropdown}`)?.focus();
+      }
+      setActiveDropdown(null);
+      setMobileMenuOpen(false);
     }
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, []);
+  }, [activeDropdown]);
 
   return (
     <>
       <motion.header
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease }}
-        className="fixed top-0 z-50 w-full"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.4 }}
+        className="fixed inset-x-0 top-0 z-50 tracking-[-0.01em] normal-nums"
+        onMouseEnter={() => {
+          if (closeTimer.current) clearTimeout(closeTimer.current);
+        }}
+        onMouseLeave={() => closeDropdown()}
+        onBlur={(e) => {
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null))
+            closeNow();
+        }}
       >
-        {/* Main bar */}
+        {/* Bar + flyout share one surface */}
         <div
           className={cn(
-            "border-b transition-all duration-300",
+            "relative z-20 border-b transition-[background-color,border-color] duration-300",
             isTransparent
               ? "border-transparent bg-transparent"
-              : "border-zinc-200/60 bg-[#f7f7f5]",
+              : mobileMenuOpen || activeDropdown
+                ? cn(
+                    "bg-[#f7f7f5]",
+                    activeDropdown
+                      ? "border-black/[0.08] contrast-more:border-black/30"
+                      : "border-transparent",
+                  )
+                : cn(
+                    "bg-[#f7f7f5]",
+                    scrolled
+                      ? "border-black/[0.08] contrast-more:border-black/30"
+                      : "border-transparent",
+                  ),
           )}
         >
-          <nav className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6 md:px-10">
-            {/* Logo */}
+          <nav
+            aria-label="Main"
+            className="relative mx-auto flex h-14 max-w-7xl items-center justify-between px-6 md:px-10"
+          >
             <Link
               href="/"
-              className="relative z-10 flex items-center transition-opacity duration-300 hover:opacity-80"
+              aria-label="Wavenxt home"
+              onClick={() => setMobileMenuOpen(false)}
+              onMouseEnter={() => closeDropdown(80)}
+              className={cn(
+                "relative z-10 flex items-center rounded-md transition-opacity duration-200 hover:opacity-75",
+                focusRing,
+              )}
             >
               <Image
                 src="/logo.png"
                 alt="Wavenxt"
                 width={160}
                 height={40}
-                className="h-7 w-auto object-contain transition-all duration-300"
+                className="h-[26px] w-auto object-contain"
                 priority
               />
             </Link>
 
             {/* Center nav */}
-            <ul className="hidden md:flex absolute text-sm left-1/2 -translate-x-1/2 items-center gap-0.5">
+            <ul className="absolute inset-y-0 left-1/2 hidden -translate-x-1/2 items-center gap-1 lg:flex">
               {navLinks.map((link) => {
-                const isActive =
-                  link.href === "/"
-                    ? pathname === "/"
-                    : pathname.startsWith(link.href);
-
-                const hasChevron = !!link.dropdownType;
-                const isThisDropdownOpen = activeDropdown === link.dropdownType;
+                const isActive = isLinkActive(link, pathname);
+                const isOpen =
+                  !!link.dropdownType && activeDropdown === link.dropdownType;
 
                 return (
-                  <li
-                    key={link.href}
-                    className={link.dropdownType ? "relative" : ""}
-                    onMouseEnter={
-                      link.dropdownType
-                        ? () => handleDropdownEnter(link.dropdownType!)
-                        : undefined
-                    }
-                    onMouseLeave={
-                      link.dropdownType ? handleDropdownLeave : undefined
-                    }
-                  >
+                  <li key={link.href} className="flex h-full items-center">
                     <Link
+                      id={
+                        link.dropdownType
+                          ? `nav-trigger-${link.dropdownType}`
+                          : undefined
+                      }
                       href={
                         link.dropdownType === "resources"
                           ? "/resources/blogs"
                           : link.href
                       }
+                      onMouseEnter={() =>
+                        link.dropdownType
+                          ? openDropdown(link.dropdownType)
+                          : closeDropdown(80)
+                      }
+                      onFocus={() =>
+                        link.dropdownType
+                          ? openDropdown(link.dropdownType)
+                          : closeNow()
+                      }
+                      onKeyDown={
+                        link.dropdownType
+                          ? (e) => handleTriggerKeyDown(e, link.dropdownType!)
+                          : undefined
+                      }
+                      onClick={closeNow}
+                      aria-current={isActive ? "page" : undefined}
+                      aria-expanded={link.dropdownType ? isOpen : undefined}
+                      aria-controls={
+                        link.dropdownType ? "nav-flyout" : undefined
+                      }
                       className={cn(
-                        "relative flex items-center gap-1 rounded-lg px-6 py-2.5 transition-colors duration-300",
-                        isActive
-                          ? "font-medium text-zinc-900"
-                          : "text-zinc-500 hover:text-zinc-800",
+                        "flex items-center gap-1 rounded-md px-3.5 py-2 text-[13px] tracking-[-0.005em] transition-colors duration-200 contrast-more:text-[#1d1d1f]",
+                        focusRing,
+                        isActive || isOpen
+                          ? "text-[#1d1d1f]"
+                          : "text-[#1d1d1f]/75 hover:text-[#1d1d1f]",
                       )}
                     >
                       {link.label}
-                      {hasChevron && (
-                        <motion.span
-                          animate={{ rotate: isThisDropdownOpen ? 180 : 0 }}
-                          transition={{ duration: 0.2, ease }}
-                        >
-                          <ChevronDown className="size-3 text-zinc-400 transition-colors duration-300" />
-                        </motion.span>
-                      )}
-                      {isActive && (
-                        <motion.span
-                          layoutId="nav-underline"
-                          className="absolute inset-x-1.5 -bottom-[calc(0.5rem+1px)] h-0.5 bg-zinc-600"
-                          transition={{
-                            type: "spring",
-                            stiffness: 400,
-                            damping: 30,
-                          }}
+                      {link.dropdownType && (
+                        <CaretDown
+                          aria-hidden="true"
+                          weight="bold"
+                          className={cn(
+                            "size-2.5 text-[#86868b] transition-transform duration-300",
+                            isOpen && "rotate-180 text-[#1d1d1f]",
+                          )}
                         />
                       )}
                     </Link>
-
-                    {/* ── Resources dropdown (inline in li) ── */}
-                    {link.dropdownType === "resources" && (
-                      <AnimatePresence>
-                        {activeDropdown === "resources" && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                            transition={{ duration: 0.2, ease }}
-                            className="absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4"
-                          >
-                            <div className="w-[300px] overflow-hidden rounded-2xl border border-zinc-200/70 bg-white p-1.5 shadow-[0_20px_60px_-12px_rgba(0,0,0,0.16),0_0_0_1px_rgba(0,0,0,0.03)]">
-                              {resourceItems.map((item) => {
-                                const Icon = item.icon;
-                                return (
-                                  <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    onClick={() => setActiveDropdown(null)}
-                                    className="group flex items-start gap-3 rounded-xl px-3.5 py-3.5 transition-colors duration-150 hover:bg-zinc-50"
-                                  >
-                                    <div className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-lg bg-[#172556]/[0.06] text-[#172556] transition-all duration-150 group-hover:bg-[#172556] group-hover:text-white">
-                                      <Icon className="size-3.5" />
-                                    </div>
-                                    <div className="min-w-0 flex-1">
-                                      <div className="flex items-center justify-between gap-2">
-                                        <span className="text-[14px] font-medium text-zinc-700 transition-colors duration-150 group-hover:text-zinc-900">
-                                          {item.name}
-                                        </span>
-                                        <ArrowUpRight className="size-3.5 shrink-0 text-zinc-300 opacity-0 transition-all duration-150 group-hover:opacity-100 group-hover:text-[#172556]" />
-                                      </div>
-                                      <p className="mt-0.5 text-[12px] leading-relaxed text-zinc-400">
-                                        {item.desc}
-                                      </p>
-                                    </div>
-                                  </Link>
-                                );
-                              })}
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    )}
-
-                    {/* ── Products dropdown (inline in li) ── */}
-                    {link.dropdownType === "products" && (
-                      <AnimatePresence>
-                        {activeDropdown === "products" && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            exit={{ opacity: 0, y: 8, scale: 0.97 }}
-                            transition={{ duration: 0.2, ease }}
-                            className="fixed left-1/2 top-16 z-50 -translate-x-1/2 pt-4"
-                          >
-                            <div className="w-[980px] overflow-hidden rounded-2xl border border-zinc-200/70 shadow-[0_20px_60px_-12px_rgba(0,0,0,0.16),0_0_0_1px_rgba(0,0,0,0.03)]">
-                              <div className="flex">
-                                {/* Dark navy sidebar */}
-                                <div className="relative w-[30%] shrink-0 overflow-hidden bg-[#111e3d] px-8 py-8">
-                                  <svg
-                                    aria-hidden="true"
-                                    className="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 opacity-[0.09]"
-                                    viewBox="0 0 200 200"
-                                    fill="none"
-                                  >
-                                    {[28, 56, 84, 112, 140, 168].map((r) => (
-                                      <circle
-                                        key={r}
-                                        cx="200"
-                                        cy="200"
-                                        r={r}
-                                        stroke="white"
-                                        strokeWidth="1"
-                                      />
-                                    ))}
-                                    <circle
-                                      cx="200"
-                                      cy="200"
-                                      r="3"
-                                      fill="white"
-                                      fillOpacity="0.4"
-                                    />
-                                  </svg>
-
-                                  <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.24em] text-white/30">
-                                    Products
-                                  </p>
-
-                                  <div className="flex flex-col">
-                                    {productItems.map((item, idx) => (
-                                      <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        onMouseEnter={() => setActiveIndex(idx)}
-                                        onClick={() => setActiveDropdown(null)}
-                                        className="group flex items-center gap-3 border-b border-white/[0.06] py-[11px] last:border-0 transition-all duration-150"
-                                      >
-                                        <span
-                                          className={cn(
-                                            "w-5 shrink-0 font-mono text-[10px] tabular-nums transition-colors duration-150",
-                                            activeIndex === idx
-                                              ? "text-white/40"
-                                              : "text-white/15",
-                                          )}
-                                        >
-                                          {String(idx + 1).padStart(2, "0")}
-                                        </span>
-                                        <span
-                                          className={cn(
-                                            "flex-1 font-heading text-[15px] font-medium tracking-tight transition-colors duration-150",
-                                            activeIndex === idx
-                                              ? "text-white"
-                                              : "text-white/45 group-hover:text-white/70",
-                                          )}
-                                        >
-                                          {item.name}
-                                        </span>
-                                        <ArrowRight
-                                          className={cn(
-                                            "size-3.5 shrink-0 transition-all duration-150",
-                                            activeIndex === idx
-                                              ? "text-white/45 opacity-100"
-                                              : "opacity-0",
-                                          )}
-                                        />
-                                      </Link>
-                                    ))}
-                                  </div>
-
-                                  <div className="mt-5 border-t border-white/[0.07] pt-5">
-                                    <Link
-                                      href="/products"
-                                      onClick={() => setActiveDropdown(null)}
-                                      className="group inline-flex items-center gap-1.5 text-[11px] font-medium text-white/35 transition-colors hover:text-white/65"
-                                    >
-                                      Browse all products
-                                      <ArrowRight className="size-3 transition-transform group-hover:translate-x-0.5" />
-                                    </Link>
-                                  </div>
-                                </div>
-
-                                {/* White detail panel */}
-                                <div className="flex-1 bg-white">
-                                  <AnimatePresence mode="wait">
-                                    <motion.div
-                                      key={activeProduct.href}
-                                      initial={{ opacity: 0, x: 10 }}
-                                      animate={{ opacity: 1, x: 0 }}
-                                      exit={{ opacity: 0 }}
-                                      transition={{
-                                        duration: 0.18,
-                                        ease: [0.16, 1, 0.3, 1],
-                                      }}
-                                      className="flex h-full"
-                                    >
-                                      {/* Image */}
-                                      <div className="relative w-[50%] shrink-0 flex items-center justify-center bg-[#f6f6f4] p-5">
-                                        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.75)_0%,transparent_70%)]" />
-                                        <motion.div
-                                          initial={{ opacity: 0, scale: 0.93 }}
-                                          animate={{ opacity: 1, scale: 1 }}
-                                          transition={{
-                                            duration: 0.35,
-                                            ease: [0.16, 1, 0.3, 1],
-                                          }}
-                                          className="relative w-full aspect-square"
-                                        >
-                                          <Image
-                                            src={activeProduct.image}
-                                            alt={activeProduct.name}
-                                            fill
-                                            sizes="20vw"
-                                            className="object-cover drop-shadow-xl"
-                                            priority
-                                          />
-                                        </motion.div>
-                                      </div>
-
-                                      {/* Details */}
-                                      <div className="flex flex-1 flex-col justify-between p-8">
-                                        <div>
-                                          <motion.span
-                                            initial={{ opacity: 0 }}
-                                            animate={{ opacity: 1 }}
-                                            transition={{ delay: 0.06 }}
-                                            className="inline-flex rounded-md bg-[#172556]/[0.07] px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#172556]"
-                                          >
-                                            {activeProduct.tag}
-                                          </motion.span>
-
-                                          <motion.h3
-                                            initial={{ opacity: 0, y: 5 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.1 }}
-                                            className="mt-3 font-heading text-xl font-medium tracking-tight text-zinc-900"
-                                          >
-                                            {activeProduct.name}
-                                          </motion.h3>
-
-                                          <motion.p
-                                            initial={{ opacity: 0, y: 5 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ delay: 0.14 }}
-                                            className="mt-2 text-[13px] leading-relaxed text-zinc-500"
-                                          >
-                                            {activeProduct.desc}
-                                          </motion.p>
-
-                                          {activeProduct.subModels.length >
-                                            0 && (
-                                            <motion.div
-                                              initial={{ opacity: 0 }}
-                                              animate={{ opacity: 1 }}
-                                              transition={{ delay: 0.18 }}
-                                              className="mt-4"
-                                            >
-                                              <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-300">
-                                                Available Series
-                                              </p>
-                                              <div className="flex flex-col gap-1">
-                                                {activeProduct.subModels.map(
-                                                  (sub) => (
-                                                    <Link
-                                                      key={sub.name}
-                                                      href={sub.href}
-                                                      onClick={() =>
-                                                        setActiveDropdown(null)
-                                                      }
-                                                      className="group/sub flex items-center justify-between rounded-lg border border-transparent bg-zinc-50 px-3 py-2 transition-all duration-150 hover:border-[#172556]/12 hover:bg-[#172556]/[0.04]"
-                                                    >
-                                                      <div className="flex items-center gap-2">
-                                                        <span className="text-[12px] font-semibold text-zinc-700 transition-colors duration-150 group-hover/sub:text-[#172556]">
-                                                          {sub.name}
-                                                        </span>
-                                                        <span className="h-2.5 w-px bg-zinc-200" />
-                                                        <span className="font-mono text-[10px] text-zinc-400">
-                                                          {sub.spec}
-                                                        </span>
-                                                      </div>
-                                                      <ArrowRight className="size-3 text-zinc-300 transition-all duration-150 group-hover/sub:translate-x-0.5 group-hover/sub:text-[#172556]" />
-                                                    </Link>
-                                                  ),
-                                                )}
-                                              </div>
-                                            </motion.div>
-                                          )}
-
-                                          {activeProduct.subModels.length ===
-                                            0 && (
-                                            <motion.p
-                                              initial={{ opacity: 0 }}
-                                              animate={{ opacity: 1 }}
-                                              transition={{ delay: 0.18 }}
-                                              className="mt-3 text-[12px] text-zinc-400"
-                                            >
-                                              Multiple configurations available
-                                              — visit the product page.
-                                            </motion.p>
-                                          )}
-                                        </div>
-
-                                        <motion.div
-                                          initial={{ opacity: 0 }}
-                                          animate={{ opacity: 1 }}
-                                          transition={{ delay: 0.22 }}
-                                          className="pt-4"
-                                        >
-                                          <Link
-                                            href={activeProduct.href}
-                                            onClick={() =>
-                                              setActiveDropdown(null)
-                                            }
-                                            className="group inline-flex items-center gap-2 text-sm font-semibold text-[#172556] transition-colors hover:text-[#1e3070]"
-                                          >
-                                            View full details
-                                            <ArrowUpRight className="size-4 transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                                          </Link>
-                                        </motion.div>
-                                      </div>
-                                    </motion.div>
-                                  </AnimatePresence>
-                                </div>
-                              </div>
-                            </div>
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    )}
                   </li>
                 );
               })}
             </ul>
 
-            <div className="relative z-10 flex items-center gap-4">
-              <button
-                className="md:hidden p-2 -mr-2 text-zinc-900 transition-colors duration-300"
-                onClick={() => setMobileMenuOpen(true)}
-                aria-label="Open mobile menu"
+            <div className="relative z-10 flex items-center gap-2">
+              <Link
+                href="/contact"
+                onClick={closeNow}
+                onMouseEnter={() => closeDropdown(80)}
+                className={cn(
+                  "inline-flex min-h-10 items-center justify-center rounded-full bg-[#0b3d91] px-4 py-2 text-[13px] text-white transition-colors duration-200 hover:bg-[#1249a8] active:bg-[#08306f]",
+                  focusRing,
+                )}
               >
-                <Menu className="size-6" />
+                Let&apos;s Talk
+              </Link>
+
+              {/* Mobile toggle — two lines that morph into a close mark */}
+              <button
+                type="button"
+                className={cn(
+                  "-mr-3 flex size-11 items-center justify-center rounded-full lg:hidden",
+                  focusRing,
+                )}
+                onClick={() => setMobileMenuOpen((open) => !open)}
+                aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={mobileMenuOpen}
+                aria-controls="mobile-menu"
+              >
+                <span
+                  aria-hidden="true"
+                  className="relative block h-3 w-[18px]"
+                >
+                  <motion.span
+                    className="absolute inset-x-0 top-[2px] h-[1.5px] rounded-full bg-[#1d1d1f]"
+                    animate={
+                      mobileMenuOpen
+                        ? { y: 3.25, rotate: 45 }
+                        : { y: 0, rotate: 0 }
+                    }
+                    transition={{ duration: dur(0.3), ease }}
+                  />
+                  <motion.span
+                    className="absolute inset-x-0 bottom-[2px] h-[1.5px] rounded-full bg-[#1d1d1f]"
+                    animate={
+                      mobileMenuOpen
+                        ? { y: -3.25, rotate: -45 }
+                        : { y: 0, rotate: 0 }
+                    }
+                    transition={{ duration: dur(0.3), ease }}
+                  />
+                </span>
               </button>
             </div>
           </nav>
+
+          {/* ── Desktop flyout ── */}
+          <AnimatePresence>
+            {activeDropdown && (
+              <Flyout
+                key="flyout"
+                ref={panelRef}
+                type={activeDropdown}
+                direction={direction}
+                reduceMotion={!!reduceMotion}
+                onNavigate={closeNow}
+              />
+            )}
+          </AnimatePresence>
         </div>
 
-        {/* Mobile Menu */}
+        {/* ── Mobile menu ── */}
         <AnimatePresence>
           {mobileMenuOpen && (
             <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease }}
-              className="fixed inset-0 z-100 flex flex-col bg-white md:hidden"
+              key="mobile-menu"
+              id="mobile-menu"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: dur(0.25), ease }}
+              className="fixed inset-0 z-10 flex flex-col bg-[#f7f7f5] pt-14 lg:hidden"
             >
-              {/* Mobile Menu Header */}
-              <div className="flex h-14 shrink-0 items-center justify-between px-6 border-b border-zinc-100">
-                <Link
-                  href="/"
-                  className="font-heading text-lg font-semibold tracking-tight text-zinc-900"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  Wavenxt
-                </Link>
-                <button
-                  className="p-2 -mr-2 text-zinc-500 hover:text-zinc-900 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                  aria-label="Close mobile menu"
-                >
-                  <X className="size-6" />
-                </button>
-              </div>
-
-              {/* Mobile Menu Scrollable Content */}
-              <div className="flex-1 overflow-y-auto px-6 py-8">
-                <div className="flex flex-col gap-6">
-                  {navLinks.map((link) => (
-                    <div key={link.href} className="flex flex-col">
-                      {link.dropdownType === "products" ? (
-                        <>
-                          <div className="flex items-center justify-between py-2 text-xl font-medium text-zinc-900">
-                            {link.label}
-                          </div>
-                          <div className="mt-4 flex flex-col gap-4 pl-4 border-l-2 border-zinc-100">
-                            {productItems.map((item) => (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="text-base text-zinc-600 font-medium transition-colors hover:text-[#172556]"
-                              >
-                                {item.name}
-                              </Link>
-                            ))}
-                          </div>
-                        </>
-                      ) : link.dropdownType === "resources" ? (
-                        <>
-                          <div className="flex items-center justify-between py-2 text-xl font-medium text-zinc-900">
-                            {link.label}
-                          </div>
-                          <div className="mt-4 flex flex-col gap-4 pl-4 border-l-2 border-zinc-100">
-                            {resourceItems.map((item) => (
-                              <Link
-                                key={item.href}
-                                href={item.href}
-                                onClick={() => setMobileMenuOpen(false)}
-                                className="flex items-center gap-3 text-base text-zinc-600 font-medium transition-colors hover:text-[#172556]"
-                              >
-                                <item.icon className="size-4" />
-                                {item.name}
-                              </Link>
-                            ))}
-                          </div>
-                        </>
-                      ) : (
-                        <Link
-                          href={link.href}
-                          onClick={() => setMobileMenuOpen(false)}
-                          className="py-2 text-xl font-medium text-zinc-900 transition-colors hover:text-[#172556]"
-                        >
-                          {link.label}
-                        </Link>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Mobile Menu Footer CTA */}
-              <div className="shrink-0 p-6 border-t border-zinc-100 bg-zinc-50/50">
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="flex w-full items-center justify-center gap-2 rounded-full bg-[#172556] px-6 py-3.5 text-base font-medium text-white transition-opacity hover:opacity-90"
-                >
-                  Let&apos;s Talk
-                  <ArrowUpRight className="size-4" />
-                </Link>
-              </div>
+              <MobileMenu
+                pathname={pathname}
+                reduceMotion={!!reduceMotion}
+                onNavigate={() => setMobileMenuOpen(false)}
+              />
             </motion.div>
           )}
         </AnimatePresence>
       </motion.header>
+
+      {/* Page scrim behind the flyout */}
+      <AnimatePresence>
+        {activeDropdown && (
+          <motion.div
+            key="scrim"
+            aria-hidden="true"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: dur(0.3), ease }}
+            onClick={closeNow}
+            className="fixed inset-0 z-40 hidden bg-[#e8e8ed]/40 supports-[backdrop-filter]:backdrop-blur-xl lg:block"
+          />
+        )}
+      </AnimatePresence>
     </>
+  );
+}
+
+/* ─── Mobile menu ───
+   Product-first: the families as image tiles (like the home hero rail),
+   then Resources and Company as inset grouped lists. Sections rise in
+   one after another. */
+
+const mobileHeadingClass = "px-1 text-[13px] font-semibold text-[#6e6e73]";
+
+const mobileGroupClass =
+  "overflow-hidden rounded-[20px] bg-white ring-1 ring-black/[0.06] divide-y divide-black/[0.06]";
+
+const mobileSectionVariants: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.45, delay: 0.05 + i * 0.07, ease },
+  }),
+};
+
+function MobileMenu({
+  pathname,
+  reduceMotion,
+  onNavigate,
+}: {
+  pathname: string;
+  reduceMotion: boolean;
+  onNavigate: () => void;
+}) {
+  const companyLinks = navLinks.filter((link) => !link.dropdownType);
+  const isCurrent = (href: string) =>
+    pathname === href || (href !== "/" && pathname.startsWith(`${href}/`));
+  const section = (i: number) => ({
+    custom: i,
+    variants: mobileSectionVariants,
+    initial: reduceMotion ? false : ("hidden" as const),
+    animate: "visible" as const,
+  });
+
+  return (
+    <>
+      <nav
+        aria-label="Mobile"
+        className="flex-1 overflow-y-auto overscroll-contain px-5 pb-10 pt-5"
+      >
+        <motion.section {...section(0)} aria-labelledby="mobile-products">
+          <div className="flex items-baseline justify-between">
+            <h2 id="mobile-products" className={mobileHeadingClass}>
+              Products
+            </h2>
+            <Link
+              href="/products"
+              onClick={onNavigate}
+              className={cn(
+                "inline-flex items-center gap-1 rounded-sm text-[15px] text-[#0066cc]",
+                focusRing,
+              )}
+            >
+              All Products
+              <CaretRight aria-hidden="true" weight="bold" className="size-3" />
+            </Link>
+          </div>
+          <ul className="mt-3 grid grid-cols-2 gap-2.5">
+            {productItems.map((item) => {
+              const current = isCurrent(item.href);
+              return (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    onClick={onNavigate}
+                    aria-current={current ? "page" : undefined}
+                    className={cn(
+                      "flex h-full flex-col rounded-[20px] bg-white px-3.5 pb-3.5 pt-3 ring-1 transition-transform duration-200 active:scale-[0.98]",
+                      current ? "ring-2 ring-[#0b3d91]" : "ring-black/[0.06]",
+                      focusRing,
+                    )}
+                  >
+                    <span className="relative block h-[72px] w-full">
+                      <ProductImage src={item.image} sizes="160px" inset="inset-1" />
+                    </span>
+                    <span className="mt-3 text-[15px] font-medium leading-[1.25] tracking-[-0.01em] text-[#1d1d1f]">
+                      {item.name}
+                    </span>
+                    <span className="mt-1 text-[12px] leading-[1.3] text-[#6e6e73]">
+                      {item.tag}
+                    </span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </motion.section>
+
+        <motion.section {...section(1)} aria-labelledby="mobile-resources" className="mt-8">
+          <h2 id="mobile-resources" className={mobileHeadingClass}>
+            Resources
+          </h2>
+          <ul className={cn("mt-3", mobileGroupClass)}>
+            {resourceItems.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  onClick={onNavigate}
+                  aria-current={isCurrent(item.href) ? "page" : undefined}
+                  className={cn(
+                    "flex items-center gap-3 px-4 py-3.5 transition-colors active:bg-[#f5f5f7]",
+                    focusRing,
+                  )}
+                >
+                  <span className="min-w-0 flex-1">
+                    <span className="block text-[17px] font-medium tracking-[-0.01em] text-[#1d1d1f]">
+                      {item.name}
+                    </span>
+                    <span className="mt-0.5 block text-[13px] leading-[1.4] text-[#6e6e73]">
+                      {item.desc}
+                    </span>
+                  </span>
+                  <CaretRight aria-hidden="true" weight="bold" className="size-3.5 shrink-0 text-[#c7c7cc]" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </motion.section>
+
+        <motion.section {...section(2)} aria-labelledby="mobile-company" className="mt-8">
+          <h2 id="mobile-company" className={mobileHeadingClass}>
+            Company
+          </h2>
+          <ul className={cn("mt-3", mobileGroupClass)}>
+            {companyLinks.map((link) => {
+              const current = isLinkActive(link, pathname);
+              return (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    onClick={onNavigate}
+                    aria-current={current ? "page" : undefined}
+                    className={cn(
+                      "flex min-h-[52px] items-center gap-3 px-4 transition-colors active:bg-[#f5f5f7]",
+                      focusRing,
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        "flex-1 text-[17px] font-medium tracking-[-0.01em]",
+                        current ? "text-[#0b3d91]" : "text-[#1d1d1f]",
+                      )}
+                    >
+                      {link.label}
+                    </span>
+                    <CaretRight aria-hidden="true" weight="bold" className="size-3.5 shrink-0 text-[#c7c7cc]" />
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </motion.section>
+      </nav>
+
+      <motion.div
+        {...section(3)}
+        className="border-t border-black/[0.06] bg-[#f7f7f5]/90 px-5 pt-3 pb-[max(1rem,env(safe-area-inset-bottom))] backdrop-blur-xl"
+      >
+        <Link
+          href="/contact"
+          onClick={onNavigate}
+          className={cn(
+            "flex h-12 w-full items-center justify-center rounded-full bg-[#0b3d91] text-[17px] text-white transition-colors hover:bg-[#1249a8] active:bg-[#08306f]",
+            focusRing,
+          )}
+        >
+          Let&apos;s Talk
+        </Link>
+      </motion.div>
+    </>
+  );
+}
+
+/* ─── Flyout ─── */
+
+// Menu copies of the product images, cropped tight to the product so they
+// center correctly. `fit` evens out visual weight between tall and wide
+// products, and keeps the low-resolution sources from being upscaled.
+const navImages: Record<string, { src: string; fit: number }> = {
+  "/images/group-atten.webp": {
+    src: "/images/nav/group-atten.webp",
+    fit: 0.82,
+  },
+  "/images/mesh4.webp": { src: "/images/nav/mesh4.webp", fit: 1 },
+  "/images/butler4.webp": { src: "/images/nav/butler4.webp", fit: 0.8 },
+  "/images/handover.webp": { src: "/images/nav/handover.webp", fit: 0.96 },
+  "/images/matrix.webp": { src: "/images/nav/matrix.webp", fit: 0.96 },
+  "/images/splitter.webp": { src: "/images/nav/splitter.webp", fit: 0.78 },
+};
+
+const contentVariants: Variants = {
+  enter: (direction: number) =>
+    direction === 0 ? { opacity: 0, y: -8 } : { opacity: 0, x: direction * 40 },
+  center: {
+    opacity: 1,
+    x: 0,
+    y: 0,
+    transition: { duration: 0.32, ease, staggerChildren: 0.025 },
+  },
+  exit: (direction: number) => ({
+    opacity: 0,
+    x: direction * -40,
+    transition: { duration: 0.2, ease },
+  }),
+};
+
+const itemVariants: Variants = {
+  enter: { opacity: 0, y: 8 },
+  center: { opacity: 1, y: 0, transition: { duration: 0.35, ease } },
+};
+
+const detailVariants: Variants = {
+  enter: (direction: number) => ({ opacity: 0, y: direction * 14 }),
+  center: { opacity: 1, y: 0, transition: { duration: 0.3, ease } },
+  exit: (direction: number) => ({
+    opacity: 0,
+    y: direction * -14,
+    transition: { duration: 0.16, ease },
+  }),
+};
+
+function Flyout({
+  ref,
+  type,
+  direction,
+  reduceMotion,
+  onNavigate,
+}: {
+  ref: React.Ref<HTMLDivElement>;
+  type: DropdownType;
+  direction: number;
+  reduceMotion: boolean;
+  onNavigate: () => void;
+}) {
+  // Measure the active content so the panel height animates between flyouts
+  const measureRef = useRef<HTMLDivElement>(null);
+  const [height, setHeight] = useState<number | "auto">("auto");
+
+  useEffect(() => {
+    const el = measureRef.current;
+    if (!el) return;
+    const observer = new ResizeObserver(([entry]) =>
+      setHeight(entry.borderBoxSize[0].blockSize),
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <motion.div
+      ref={ref}
+      id="nav-flyout"
+      initial={{ height: 0 }}
+      animate={{ height }}
+      exit={{ height: 0 }}
+      transition={{ duration: reduceMotion ? 0 : 0.4, ease }}
+      className="hidden overflow-hidden lg:block"
+    >
+      <div ref={measureRef} className="relative">
+        <AnimatePresence mode="popLayout" custom={direction}>
+          <motion.div
+            key={type}
+            custom={direction}
+            variants={contentVariants}
+            initial={reduceMotion ? false : "enter"}
+            animate="center"
+            exit={reduceMotion ? undefined : "exit"}
+            className="mx-auto w-full max-w-7xl px-6 pb-8 pt-5 md:px-10"
+          >
+            {type === "products" ? (
+              <ProductsFlyout
+                onNavigate={onNavigate}
+                reduceMotion={reduceMotion}
+              />
+            ) : (
+              <ResourcesFlyout onNavigate={onNavigate} />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}
+
+function ProductImage({
+  src,
+  sizes,
+  inset,
+  className,
+}: {
+  src: string;
+  sizes: string;
+  /** Padding between the tile edge and the image box */
+  inset: string;
+  className?: string;
+}) {
+  const image = navImages[src] ?? { src, fit: 1 };
+
+  return (
+    <div className={cn("absolute inset-0", inset)}>
+      <div
+        className="relative size-full"
+        style={{ transform: `scale(${image.fit})` }}
+      >
+        <Image
+          src={image.src}
+          alt=""
+          fill
+          sizes={sizes}
+          className={cn("object-contain", className)}
+        />
+      </div>
+    </div>
+  );
+}
+
+function ProductsFlyout({
+  onNavigate,
+  reduceMotion,
+}: {
+  onNavigate: () => void;
+  reduceMotion: boolean;
+}) {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
+  const hoverTimer = useRef<NodeJS.Timeout | null>(null);
+  const product = productItems[activeIndex];
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    };
+  }, []);
+
+  function select(idx: number) {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    if (idx === activeIndex) return;
+    setDirection(idx > activeIndex ? 1 : -1);
+    setActiveIndex(idx);
+  }
+
+  // Short hover intent so a diagonal move toward the detail card
+  // doesn't flip through every row the pointer crosses.
+  function handleRowEnter(idx: number) {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+    hoverTimer.current = setTimeout(() => select(idx), 70);
+  }
+
+  function handleRowLeave() {
+    if (hoverTimer.current) clearTimeout(hoverTimer.current);
+  }
+
+  function handleListKeyDown(e: React.KeyboardEvent<HTMLUListElement>) {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+    const rows = Array.from(
+      e.currentTarget.querySelectorAll<HTMLAnchorElement>("a"),
+    );
+    const current = rows.indexOf(document.activeElement as HTMLAnchorElement);
+    if (current === -1) return;
+    e.preventDefault();
+    const next =
+      e.key === "ArrowDown"
+        ? Math.min(current + 1, rows.length - 1)
+        : Math.max(current - 1, 0);
+    rows[next].focus();
+  }
+
+  return (
+    <div className="grid grid-cols-[280px_minmax(0,1fr)] gap-6 xl:grid-cols-[320px_minmax(0,1fr)] xl:gap-8">
+      {/* Product list */}
+      <div className="flex flex-col">
+        <motion.p
+          variants={itemVariants}
+          className="px-1 text-[12px] text-[#6e6e73]"
+        >
+          Products
+        </motion.p>
+        <ul
+          className="-mx-2 mt-2.5 flex flex-col gap-0.5"
+          onKeyDown={handleListKeyDown}
+        >
+          {productItems.map((item, idx) => {
+            const selected = idx === activeIndex;
+            return (
+              <motion.li key={item.href} variants={itemVariants}>
+                <Link
+                  href={item.href}
+                  onMouseEnter={() => handleRowEnter(idx)}
+                  onMouseLeave={handleRowLeave}
+                  onFocus={() => select(idx)}
+                  onClick={onNavigate}
+                  className={cn(
+                    "group relative flex items-center gap-3 rounded-xl p-1.5 pr-3",
+                    focusRing,
+                  )}
+                >
+                  {selected && (
+                    <motion.span
+                      layoutId="product-highlight"
+                      aria-hidden="true"
+                      className="absolute inset-0 rounded-xl bg-white shadow-[0_1px_2px_rgba(17,30,61,0.06),0_6px_16px_-8px_rgba(17,30,61,0.2)] ring-1 ring-black/[0.06] contrast-more:ring-black/30"
+                      transition={
+                        reduceMotion
+                          ? { duration: 0 }
+                          : { type: "spring", stiffness: 520, damping: 42 }
+                      }
+                    />
+                  )}
+                  <span className="relative size-10 shrink-0 overflow-hidden rounded-lg bg-white ring-1 ring-black/[0.06]">
+                    <ProductImage src={item.image} sizes="64px" inset="p-1.5" />
+                  </span>
+                  <span
+                    className={cn(
+                      "relative flex-1 truncate text-[14px] transition-colors duration-150",
+                      selected
+                        ? "text-[#1d1d1f]"
+                        : "text-[#424245] group-hover:text-[#1d1d1f]",
+                    )}
+                  >
+                    {item.name}
+                  </span>
+                  <CaretRight
+                    aria-hidden="true"
+                    weight="bold"
+                    className={cn(
+                      "relative size-3 text-[#86868b] transition-all duration-200",
+                      selected
+                        ? "translate-x-0 opacity-100"
+                        : "-translate-x-1 opacity-0",
+                    )}
+                  />
+                </Link>
+              </motion.li>
+            );
+          })}
+        </ul>
+      </div>
+
+      {/* Detail card — sized by an invisible stack of every product's details,
+          so the panel never changes height while hovering through the list */}
+      <motion.div
+        variants={itemVariants}
+        className="relative overflow-hidden rounded-2xl bg-white shadow-[0_1px_2px_rgba(17,30,61,0.04)] ring-1 ring-black/[0.06] contrast-more:ring-black/30"
+      >
+        <div
+          aria-hidden="true"
+          className="invisible grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+        >
+          <div className="col-start-2 grid">
+            {productItems.map((item) => (
+              <div key={item.href} className="col-start-1 row-start-1">
+                <ProductDetails product={item} onNavigate={onNavigate} />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <AnimatePresence initial={false} custom={direction}>
+          <motion.div
+            key={product.href}
+            custom={direction}
+            variants={detailVariants}
+            initial={reduceMotion ? false : "enter"}
+            animate="center"
+            exit={reduceMotion ? undefined : "exit"}
+            className="absolute inset-0 grid grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]"
+          >
+            <Link
+              href={product.href}
+              onClick={onNavigate}
+              tabIndex={-1}
+              aria-hidden="true"
+              className="group/img relative m-2 overflow-hidden rounded-xl bg-[#f5f5f7]"
+            >
+              <ProductImage
+                src={product.image}
+                sizes="(min-width: 1280px) 400px, 30vw"
+                inset="p-10"
+                className="drop-shadow-[0_14px_14px_rgba(17,30,61,0.18)] transition-transform duration-500 ease-out group-hover/img:scale-[1.04]"
+              />
+            </Link>
+            <ProductDetails product={product} onNavigate={onNavigate} />
+          </motion.div>
+        </AnimatePresence>
+      </motion.div>
+    </div>
+  );
+}
+
+// Rack-unit badges (1RU, 3RU…) are the key spec, so they lead and stand out
+const isRackUnit = (part: string) => /^\d+RU$/i.test(part);
+
+function orderBadges(parts: string[]) {
+  return [...parts.filter(isRackUnit), ...parts.filter((p) => !isRackUnit(p))];
+}
+
+function ProductDetails({
+  product,
+  onNavigate,
+}: {
+  product: ProductItem;
+  onNavigate: () => void;
+}) {
+  return (
+    <div className="flex flex-col py-6 pl-4 pr-6">
+      <span className="text-[12px] font-semibold text-[#bf4800]">
+        {product.tag}
+      </span>
+      <h3 className="mt-1 text-[21px] font-semibold tracking-[-0.02em] text-[#1d1d1f]">
+        {product.name}
+      </h3>
+      <p className="mt-1.5 text-[14px] leading-[1.45] text-[#6e6e73]">
+        {product.desc}
+      </p>
+
+      {product.subModels.length > 0 ? (
+        <div className="mt-4">
+          <p className="text-[12px] font-semibold text-[#1d1d1f]">
+            Available Series
+          </p>
+          <ul className="mt-2 grid grid-cols-2 gap-2">
+            {product.subModels.map((sub) => (
+              <li key={sub.name}>
+                <Link
+                  href={sub.href}
+                  onClick={onNavigate}
+                  className={cn(
+                    "group/sub flex h-full flex-col gap-2.5 rounded-xl bg-white p-3 ring-1 ring-[#d2d2d7] transition-[box-shadow] duration-200 hover:shadow-[0_8px_20px_-12px_rgba(0,0,0,0.28)] hover:ring-[#86868b] contrast-more:ring-black/40",
+                    focusRing,
+                  )}
+                >
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="text-[14px] font-semibold tracking-[-0.01em] text-[#1d1d1f]">
+                      {sub.name}
+                    </span>
+                    <CaretRight
+                      aria-hidden="true"
+                      weight="bold"
+                      className="size-3 shrink-0 text-[#86868b] transition-all duration-200 group-hover/sub:translate-x-0.5 group-hover/sub:text-[#0b3d91]"
+                    />
+                  </span>
+                  <span className="flex flex-wrap gap-1.5">
+                    {orderBadges(sub.spec.split(" · ")).map((part) => (
+                      <span
+                        key={part}
+                        className={cn(
+                          "rounded-md px-2 py-1 text-[12px] font-semibold leading-none",
+                          isRackUnit(part)
+                            ? "bg-[#0b3d91] text-white"
+                            : "bg-[#f5f5f7] text-[#1d1d1f] ring-1 ring-inset ring-black/[0.04]",
+                        )}
+                      >
+                        {part}
+                      </span>
+                    ))}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="mt-4 text-[14px] leading-[1.45] text-[#6e6e73]">
+          Multiple configurations available — visit the product page.
+        </p>
+      )}
+
+      <Link
+        href={product.href}
+        onClick={onNavigate}
+        className={cn(
+          "group mt-auto inline-flex items-center gap-1 self-start rounded-sm pt-5 text-[14px] text-[#0066cc] hover:underline hover:underline-offset-4",
+          focusRing,
+        )}
+      >
+        View full details
+        <CaretRight aria-hidden="true" weight="bold" className="size-3" />
+      </Link>
+    </div>
+  );
+}
+
+function ResourcesFlyout({ onNavigate }: { onNavigate: () => void }) {
+  return (
+    <ul className="grid grid-cols-2 gap-4">
+      {resourceItems.map((item) => {
+        const Art =
+          item.href === "/resources/webinars" ? WebinarsArt : BlogsArt;
+        return (
+          <motion.li key={item.href} variants={itemVariants}>
+            <Link
+              href={item.href}
+              onClick={onNavigate}
+              className={cn(
+                "group block rounded-2xl bg-white p-2 shadow-[0_1px_2px_rgba(17,30,61,0.04)] ring-1 ring-black/[0.06] transition-[box-shadow,translate] duration-300 hover:-translate-y-0.5 hover:shadow-[0_1px_2px_rgba(17,30,61,0.06),0_16px_32px_-16px_rgba(17,30,61,0.3)] contrast-more:ring-black/30",
+                focusRing,
+              )}
+            >
+              <div aria-hidden="true" className="h-40">
+                <Art />
+              </div>
+              <div className="flex items-start gap-3.5 px-3 pb-3 pt-4">
+                <span className="min-w-0 flex-1">
+                  <span className="flex items-center justify-between gap-2">
+                    <span className="text-[17px] font-semibold tracking-[-0.02em] text-[#1d1d1f]">
+                      {item.name}
+                    </span>
+                    <CaretRight
+                      aria-hidden="true"
+                      weight="bold"
+                      className="size-3 text-[#86868b] transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-[#0b3d91]"
+                    />
+                  </span>
+                  <span className="mt-0.5 block text-[14px] leading-[1.45] text-[#6e6e73]">
+                    {item.desc}
+                  </span>
+                </span>
+              </div>
+            </Link>
+          </motion.li>
+        );
+      })}
+    </ul>
+  );
+}
+
+/* ─── Resource card art (decorative) ─── */
+
+function ArticleSkeleton({ className }: { className?: string }) {
+  return (
+    <div
+      className={cn(
+        "absolute w-[42%] max-w-[220px] rounded-lg bg-white p-2.5 ring-1 ring-black/[0.06]",
+        className,
+      )}
+    >
+      <div className="h-14 rounded-md bg-[linear-gradient(135deg,#e8e8ed_0%,#d2d2d7_100%)]" />
+      <div className="mt-2.5 h-2 w-4/5 rounded-full bg-[#1d1d1f]/80" />
+      <div className="mt-2 h-1.5 w-full rounded-full bg-[#e8e8ed]" />
+      <div className="mt-1.5 h-1.5 w-11/12 rounded-full bg-[#e8e8ed]" />
+      <div className="mt-1.5 h-1.5 w-2/3 rounded-full bg-[#e8e8ed]" />
+    </div>
+  );
+}
+
+function BlogsArt() {
+  return (
+    <div className="relative h-full overflow-hidden rounded-xl bg-[#f5f5f7]">
+      <div className="absolute inset-0 bg-[radial-gradient(#1d1d1f_1px,transparent_1px)] [background-size:14px_14px] opacity-[0.06]" />
+      <ArticleSkeleton className="left-1/2 top-9 translate-x-[-8%] rotate-[5deg] opacity-80 shadow-sm transition-[translate,rotate] duration-500 ease-out group-hover:translate-x-[2%] group-hover:rotate-[8deg]" />
+      <ArticleSkeleton className="left-1/2 top-6 -translate-x-[88%] -rotate-[4deg] opacity-90 shadow-sm transition-[translate,rotate] duration-500 ease-out group-hover:-translate-x-[98%] group-hover:-rotate-[7deg]" />
+      <ArticleSkeleton className="left-1/2 top-8 -translate-x-1/2 shadow-[0_12px_28px_-10px_rgba(17,30,61,0.35)] transition-[translate] duration-500 ease-out group-hover:-translate-y-2" />
+    </div>
+  );
+}
+
+const waveform = [
+  38, 62, 45, 80, 52, 70, 34, 58, 88, 64, 42, 74, 50, 92, 60, 40, 68, 54, 82,
+  46, 66, 36, 72, 56, 44, 78, 48, 62, 38, 70,
+];
+
+function WebinarsArt() {
+  return (
+    <div className="relative h-full overflow-hidden rounded-xl bg-[#0b3d91]">
+      <div className="absolute inset-x-[16%] bottom-0 top-5 overflow-hidden rounded-t-lg bg-white/[0.06] ring-1 ring-white/10">
+        {/* Signal waveform */}
+        <div className="absolute inset-x-4 bottom-5 flex h-12 items-end gap-[3px]">
+          {waveform.map((h, i) => (
+            <span
+              key={i}
+              className="flex-1 rounded-full bg-white/20 transition-colors duration-500 group-hover:bg-white/55"
+              style={{ height: `${h}%` }}
+            />
+          ))}
+        </div>
+        {/* Play button */}
+        <div className="absolute left-1/2 top-[38%] flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white shadow-[0_8px_24px_-6px_rgba(0,0,0,0.5)] transition-[scale] duration-300 ease-out group-hover:scale-110">
+          <Play weight="fill" className="ml-0.5 size-4 text-[#0b3d91]" />
+        </div>
+        {/* Progress */}
+        <div className="absolute inset-x-4 bottom-2 h-1 overflow-hidden rounded-full bg-white/10">
+          <div className="h-full w-1/4 rounded-full bg-white transition-[width] duration-700 ease-out group-hover:w-2/3" />
+        </div>
+      </div>
+    </div>
   );
 }
