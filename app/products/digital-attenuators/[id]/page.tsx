@@ -430,8 +430,8 @@ export default function DigitalAttenuatorProduct() {
                       fill
                       sizes="(max-width:768px) 100vw, 500px"
                       className={
-                        m.chNum === 12 || m.chNum === 24
-                          ? "object-contain transition-transform duration-700"
+                        m.chNum > 8
+                          ? "object-contain mix-blend-multiply transition-transform duration-700"
                           : "object-cover scale-125 transition-transform duration-700"
                       }
                       priority
