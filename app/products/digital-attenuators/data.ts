@@ -83,6 +83,8 @@ const mechanicalSpecs: Record<string, { parameter: string; value: string }[]> = 
 };
 
 const modelImages: Record<string, string> = {
+  24: "/images/atten24.webp",
+  12: "/images/atten12.webp",
   8: "/images/atten8.webp",
   4: "/images/atten4.webp",
   2: "/images/atten2.webp",

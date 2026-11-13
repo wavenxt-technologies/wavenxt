@@ -429,7 +429,11 @@ export default function DigitalAttenuatorProduct() {
                       alt={m.model}
                       fill
                       sizes="(max-width:768px) 100vw, 500px"
-                      className="object-cover scale-125 transition-transform duration-700"
+                      className={
+                        m.chNum === 12 || m.chNum === 24
+                          ? "object-contain transition-transform duration-700"
+                          : "object-cover scale-125 transition-transform duration-700"
+                      }
                       priority
                     />
                   </div>
